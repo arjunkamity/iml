@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+.angular/
+
+# Env / secrets
+.env
+
+# Claude local settings
+.claude/settings.local.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Large unused media assets (download separately if needed)
+Landing/sounds/*.mp4
+
+# Generated API spec (regenerated on backend start)
+backend/openapi.json

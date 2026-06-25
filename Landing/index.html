@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>India Mind League — Champions of the Mind</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="India Mind League — a flagship intellectual championship by the Amity Group of Schools, testing IQ, EQ and core values. Register for the Digital Qualifier." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%238b5cf6'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/hero.css" />
+  <link rel="stylesheet" href="css/leaderboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/splash.css" />
+  <noscript><style>#splash{display:none!important}</style></noscript>
+  <script>
+    // Onboarding intro is a MOBILE-only experience; hero carousel is DESKTOP-only.
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      document.documentElement.classList.add('intro');
+    }
+  </script>
+</head>
+<body>
+  <!-- LOGO REVEAL SPLASH -->
+  <div id="splash">
+    <span class="splash-burst"></span>
+    <!-- Transition 1 · Amity presents -->
+    <div class="splash-amity">
+      <div class="amity-card"><img class="amity-logo" src="images/amity-logo.png" alt="Amity Group of Schools" /></div>
+      <span class="amity-presents">Presents</span>
+    </div>
+    <!-- Transition 2 · IML logo -->
+    <img class="splash-logo" src="images/logo-trim.png" alt="India Mind League" />
+    <!-- Transition 3 · Tagline -->
+    <div class="splash-words">
+      <span class="sw">Where</span>
+      <span class="sw g">India</span>
+      <span class="sw">Thinks</span>
+      <span class="sw g">Forward</span>
+    </div>
+  </div>
+
+  <!-- ONBOARDING INTRO -->
+  <div id="onboarding" role="dialog" aria-label="Welcome">
+    <div class="ob-bg"></div>
+    <span class="ob-blob b1"></span><span class="ob-blob b2"></span><span class="ob-blob b3"></span>
+    <div class="ob-progress"><span id="obBar"></span></div>
+    <button class="ob-skip" id="obSkip">Skip intro →</button>
+
+    <div class="ob-slides">
+      <!-- Slide 1 -->
+      <section class="ob-slide active" data-slide="0">
+        <div class="ob-brain">🧠</div>
+        <div class="ob-kicker">Amity Group of Schools presents</div>
+        <h1 class="ob-title">India <span class="gradient">Mind</span> League</h1>
+        <p class="ob-sub">Champions of the Mind ✨</p>
+        <span class="ob-spark s1">✨</span><span class="ob-spark s2">⭐</span>
+        <span class="ob-spark s3">💫</span><span class="ob-spark s4">✨</span>
+      </section>
+
+      <!-- Slide 2 -->
+      <section class="ob-slide" data-slide="1">
+        <h1 class="ob-title">Three <span class="gradient">superpowers</span></h1>
+        <p class="ob-sub">Every champion masters all three.</p>
+        <div class="ob-cards">
+          <div class="ob-card"><span class="emo">🧠</span><b>IQ</b><span>Smart thinking</span></div>
+          <div class="ob-card"><span class="emo">❤️</span><b>EQ</b><span>Big heart</span></div>
+          <div class="ob-card"><span class="emo">🧭</span><b>Values</b><span>Strong character</span></div>
+        </div>
+      </section>
+
+      <!-- Slide 3 -->
+      <section class="ob-slide" data-slide="2">
+        <div class="ob-confetti"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="ob-trophy">🏆</div>
+        <h1 class="ob-title">Ready to <span class="gradient">play?</span></h1>
+        <p class="ob-sub">Your journey to the national stage starts now.</p>
+        <button class="btn btn-primary btn-lg ob-go" id="obGo">Let's Go →</button>
+      </section>
+    </div>
+
+    <div class="ob-dots">
+      <button class="ob-dot on" data-go="0" aria-label="Slide 1"></button>
+      <button class="ob-dot" data-go="1" aria-label="Slide 2"></button>
+      <button class="ob-dot" data-go="2" aria-label="Slide 3"></button>
+    </div>
+    <button class="ob-next" id="obNext" aria-label="Next">→</button>
+  </div>
+
+  <div class="bg-aurora"></div>
+  <div class="bg-grid"></div>
+
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <div class="container">
+      <a href="#top" class="brand"><img class="nav-logo" src="images/logo-trim.png" alt="India Mind League" /></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      <nav class="nav-links" id="navLinks">
+        <a href="#how">How it works</a>
+        <a href="#visionary">Visionary</a>
+        <a href="#leaderboard">Leaderboard</a>
+        <a href="#register" class="btn btn-primary btn-sm">Register</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO SLIDER -->
+    <section class="hero-slider" id="heroSlider" aria-roledescription="carousel" aria-label="India Mind League">
+      <div class="hs-progress"><span></span></div>
+
+      <div class="hs-slides">
+        <!-- Slide 1 · National Exposure -->
+        <article class="hs-slide active" style="--tint:37,99,235;">
+          <div class="hs-row">
+            <div class="hs-info up">
+              <div class="banner">
+                <div class="banner-orb"><span class="bring b1"></span><span class="bring b2"></span>📡</div>
+                <div class="fcard fa"><span class="fic">🔴</span><span><small>Status</small><b>On Air · Live</b></span></div>
+                <div class="fcard fb"><span><small>Reach</small><b>100+ schools</b></span><span class="mbars"><i style="height:40%"></i><i style="height:62%"></i><i style="height:84%"></i><i style="height:100%"></i></span></div>
+                <div class="fcard fc"><span class="fchips"><i>📺</i><i>▶️</i><i>📱</i></span><span><small>Platforms</small><b>TV · OTT · Digital</b></span></div>
+                <div class="fcard fd"><span class="avs"><span>A</span><span>R</span><span>K</span></span><span><small>Audience</small><b>2.4k+</b></span></div>
+              </div>
+            </div>
+            <div class="hs-copy">
+              <h1 class="hs-title up d2">National <span class="gradient">Exposure</span></h1>
+              <p class="hs-sub up d3">Showcase your talents on a national platform — TV, OTT and digital.</p>
+              <div class="hs-cta up d4"><a class="btn btn-primary btn-lg" href="#register">Register for the Qualifier →</a></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 2 · Leadership Development -->
+        <article class="hs-slide" style="--tint:124,58,237;">
+          <div class="hs-row">
+            <div class="hs-info up">
+              <div class="banner">
+                <div class="banner-orb"><span class="bring b1"></span><span class="bring b2"></span>🚀</div>
+                <div class="fcard fa"><span class="fic">🧠</span><span><small>Skill</small><b>Critical Thinking</b></span></div>
+                <div class="fcard fb"><span><small>Confidence</small><b>85%</b></span><span class="prog"><i style="width:85%"></i></span></div>
+                <div class="fcard fc"><span class="fic">🧭</span><span><small>Journey</small><b>3 Stages</b></span></div>
+                <div class="fcard fd"><span class="fic">⭐</span><span><small>Mentorship</small><b>Level Up</b></span></div>
+              </div>
+            </div>
+            <div class="hs-copy">
+              <h1 class="hs-title up d2">Leadership <span class="gradient">Development</span></h1>
+              <p class="hs-sub up d3">Gain the skills, mentorship and confidence to lead and inspire others.</p>
+              <div class="hs-cta up d4"><a class="btn btn-primary btn-lg" href="#register">Register for the Qualifier →</a></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 3 · Recognition -->
+        <article class="hs-slide" style="--tint:236,72,153;">
+          <div class="hs-row">
+            <div class="hs-info up">
+              <div class="banner">
+                <div class="banner-orb"><span class="bring b1"></span><span class="bring b2"></span>🏆</div>
+                <div class="fcard fa"><span class="fic">👑</span><span><small>Your rank</small><b>#1</b></span></div>
+                <div class="fcard fb"><span class="fic">📜</span><span><small>Reward</small><b>Certificate</b></span></div>
+                <div class="fcard fc"><span class="fic">🏅</span><span><small>Shortlist</small><b>Top 500</b></span></div>
+                <div class="fcard fd"><span class="avs"><span>1</span><span>2</span><span>3</span></span><span><small>Leaderboard</small><b>Live</b></span></div>
+              </div>
+            </div>
+            <div class="hs-copy">
+              <h1 class="hs-title up d2"><span class="gradient">Recognition</span></h1>
+              <p class="hs-sub up d3">Earn certificates and be acknowledged for your exceptional abilities.</p>
+              <div class="hs-cta up d4"><a class="btn btn-primary btn-lg" href="#register">Register for the Qualifier →</a></div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="hs-dots" id="hsDots">
+        <button class="hs-dot on" aria-label="Slide 1"></button>
+        <button class="hs-dot" aria-label="Slide 2"></button>
+        <button class="hs-dot" aria-label="Slide 3"></button>
+      </div>
+      <a class="hs-scroll" href="#how">Scroll ↓</a>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section" id="how">
+      <div class="container">
+        <div class="center reveal">
+          <span class="eyebrow">The Journey</span>
+          <h2>How it works</h2>
+          <p class="lead">Three stages that carry the sharpest minds from screen to national stage.</p>
+        </div>
+        <div class="grid cols-3" style="margin-top:2.4rem;">
+          <div class="card hover step reveal">
+            <div class="no">01</div>
+            <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+            <h3>Digital Qualifier</h3><p>An online assessment measuring IQ, EQ and values — your entry into the league.</p>
+          </div>
+          <div class="card hover step reveal">
+            <div class="no">02</div>
+            <div class="icon-tile cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <h3>School Round</h3><p>Top qualifiers compete in teams at their schools, building collaboration and critical thinking.</p>
+          </div>
+          <div class="card hover step reveal">
+            <div class="no">03</div>
+            <div class="icon-tile pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.79-.78.79-2.13 0-2.91a2.06 2.06 0 0 0-3 0Z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2Z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></div>
+            <h3>University Bootcamp</h3><p>Finalists join an immersive leadership, mentorship and networking experience.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MESSAGE FROM THE VISIONARY -->
+    <section class="section" id="visionary">
+      <div class="container vis-grid">
+        <div class="vis-photo reveal">
+          <img src="images/Dr-MS-Chauhan.jpg" alt="Dr. (Mrs.) Amita Chauhan" />
+        </div>
+        <div class="vis-body reveal">
+          <span class="eyebrow">Message from the Visionary</span>
+          <h2>Dr. (Mrs.) Amita Chauhan</h2>
+          <p class="vis-role">Chairperson, Amity Group of Schools</p>
+          <p class="vis-quote">"In an AI-driven world, education must nurture both intellect and values — minds that think, feel and lead."</p>
+          <p class="vis-intro">India Mind League is envisioned as a new-age championship for today's AI-driven world — developing <b>Emotional Intelligence (EQ)</b>, <b>Spiritual Intelligence (SQ)</b> and core values in students.</p>
+          <button type="button" class="btn btn-primary btn-lg" id="visionaryBtn" style="margin-top:0.4rem;">Read Full Message →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEADERBOARD -->
+    <section class="section" id="leaderboard">
+      <div class="container">
+        <div class="center reveal"><span class="eyebrow">Real-time</span><h2>Live Leaderboard</h2><p class="lead">Track the top performers as the championship unfolds.</p></div>
+        <div class="lb2 reveal">
+          <div class="lb2-card">
+            <div id="lbMount"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REGISTRATION -->
+    <section class="section" id="register">
+      <div class="container reg-grid">
+        <div class="reg-aside reveal">
+          <span class="eyebrow">Enter the Arena</span>
+          <h2>Register for the<br/>Digital Qualifier</h2>
+          <p style="margin-top:.8rem;">Fill the form to secure your spot — it takes under a minute. Just your name, class and a mobile number.</p>
+          <ul>
+            <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Mobile-friendly, timed online assessment</span></li>
+            <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Quick &amp; secure — done in under a minute</span></li>
+            <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Instant participation certificate</span></li>
+          </ul>
+        </div>
+
+        <div class="card form-card reveal">
+          <form id="regForm" novalidate>
+            <div class="field"><label>Student Name <span class="req">*</span></label><input name="name" placeholder="Full name" required /></div>
+            <div class="field"><label>Class / Grade <span class="req">*</span></label><input name="grade" placeholder="e.g. 8" required /></div>
+            <div class="field"><label>School Name <span class="opt">(optional)</span></label><input name="school" placeholder="School name" /></div>
+            <div class="field"><label>Parent Name</label><input name="parentName" placeholder="Parent / Guardian" /></div>
+            <div class="field"><label>Mobile Number <span class="req">*</span></label><input name="phone" id="phone" placeholder="10-digit mobile" inputmode="numeric" required /></div>
+
+            <div class="form-msg" id="formMsg"></div>
+            <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:.6rem;">Complete Registration</button>
+            <p class="hint center">By registering you agree to the championship terms &amp; data policy.</p>
+          </form>
+
+          <div class="form-success" id="formSuccess">
+            <div class="check"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+            <h3>You're registered! 🎉</h3>
+            <p id="successName">Welcome to the India Mind League.</p>
+            <button class="btn btn-ghost" id="regAgain" style="margin-top:1rem;">Register another participant</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container row">
+      <a href="#top" class="brand"><img class="footer-logo" src="images/logo-trim.png" alt="India Mind League" /></a>
+      <div class="links">
+        <a href="#how">How it works</a><a href="#visionary">Visionary</a><a href="#leaderboard">Leaderboard</a><a href="#register">Register</a>
+      </div>
+      <span class="faint" style="color:var(--faint);font-size:.85rem;">© <span id="year"></span> Amity Group of Schools</span>
+    </div>
+  </footer>
+
+  <!-- VISIONARY MESSAGE MODAL -->
+  <div class="modal" id="visionaryModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Message from the Visionary">
+      <button class="modal-close" data-close aria-label="Close">&times;</button>
+      <div class="vm-head">
+        <div class="vm-photo">
+          <div class="hs-frame"><div class="inner">
+            <img src="images/Dr-MS-Chauhan.jpg" alt="Dr. (Mrs.) Amita Chauhan" />
+          </div></div>
+        </div>
+        <div>
+          <span class="eyebrow">Meet the Visionary</span>
+          <h2 style="margin:.2rem 0;">Dr. (Mrs.) Amita Chauhan</h2>
+          <p class="vm-role">Chairperson, Amity Group of Schools</p>
+        </div>
+      </div>
+      <div class="vm-text">
+        <p>Under the visionary guidance of <b>Dr. (Mrs.) Amita Chauhan</b>, Chairperson, Amity Group of Schools.</p>
+        <p><b>India Mind League</b> is envisioned as a new-age championship aligned with today's AI-driven world.</p>
+        <p>While AI can process knowledge, it cannot feel or make value-based decisions.</p>
+        <p>With the belief that education must nurture both intellect and values, this initiative focuses on developing <b>Emotional Intelligence (EQ)</b> and <b>Spiritual Intelligence (SQ)</b> in students.</p>
+      </div>
+      <div class="vm-cta"><a class="btn btn-primary btn-lg" href="#register" data-close>Be part of it →</a></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="js/splash.js"></script>
+  <script src="js/onboarding.js"></script>
+  <script src="js/hero.js"></script>
+  <script src="js/leaderboard.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
