@@ -41,9 +41,13 @@ html.intro body { overflow: hidden; }
 }
 .ob-slide.active { position: relative; opacity: 1; visibility: visible; pointer-events: auto; }
 
-.ob-kicker { font-family: "Sora"; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.78rem; color: var(--muted); }
-.ob-title { font-family: "Sora"; font-weight: 800; font-size: clamp(2.2rem, 7vw, 4rem); letter-spacing: -0.02em; line-height: 1.05; }
-.ob-sub { color: var(--muted); font-size: clamp(1rem, 2.4vw, 1.25rem); margin-top: 0.3rem; }
+.ob-kicker { font-family: "Sora"; font-weight: 700; letter-spacing: 0.32em; text-transform: uppercase; font-size: 0.78rem;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.ob-logo { width: clamp(220px, 66vw, 360px); max-width: 90vw; height: auto; margin-bottom: 1.3rem;
+  filter: drop-shadow(0 0 42px rgba(124, 58, 237, 0.5)); animation: obBob 4s ease-in-out infinite; }
+.ob-title { font-family: "Sora"; font-weight: 800; font-size: clamp(2.6rem, 9vw, 4.4rem); letter-spacing: -0.02em; line-height: 1.04;
+  text-shadow: 0 10px 34px rgba(0, 0, 0, 0.45); }
+.ob-sub { color: var(--muted); font-size: clamp(1.05rem, 3.6vw, 1.3rem); margin: 0.7rem auto 0; max-width: 26ch; line-height: 1.5; }
 
 /* spring entrance applied to children of the active slide */
 .ob-slide.active > * { animation: obPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
@@ -72,25 +76,32 @@ html.intro body { overflow: hidden; }
 @keyframes obSpark { 0%, 100% { opacity: 0; transform: scale(0.4) rotate(0); } 50% { opacity: 1; transform: scale(1.1) rotate(25deg); } }
 
 /* Slide 2 — superpower cards */
-.ob-cards { display: flex; gap: 1rem; margin-top: 1.6rem; flex-wrap: wrap; justify-content: center; }
+.ob-cards { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; justify-content: center; }
 .ob-card {
-  width: 150px; padding: 1.4rem 1rem; border-radius: 18px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  width: clamp(118px, 30vw, 158px); padding: 1.6rem 1rem 1.3rem; border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
   border: 1px solid var(--line-2); backdrop-filter: blur(10px); box-shadow: var(--shadow);
 }
-.ob-card .emo { font-size: 2.6rem; display: block; animation: obWobble 2.6s ease-in-out infinite; }
-.ob-card b { display: block; font-family: "Sora"; font-size: 1.2rem; margin: 0.5rem 0 0.1rem; }
-.ob-card span:last-child { color: var(--muted); font-size: 0.85rem; }
+.ob-card .emo { font-size: 2.4rem; display: grid; place-items: center; width: 66px; height: 66px;
+  margin: 0 auto 0.8rem; border-radius: 18px; animation: obBob 3s ease-in-out infinite; }
+.ob-card.c-iq .emo { background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.45); box-shadow: 0 0 30px -8px rgba(59, 130, 246, 0.7); }
+.ob-card.c-eq .emo { background: rgba(236, 72, 153, 0.2); border: 1px solid rgba(236, 72, 153, 0.45); box-shadow: 0 0 30px -8px rgba(236, 72, 153, 0.7); animation-delay: 0.4s; }
+.ob-card.c-val .emo { background: rgba(124, 58, 237, 0.2); border: 1px solid rgba(124, 58, 237, 0.45); box-shadow: 0 0 30px -8px rgba(124, 58, 237, 0.7); animation-delay: 0.8s; }
+.ob-card b { display: block; font-family: "Sora"; font-size: 1.5rem; font-weight: 800; margin: 0.2rem 0;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.ob-card span:last-child { color: var(--muted); font-size: 0.9rem; }
 .ob-slide.active .ob-card { animation: obPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 .ob-slide.active .ob-card:nth-child(1) { animation-delay: 0.15s; }
 .ob-slide.active .ob-card:nth-child(2) { animation-delay: 0.3s; }
 .ob-slide.active .ob-card:nth-child(3) { animation-delay: 0.45s; }
-.ob-card:nth-child(2) .emo { animation-delay: 0.4s; }
-.ob-card:nth-child(3) .emo { animation-delay: 0.8s; }
-@keyframes obWobble { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 
-/* Slide 3 — trophy + go */
-.ob-trophy { font-size: clamp(3.5rem, 11vw, 6rem); filter: drop-shadow(0 0 26px rgba(251, 191, 36, 0.6)); animation: obBob 2.8s ease-in-out infinite !important; }
+/* Slide 3 — trophy badge + go */
+.ob-badge { width: clamp(112px, 28vw, 152px); height: clamp(112px, 28vw, 152px); border-radius: 50%;
+  display: grid; place-items: center; font-size: clamp(3rem, 9vw, 4.4rem); margin: 0 auto 0.4rem;
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05)), linear-gradient(135deg, #fde68a, #f59e0b);
+  box-shadow: 0 0 80px -10px rgba(251, 191, 36, 0.7), inset 0 2px 0 rgba(255, 255, 255, 0.35);
+  animation: obBob 3s ease-in-out infinite; }
+.ob-slide.active > .ob-confetti { animation: none; opacity: 1; }
 .ob-go { margin-top: 1.4rem !important; animation: obPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both, obBreathe 2.2s ease-in-out 0.7s infinite !important; }
 @keyframes obBreathe { 0%, 100% { transform: scale(1); box-shadow: 0 12px 34px -10px rgba(139, 92, 246, 0.65); } 50% { transform: scale(1.05); box-shadow: 0 18px 46px -8px rgba(59, 130, 246, 0.7); } }
 

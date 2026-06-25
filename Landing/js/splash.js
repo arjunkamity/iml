@@ -23,9 +23,10 @@
     }
   }
 
-  // Play from the start (Amity phase); if autoplay is blocked, play on the first gesture.
+  // Play from the start (Amity phase); browsers block autoplay until the user
+  // interacts, so also play on the first gesture of any kind.
   playSound();
-  ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
+  ['pointerdown', 'mousedown', 'click', 'keydown', 'touchstart', 'touchend', 'wheel'].forEach(function (ev) {
     window.addEventListener(ev, playSound, { passive: true });
   });
 
