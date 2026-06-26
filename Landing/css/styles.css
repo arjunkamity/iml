@@ -441,7 +441,7 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
     background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line-2); color: var(--text); transition: all 0.2s;
   }
   .nav-social a:hover { background: var(--grad); border-color: transparent; color: #0a0820; transform: translateY(-2px); }
-  .nav-social svg { width: 21px; height: 21px; }
+  .nav-social svg { width: 21px; height: 21px; display: block; }
 
   .nav-toggle.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
   .nav-toggle.open span:nth-child(2) { opacity: 0; }
