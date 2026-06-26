@@ -191,12 +191,14 @@
 
 /* layered, glowing wave divider: masks the photo's cut-off edge + blends into the next section */
 .hs-wave { position: absolute; left: -1px; right: -1px; bottom: -1px; width: calc(100% + 2px);
-  height: clamp(86px, 9vw, 140px); z-index: 3; pointer-events: none; line-height: 0; }
+  height: clamp(98px, 10vw, 158px); z-index: 3; pointer-events: none; line-height: 0; }
 .hs-wave svg { width: 100%; height: 100%; display: block; }
-.hs-wave .w-glow { fill: rgba(124, 58, 237, 0.22); }
+.hs-wave .wl-a { fill: rgba(167, 139, 250, 0.22); }
+.hs-wave .wl-b { fill: rgba(96, 165, 250, 0.22); }
+.hs-wave .wl-c { fill: rgba(244, 114, 182, 0.18); }
 .hs-wave .w-fill { fill: var(--bg); }
-.hs-wave .w-edge { fill: none; stroke: url(#iml-wave-grad); stroke-width: 3; vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 0 9px rgba(124, 58, 237, 0.75)); }
+.hs-wave .w-edge { fill: none; stroke: url(#iml-wave-grad); stroke-width: 2.5; vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.7)); }
 
 .hs-scroll { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 6;
   color: var(--muted); font-size: 0.8rem; font-weight: 600; font-family: var(--display); animation: hsFloat 2.4s ease-in-out infinite; }
