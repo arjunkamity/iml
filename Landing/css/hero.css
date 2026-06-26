@@ -116,7 +116,9 @@
 }
 .banner-photo { position: absolute; inset: 0; z-index: 1; display: flex; align-items: flex-end; justify-content: center; }
 .banner-photo img { height: 100%; width: auto; max-width: 100%; object-fit: contain; object-position: bottom;
-  filter: drop-shadow(0 26px 38px rgba(0, 0, 0, 0.55)); }
+  filter: drop-shadow(0 26px 38px rgba(0, 0, 0, 0.55));
+  -webkit-mask-image: linear-gradient(to bottom, #000 84%, rgba(0,0,0,0.35) 94%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 84%, rgba(0,0,0,0.35) 94%, transparent 100%); }
 
 .fcard {
   position: absolute; z-index: 2; display: flex; align-items: center; gap: 0.55rem;
@@ -129,7 +131,7 @@
 .fcard small { display: block; color: var(--faint); font-weight: 600; font-size: 0.68rem; }
 .fcard b { font-family: var(--display); font-size: 0.86rem; }
 .fa { top: 4%; left: -2%; } .fb { top: 32%; right: -6%; animation-delay: 1s; }
-.fc { bottom: 15%; left: -4%; animation-delay: 2s; } .fd { bottom: 1%; right: 4%; animation-delay: 1.5s; }
+.fc { bottom: 24%; left: -4%; animation-delay: 2s; } .fd { bottom: 16%; right: 4%; animation-delay: 1.5s; }
 @keyframes bfloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
 
 .avs { display: flex; }
@@ -186,6 +188,11 @@
 
 .hs-progress { position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 6; background: rgba(255, 255, 255, 0.08); }
 .hs-progress span { display: block; height: 100%; width: 0; background: var(--grad); }
+
+/* curved bottom that masks the photo's cut-off edge + transitions into the next section */
+.hs-wave { position: absolute; left: -1px; right: -1px; bottom: -1px; width: calc(100% + 2px);
+  height: clamp(72px, 7vw, 118px); z-index: 3; pointer-events: none; display: block; }
+.hs-wave path { fill: var(--bg); }
 
 .hs-scroll { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 6;
   color: var(--muted); font-size: 0.8rem; font-weight: 600; font-family: var(--display); animation: hsFloat 2.4s ease-in-out infinite; }

@@ -18,9 +18,14 @@
   /* Nav: mobile toggle */
   var toggle = document.getElementById('navToggle');
   var links = document.getElementById('navLinks');
-  toggle.addEventListener('click', function () { links.classList.toggle('open'); });
+  function setMenu(open) {
+    links.classList.toggle('open', open);
+    toggle.classList.toggle('open', open);
+    document.body.classList.toggle('menu-open', open);
+  }
+  toggle.addEventListener('click', function () { setMenu(!links.classList.contains('open')); });
   links.addEventListener('click', function (e) {
-    if (e.target.tagName === 'A') links.classList.remove('open');
+    if (e.target.closest('a')) setMenu(false);
   });
 
   /* Scroll reveal */
