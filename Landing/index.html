@@ -193,9 +193,20 @@
         </article>
       </div>
 
-      <svg class="hs-wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0,46 C240,112 480,6 720,40 C960,74 1200,118 1440,52 L1440,120 L0,120 Z"></path>
-      </svg>
+      <div class="hs-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 140" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="iml-wave-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#2563eb"/>
+              <stop offset="0.5" stop-color="#7c3aed"/>
+              <stop offset="1" stop-color="#ec4899"/>
+            </linearGradient>
+          </defs>
+          <path class="w-glow" d="M0,52 C360,134 1020,4 1440,64 L1440,140 L0,140 Z"/>
+          <path class="w-fill" d="M0,66 C360,142 1020,16 1440,76 L1440,140 L0,140 Z"/>
+          <path class="w-edge" d="M0,66 C360,142 1020,16 1440,76"/>
+        </svg>
+      </div>
 
       <div class="hs-dots" id="hsDots">
         <button class="hs-dot on" aria-label="Slide 1"></button>
