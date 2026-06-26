@@ -35,19 +35,23 @@
     <img class="splash-logo" src="images/logo-trim.png" alt="India Mind League" />
     <!-- Transition 3 · Tagline (full-screen video seen through the letters) -->
     <div class="splash-words splash-vtext" role="img" aria-label="India Mind League">
-      <svg class="vt" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
+      <svg class="vt" width="100%" height="100%">
         <defs>
           <mask id="vt-mask">
-            <rect width="1080" height="1920" fill="#000"/>
-            <text class="vt-w r1" x="540" y="770">INDIA</text>
-            <text class="vt-w r2" x="540" y="1030">MIND</text>
-            <text class="vt-w r3" x="540" y="1290">LEAGUE</text>
+            <rect width="100%" height="100%" fill="#000"/>
+            <text class="vt-mtext" x="50%" y="50%" text-anchor="middle" dominant-baseline="central">
+              <tspan class="vt-l r1" x="50%" dy="-1.12em">INDIA</tspan>
+              <tspan class="vt-l r2" x="50%" dy="1.12em">MIND</tspan>
+              <tspan class="vt-l r3" x="50%" dy="1.12em">LEAGUE</tspan>
+            </text>
           </mask>
         </defs>
-        <text class="vt-base r1" x="540" y="770">INDIA</text>
-        <text class="vt-base r2" x="540" y="1030">MIND</text>
-        <text class="vt-base r3" x="540" y="1290">LEAGUE</text>
-        <foreignObject x="0" y="0" width="1080" height="1920" mask="url(#vt-mask)">
+        <text class="vt-btext" x="50%" y="50%" text-anchor="middle" dominant-baseline="central">
+          <tspan class="vt-l r1" x="50%" dy="-1.12em">INDIA</tspan>
+          <tspan class="vt-l r2" x="50%" dy="1.12em">MIND</tspan>
+          <tspan class="vt-l r3" x="50%" dy="1.12em">LEAGUE</tspan>
+        </text>
+        <foreignObject x="0" y="0" width="100%" height="100%" mask="url(#vt-mask)">
           <video xmlns="http://www.w3.org/1999/xhtml" class="vt-video" autoplay muted loop playsinline preload="auto">
             <source src="videos/school_campus.mp4" type="video/mp4">
           </video>
