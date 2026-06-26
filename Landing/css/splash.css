@@ -47,6 +47,22 @@
 .splash-words {
   display: flex; flex-direction: column; align-items: center; gap: 0; text-align: center; padding: 0.5rem; width: 100%;
 }
+
+/* ---- Tagline as a window into the background video ---- */
+.splash-vtext { width: min(560px, 94vw); padding: 0; }
+.splash-vtext .vt { width: 100%; height: auto; display: block; overflow: visible; }
+.vt-w, .vt-base {
+  font-family: var(--display); font-weight: 700; font-size: 150px; letter-spacing: -4px;
+  text-anchor: middle; opacity: 0;
+}
+.vt-w { fill: #fff; }
+.vt-base { fill: #fff; filter: drop-shadow(0 6px 18px rgba(124, 58, 237, 0.55)); }
+.vt-video { width: 100%; height: 100%; object-fit: cover; }
+.vt-w.r1, .vt-base.r1 { animation: vtIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 6.6s forwards; }
+.vt-w.r2, .vt-base.r2 { animation: vtIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 7.1s forwards; }
+.vt-w.r3, .vt-base.r3 { animation: vtIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 7.6s forwards; }
+.vt-w.r4, .vt-base.r4 { animation: vtIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 8.1s forwards; }
+@keyframes vtIn { from { opacity: 0; } to { opacity: 1; } }
 .sw {
   font-family: var(--display); font-weight: 800; letter-spacing: -0.035em; line-height: 0.84; color: #fff; opacity: 0;
   white-space: nowrap; font-size: clamp(4rem, 13vw, 8.5rem);

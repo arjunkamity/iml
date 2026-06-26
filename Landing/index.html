@@ -35,12 +35,28 @@
     </div>
     <!-- Transition 2 · IML logo -->
     <img class="splash-logo" src="images/logo-trim.png" alt="India Mind League" />
-    <!-- Transition 3 · Tagline -->
-    <div class="splash-words">
-      <span class="sw">Where</span>
-      <span class="sw g">India</span>
-      <span class="sw">Thinks</span>
-      <span class="sw g">Forward</span>
+    <!-- Transition 3 · Tagline (video plays through the letters) -->
+    <div class="splash-words splash-vtext" role="img" aria-label="Where India Thinks Forward">
+      <svg class="vt" viewBox="0 0 520 600" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <mask id="vt-mask">
+            <rect width="520" height="600" fill="#000"/>
+            <text class="vt-w r1" x="260" y="148">Where</text>
+            <text class="vt-w r2" x="260" y="294">India</text>
+            <text class="vt-w r3" x="260" y="440">Thinks</text>
+            <text class="vt-w r4" x="260" y="586">Forward</text>
+          </mask>
+        </defs>
+        <text class="vt-base r1" x="260" y="148">Where</text>
+        <text class="vt-base r2" x="260" y="294">India</text>
+        <text class="vt-base r3" x="260" y="440">Thinks</text>
+        <text class="vt-base r4" x="260" y="586">Forward</text>
+        <foreignObject width="520" height="600" mask="url(#vt-mask)">
+          <video xmlns="http://www.w3.org/1999/xhtml" class="vt-video" autoplay muted loop playsinline preload="auto">
+            <source src="videos/school_campus.mp4" type="video/mp4">
+          </video>
+        </foreignObject>
+      </svg>
     </div>
   </div>
 
