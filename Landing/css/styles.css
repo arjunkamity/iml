@@ -30,8 +30,11 @@
   --grad: linear-gradient(120deg, #2563eb 0%, #7c3aed 50%, #ec4899 100%);
   --grad-2: linear-gradient(120deg, #3b82f6 0%, #a21caf 55%, #ec4899 100%);
 
+  --display: "Clash Display", "Plus Jakarta Sans", system-ui, sans-serif;
+
   --radius: 20px;
   --radius-sm: 13px;
+  --radius-btn: 14px;
   --shadow: 0 30px 70px -24px rgba(0, 0, 0, 0.75);
   --glow: 0 0 50px -10px rgba(139, 92, 246, 0.6);
   --maxw: 1200px;
@@ -76,7 +79,7 @@ ul { list-style: none; padding: 0; }
 }
 
 /* ---------- Typography ---------- */
-h1, h2, h3, h4 { font-family: "Sora", sans-serif; line-height: 1.1; letter-spacing: -0.02em; font-weight: 700; }
+h1, h2, h3, h4 { font-family: var(--display), sans-serif; line-height: 1.1; letter-spacing: -0.02em; font-weight: 700; }
 h1 { font-size: clamp(2.6rem, 6vw, 4.6rem); font-weight: 800; }
 h2 { font-size: clamp(1.9rem, 3.8vw, 2.9rem); }
 h3 { font-size: 1.25rem; }
@@ -88,7 +91,7 @@ p { color: var(--muted); }
 .section { padding: clamp(3.5rem, 8vw, 6.5rem) 0; }
 .center { text-align: center; }
 .eyebrow {
-  display: inline-block; font-family: "Sora"; font-weight: 700; font-size: 0.74rem;
+  display: inline-block; font-family: var(--display); font-weight: 700; font-size: 0.74rem;
   letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 0.9rem;
   background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
 }
@@ -100,8 +103,8 @@ p { color: var(--muted); }
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-  font-family: "Sora"; font-weight: 600; font-size: 0.96rem;
-  padding: 0.8rem 1.5rem; border-radius: 999px; border: 1px solid var(--line-2);
+  font-family: var(--display); font-weight: 600; font-size: 0.96rem;
+  padding: 0.8rem 1.5rem; border-radius: var(--radius-btn); border: 1px solid var(--line-2);
   background: var(--surface-2); color: var(--text); cursor: pointer;
   transition: transform 0.08s ease, filter 0.2s ease, box-shadow 0.25s ease;
 }
@@ -114,7 +117,7 @@ p { color: var(--muted); }
 .btn-lg { padding: 0.95rem 1.8rem; font-size: 1.02rem; }
 
 /* ---------- Brand ---------- */
-.brand { font-family: "Sora"; font-weight: 800; letter-spacing: 0.05em; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 0.55rem; }
+.brand { font-family: var(--display); font-weight: 800; letter-spacing: 0.05em; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 0.55rem; }
 .brand .logo { width: 30px; height: 30px; }
 .brand .b2 { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .nav-logo { height: 42px; width: auto; display: block; }
@@ -173,7 +176,7 @@ p { color: var(--muted); }
 /* ---------- Stat strip ---------- */
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1rem; }
 .stats .stat { padding: 1.4rem; }
-.stat .num { font-family: "Sora"; font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; line-height: 1; }
+.stat .num { font-family: var(--display); font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; line-height: 1; }
 .stat .label { color: var(--muted); font-size: 0.82rem; margin-top: 0.4rem; }
 
 /* ---------- Card ---------- */
@@ -193,7 +196,7 @@ p { color: var(--muted); }
 
 /* steps */
 .step { padding-top: 2.6rem; }
-.step .no { position: absolute; top: 1.1rem; right: 1.4rem; font-family: "Sora"; font-weight: 800; font-size: 2.6rem;
+.step .no { position: absolute; top: 1.1rem; right: 1.4rem; font-family: var(--display); font-weight: 800; font-size: 2.6rem;
   background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; opacity: 0.85; }
 
 /* ---------- Leaderboard ---------- */
@@ -204,7 +207,7 @@ p { color: var(--muted); }
 .lb-row { display: grid; grid-template-columns: 56px 1fr 1fr 80px 90px; align-items: center; gap: 0.5rem; padding: 0.9rem 1.5rem; border-bottom: 1px solid var(--line); transition: background 0.15s; }
 .lb-row:last-child { border-bottom: 0; }
 .lb-row:hover { background: rgba(139, 92, 246, 0.07); }
-.lb-row .rank { font-family: "Sora"; font-weight: 800; color: var(--violet-2); }
+.lb-row .rank { font-family: var(--display); font-weight: 800; color: var(--violet-2); }
 .lb-row.head { color: var(--faint); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
 .lb-row .school { color: var(--muted); }
 .lb-row .sc { font-weight: 700; }
@@ -282,7 +285,7 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
 .modal-close:hover { background: rgba(248, 113, 133, 0.3); transform: rotate(90deg); }
 .vm-head { display: flex; gap: 1.2rem; align-items: center; margin-bottom: 1.4rem; flex-wrap: wrap; }
 .vm-photo .hs-frame { width: 104px; animation: none; }
-.vm-role { color: var(--violet-2); font-family: "Sora"; font-weight: 600; }
+.vm-role { color: var(--violet-2); font-family: var(--display); font-weight: 600; }
 .vm-text p { color: var(--muted); line-height: 1.75; margin-bottom: 1rem; }
 .vm-text b { color: var(--text); }
 .vm-cta { margin-top: 0.4rem; }
@@ -292,7 +295,7 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
 .vis-photo { padding: 4px; background: var(--grad); border-radius: 26px;
   box-shadow: var(--shadow), 0 0 80px -20px rgba(124, 58, 237, 0.6); }
 .vis-photo img { display: block; width: 100%; height: auto; border-radius: 22px; }
-.vis-role { color: var(--violet-2); font-family: "Sora"; font-weight: 600; margin-top: 0.2rem; }
+.vis-role { color: var(--violet-2); font-family: var(--display); font-weight: 600; margin-top: 0.2rem; }
 .vis-quote { font-size: clamp(1.05rem, 2.4vw, 1.35rem); font-style: italic; color: var(--text);
   margin: 1rem 0; padding-left: 1rem; border-left: 3px solid rgba(124, 58, 237, 0.5); }
 .vis-intro { color: var(--muted); margin-bottom: 1.2rem; }
@@ -312,9 +315,9 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
     padding: calc(var(--nav-h) + 1.4rem) 1.3rem 2.6rem;
   }
 }
-.mh-eyebrow { font-family: "Sora"; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.02em;
+.mh-eyebrow { font-family: var(--display); font-weight: 700; font-size: 0.82rem; letter-spacing: 0.02em;
   background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.mh-title { font-family: "Sora"; font-weight: 800; font-size: clamp(2rem, 8.6vw, 2.85rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0.25rem 0; }
+.mh-title { font-family: var(--display); font-weight: 800; font-size: clamp(2rem, 8.6vw, 2.85rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0.25rem 0; }
 .mh-sub { color: var(--muted); font-size: 1rem; line-height: 1.55; margin-bottom: 0.3rem; }
 .mh-cta { display: flex; gap: 0.7rem; margin-top: 1rem; }
 .mh-cta .btn { flex: 1; padding-left: 0.6rem; padding-right: 0.6rem; white-space: nowrap; }
@@ -327,7 +330,7 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
   background: rgba(12, 10, 30, 0.92); border: 1px solid var(--line-2); border-radius: 14px; padding: 0.5rem 0.65rem;
   box-shadow: var(--shadow); backdrop-filter: blur(8px); font-weight: 600;
   animation: floaty 5s ease-in-out infinite; }
-.mh-card .mc-tx b { display: block; font-family: "Sora"; font-size: 0.92rem; line-height: 1.1; }
+.mh-card .mc-tx b { display: block; font-family: var(--display); font-size: 0.92rem; line-height: 1.1; }
 .mh-card .mc-tx small { display: block; color: var(--faint); font-size: 0.66rem; }
 .mh-card .fic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-size: 1rem; flex: 0 0 auto;
   background: rgba(124, 58, 237, 0.25); border: 1px solid rgba(124, 58, 237, 0.5); }
@@ -375,7 +378,7 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
 }
 .marquee-track { display: flex; gap: 2.6rem; width: max-content; animation: marquee 26s linear infinite; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
-.marquee span { display: inline-flex; align-items: center; gap: 0.55rem; white-space: nowrap; font-family: "Sora"; font-weight: 700; font-size: 1.05rem; color: var(--muted); }
+.marquee span { display: inline-flex; align-items: center; gap: 0.55rem; white-space: nowrap; font-family: var(--display); font-weight: 700; font-size: 1.05rem; color: var(--muted); }
 .marquee span i { font-style: normal; font-size: 1.25rem; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 

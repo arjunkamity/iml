@@ -21,7 +21,7 @@
   box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.55), 0 0 50px rgba(124, 58, 237, 0.35); }
 .amity-logo { display: block; width: clamp(180px, 46vw, 380px); max-width: 100%; height: auto; }
 .amity-presents {
-  font-family: "Sora"; font-weight: 700; letter-spacing: 0.42em; text-transform: uppercase;
+  font-family: var(--display); font-weight: 700; letter-spacing: 0.42em; text-transform: uppercase;
   font-size: clamp(0.72rem, 2vw, 0.95rem);
   background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
 }
@@ -48,7 +48,7 @@
   display: flex; flex-direction: column; align-items: center; gap: 0; text-align: center; padding: 1rem;
 }
 .sw {
-  font-family: "Sora"; font-weight: 800; letter-spacing: -0.035em; line-height: 0.84; color: #fff; opacity: 0;
+  font-family: var(--display); font-weight: 800; letter-spacing: -0.035em; line-height: 0.84; color: #fff; opacity: 0;
   font-size: clamp(3.2rem, 13vw, 8rem);
   /* flat upright face + extruded 3D depth behind it (down-right) */
   text-shadow:
