@@ -30,7 +30,7 @@
   --grad: linear-gradient(120deg, #2563eb 0%, #7c3aed 50%, #ec4899 100%);
   --grad-2: linear-gradient(120deg, #3b82f6 0%, #a21caf 55%, #ec4899 100%);
 
-  --display: "Clash Display", "Plus Jakarta Sans", system-ui, sans-serif;
+  --display: "Archivo", system-ui, sans-serif;
 
   --radius: 20px;
   --radius-sm: 13px;
@@ -46,7 +46,7 @@
 * { margin: 0; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
-  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text);
   background: var(--bg);
   line-height: 1.6;
@@ -120,7 +120,7 @@ p { color: var(--muted); }
 .brand { font-family: var(--display); font-weight: 800; letter-spacing: 0.05em; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 0.55rem; }
 .brand .logo { width: 30px; height: 30px; }
 .brand .b2 { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.nav-logo { height: 42px; width: auto; display: block; }
+.nav-logo { height: 34px; width: auto; max-width: 64vw; display: block; }
 .footer-logo { height: 38px; width: auto; display: block; }
 
 /* ---------- Navbar ---------- */

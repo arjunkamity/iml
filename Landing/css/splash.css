@@ -52,7 +52,7 @@
 .splash-vtext { position: fixed; inset: 0; width: 100vw; height: 100%; height: 100dvh; padding: 0; pointer-events: none; }
 .splash-vtext .vt { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .vt-w, .vt-base {
-  font-family: var(--display); font-weight: 700; font-size: 210px; letter-spacing: -9px;
+  font-family: var(--display); font-weight: 800; font-size: 195px; letter-spacing: -10px;
   text-anchor: middle; opacity: 0;
 }
 .vt-w { fill: #fff; }
