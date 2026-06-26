@@ -307,21 +307,33 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
 .mobile-hero { display: none; }
 @media (max-width: 768px) {
   .mobile-hero {
-    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-    min-height: 90vh; position: relative; overflow: hidden; gap: 0.4rem;
-    padding: calc(var(--nav-h) + 1.5rem) 1.5rem 3rem;
+    display: flex; flex-direction: column; align-items: stretch; text-align: left;
+    position: relative; gap: 0.45rem;
+    padding: calc(var(--nav-h) + 1.4rem) 1.3rem 2.6rem;
   }
 }
-.mh-glow { position: absolute; top: 4%; left: 50%; transform: translateX(-50%);
-  width: 30rem; height: 30rem; border-radius: 50%; z-index: -1; filter: blur(38px);
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.35), rgba(37, 99, 235, 0.12) 42%, transparent 66%); }
-.mh-logo { width: min(280px, 74vw); height: auto; margin-bottom: 1rem; filter: drop-shadow(0 0 38px rgba(124, 58, 237, 0.5)); }
-.mh-title { font-family: "Sora"; font-weight: 800; font-size: clamp(2.2rem, 9vw, 3.3rem); line-height: 1.05; letter-spacing: -0.02em; margin: 0.3rem 0; }
-.mh-sub { color: var(--muted); font-size: 1.05rem; max-width: 30ch; margin: 0 auto; line-height: 1.55; }
-.mh-cta { width: 100%; max-width: 360px; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.7rem; }
-.mh-chips { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1.3rem; }
-.mh-scroll { margin-top: 1.6rem; color: var(--muted); font-size: 0.82rem; font-weight: 600; font-family: "Sora"; }
-.mh-scroll:hover { color: #fff; }
+.mh-eyebrow { font-family: "Sora"; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.02em;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.mh-title { font-family: "Sora"; font-weight: 800; font-size: clamp(2rem, 8.6vw, 2.85rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0.25rem 0; }
+.mh-sub { color: var(--muted); font-size: 1rem; line-height: 1.55; margin-bottom: 0.3rem; }
+.mh-cta { display: flex; gap: 0.7rem; margin-top: 1rem; }
+.mh-cta .btn { flex: 1; padding-left: 0.6rem; padding-right: 0.6rem; white-space: nowrap; }
+.mh-visual { position: relative; width: 100%; max-width: 340px; margin: 2.4rem auto 0; aspect-ratio: 1 / 1.06; }
+.mh-frame { position: absolute; inset: 0; border-radius: 26px; overflow: hidden; border: 1px solid var(--line-2);
+  background: linear-gradient(158deg, rgba(124, 58, 237, 0.42), rgba(37, 99, 235, 0.26) 55%, rgba(236, 72, 153, 0.22));
+  box-shadow: var(--shadow); }
+.mh-photo { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); height: 100%; width: auto; object-fit: contain; object-position: bottom; }
+.mh-card { position: absolute; z-index: 2; display: flex; align-items: center; gap: 0.5rem;
+  background: rgba(12, 10, 30, 0.92); border: 1px solid var(--line-2); border-radius: 14px; padding: 0.5rem 0.65rem;
+  box-shadow: var(--shadow); backdrop-filter: blur(8px); font-weight: 600;
+  animation: floaty 5s ease-in-out infinite; }
+.mh-card .mc-tx b { display: block; font-family: "Sora"; font-size: 0.92rem; line-height: 1.1; }
+.mh-card .mc-tx small { display: block; color: var(--faint); font-size: 0.66rem; }
+.mh-card .fic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-size: 1rem; flex: 0 0 auto;
+  background: rgba(124, 58, 237, 0.25); border: 1px solid rgba(124, 58, 237, 0.5); }
+.mc-a { top: 4%; left: -3%; }
+.mc-b { top: 40%; right: -3%; animation-delay: 1.1s; }
+.mc-c { bottom: 8%; left: 1%; animation-delay: 2.2s; }
 
 /* ---------- Reveal animation ---------- */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
