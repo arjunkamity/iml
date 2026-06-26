@@ -12,10 +12,10 @@
   // podium order = [1st, 2nd, 3rd]
   var DATA = {
     region: {
-      podium: [{ n: 'Eiden', u: 'eiden', s: 2430 }, { n: 'Jackson', u: 'jackson', s: 1847 }, { n: 'Emma Aria', u: 'emma', s: 1674 }],
+      podium: [{ n: 'Aditya Verma', u: 'aditya', s: 2430 }, { n: 'Saanvi Kapoor', u: 'saanvi', s: 1847 }, { n: 'Arjun Nair', u: 'arjunn', s: 1674 }],
       rest: [
-        { n: 'Sebastian', s: 1124, t: 'up' }, { n: 'Jason', s: 875, t: 'down' },
-        { n: 'Natalie', s: 774, t: 'up' }, { n: 'Serenity', s: 723, t: 'up' }, { n: 'Hannah', s: 559, t: 'down' },
+        { n: 'Rohan Malhotra', s: 1124, t: 'up' }, { n: 'Tara Bhatia', s: 875, t: 'down' },
+        { n: 'Dev Khanna', s: 774, t: 'up' }, { n: 'Anvi Saxena', s: 723, t: 'up' }, { n: 'Karan Bose', s: 559, t: 'down' },
       ],
     },
     national: {
@@ -26,10 +26,10 @@
       ],
     },
     global: {
-      podium: [{ n: 'Sofia Lin', u: 'sofia', s: 9120 }, { n: 'Liam Park', u: 'liam', s: 8940 }, { n: 'Aisha Khan', u: 'aisha', s: 8710 }],
+      podium: [{ n: 'Aarohi Pillai', u: 'aarohi', s: 9120 }, { n: 'Shaurya Menon', u: 'shaurya', s: 8940 }, { n: 'Riya Chopra', u: 'riya', s: 8710 }],
       rest: [
-        { n: 'Noah Cohen', s: 8455, t: 'up' }, { n: 'Mia Alvarez', s: 8210, t: 'down' },
-        { n: 'Yuki Tanaka', s: 7980, t: 'up' }, { n: 'Omar Hassan', s: 7740, t: 'up' }, { n: 'Zara Ali', s: 7522, t: 'down' },
+        { n: 'Aryan Desai', s: 8455, t: 'up' }, { n: 'Meera Krishnan', s: 8210, t: 'down' },
+        { n: 'Nikhil Agarwal', s: 7980, t: 'up' }, { n: 'Sara Qureshi', s: 7740, t: 'up' }, { n: 'Veer Chauhan', s: 7522, t: 'down' },
       ],
     },
   };

@@ -259,6 +259,13 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
 .footer .row { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; flex-wrap: wrap; }
 .footer .links { display: flex; gap: 1.4rem; color: var(--muted); font-size: 0.9rem; flex-wrap: wrap; }
 .footer .links a:hover { color: #fff; }
+.footer-brand { display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap; }
+.footer-org { display: flex; flex-direction: column; gap: 0.4rem; padding-left: 1.1rem; border-left: 1px solid var(--line); }
+.org-label { font-family: var(--display); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+.org-chip { background: #fff; border-radius: 10px; padding: 0.4rem 0.65rem; display: inline-flex; align-items: center; box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.5); }
+.org-chip img { height: 38px; width: auto; display: block; }
+.footer-logo { height: 30px; }
+@media (max-width: 540px) { .footer-org { padding-left: 0; border-left: 0; } }
 
 /* ---------- Toast ---------- */
 .toast {
