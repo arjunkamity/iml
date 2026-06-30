@@ -10,6 +10,7 @@
   background: rgba(6, 5, 20, 0.86); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line);
 }
 .exam-top .nav-logo { height: 30px; }
+.et-logo-mini { display: none; height: 34px; width: auto; }
 .et-mid { text-align: center; line-height: 1.1; }
 .et-title { display: block; font-family: var(--display); font-weight: 800; font-size: 1rem; }
 .et-sub { display: block; color: var(--faint); font-size: 0.74rem; }
@@ -117,6 +118,18 @@
   .exam-wrap { grid-template-columns: 1fr; }
   .et-mid { display: none; }
   .pal-toggle { display: inline-block; }
+}
+@media (max-width: 560px) {
+  .et-logo-full { display: none; }
+  .et-logo-mini { display: block; }
+  .exam-top { padding: 0 0.9rem; }
+  .et-right { gap: 0.5rem; }
+  .et-timer { font-size: 0.92rem; padding: 0.4rem 0.7rem; }
+  .btn-quit { padding: 0.42rem 0.65rem; font-size: 0.82rem; }
+  .q-foot { gap: 0.5rem; }
+  .q-foot .btn, .pal-toggle { padding: 0.7rem 0.8rem; font-size: 0.9rem; }
+}
+@media (max-width: 860px) {
   .palette {
     position: fixed; inset: 0; z-index: 80; display: none; place-items: end stretch; padding: 0;
     background: rgba(4, 3, 14, 0.7); backdrop-filter: blur(6px);
