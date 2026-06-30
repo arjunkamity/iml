@@ -157,21 +157,7 @@
     if (remaining <= 0) { clearInterval(timerInt); if (!submitted) doSubmit(); return; }
     remaining--;
   }
-  function startExam() { timerInt = setInterval(tick, 1000); tick(); }
+  timerInt = setInterval(tick, 1000); tick();
 
   renderQuestion();
-
-  /* demo start countdown (3 seconds) */
-  (function () {
-    var examStart = $('examStart'), esCount = $('esCount'), c = 3;
-    function pop() { esCount.classList.remove('pop'); void esCount.offsetWidth; esCount.classList.add('pop'); }
-    function step() {
-      if (c > 0) { esCount.textContent = c; pop(); c -= 1; setTimeout(step, 1000); }
-      else {
-        esCount.textContent = 'Go!'; esCount.classList.add('go'); pop();
-        setTimeout(function () { examStart.classList.add('hide'); startExam(); }, 700);
-      }
-    }
-    step();
-  })();
 })();

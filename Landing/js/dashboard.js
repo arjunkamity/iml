@@ -45,4 +45,32 @@
     try { localStorage.removeItem(STORE_KEY); } catch (e) {}
     window.location.href = 'index.html';
   });
+
+  /* ---------- exam-start countdown clock (demo: 3 seconds) ---------- */
+  (function () {
+    var remaining = 3; // demo: opens 3 seconds from now
+    var clock = document.getElementById('examClock');
+    var startBtn = document.getElementById('startBtn');
+    var ecH = document.getElementById('ecH'), ecM = document.getElementById('ecM'), ecS = document.getElementById('ecS');
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function render() {
+      ecH.textContent = pad(Math.floor(remaining / 3600));
+      ecM.textContent = pad(Math.floor((remaining % 3600) / 60));
+      ecS.textContent = pad(remaining % 60);
+    }
+    function unlock() {
+      clock.classList.add('live');
+      document.getElementById('ecLabel').innerHTML = '🟢 Your Qualifier is <b>live</b> — good luck!';
+      document.getElementById('ecDigits').style.display = 'none';
+      startBtn.classList.remove('locked');
+      startBtn.classList.add('ready');
+      startBtn.textContent = 'Start Exam Now →';
+    }
+    render();
+    var iv = setInterval(function () {
+      remaining -= 1;
+      if (remaining <= 0) { clearInterval(iv); remaining = 0; render(); unlock(); return; }
+      render();
+    }, 1000);
+  })();
 })();

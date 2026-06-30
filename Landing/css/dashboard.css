@@ -46,7 +46,24 @@ body.dash { padding-top: var(--nav-h); }
   background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .wel-title { font-family: var(--display); font-weight: 800; font-size: clamp(1.9rem, 4vw, 2.8rem); letter-spacing: -0.02em; margin: 0.3rem 0 0.4rem; }
 .wel-sub { color: var(--muted); font-size: 1rem; max-width: 46ch; line-height: 1.5; }
+/* exam countdown clock */
+.exam-clock { display: inline-flex; flex-direction: column; gap: 0.5rem; margin-top: 1.3rem;
+  padding: 0.9rem 1.2rem; border-radius: 16px; background: rgba(0, 0, 0, 0.28); border: 1px solid var(--line-2); }
+.exam-clock.live { border-color: rgba(52, 211, 153, 0.45); background: rgba(52, 211, 153, 0.1); }
+.ec-label { font-family: var(--display); font-weight: 600; font-size: 0.82rem; color: var(--muted); }
+.exam-clock.live .ec-label { color: #fff; }
+.exam-clock.live .ec-label b { color: var(--green); }
+.ec-digits { display: flex; align-items: flex-end; gap: 0.4rem; }
+.ec-unit { display: flex; flex-direction: column; align-items: center; min-width: 3.1rem;
+  padding: 0.4rem 0.2rem; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); }
+.ec-unit b { font-family: var(--display); font-weight: 800; font-size: 1.9rem; line-height: 1; font-variant-numeric: tabular-nums;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.ec-unit small { color: var(--faint); font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.2rem; }
+.ec-sep { font-family: var(--display); font-weight: 800; font-size: 1.5rem; color: var(--faint); padding-bottom: 0.9rem; }
+
 .wel-cta { display: flex; gap: 0.7rem; margin-top: 1.3rem; flex-wrap: wrap; }
+.btn.locked { opacity: 0.5; pointer-events: none; filter: grayscale(0.35); }
+#startBtn.ready { animation: floaty 1.6s ease-in-out infinite; }
 .wel-badge { flex: 0 0 auto; width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; font-size: 3.4rem;
   background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.04)), var(--grad);
   box-shadow: var(--glow); animation: floaty 5s ease-in-out infinite; }

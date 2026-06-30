@@ -49,8 +49,18 @@
         <span class="wel-eyebrow">● Student Dashboard</span>
         <h1 class="wel-title">Hi, <span class="gradient" id="greetName">Champion</span> 👋</h1>
         <p class="wel-sub">You're on Stage 1 — the Digital Qualifier. Keep the momentum going!</p>
+
+        <div class="exam-clock" id="examClock">
+          <span class="ec-label" id="ecLabel">⏱ Your Qualifier opens in</span>
+          <div class="ec-digits" id="ecDigits">
+            <div class="ec-unit"><b id="ecH">00</b><small>hrs</small></div><span class="ec-sep">:</span>
+            <div class="ec-unit"><b id="ecM">00</b><small>min</small></div><span class="ec-sep">:</span>
+            <div class="ec-unit"><b id="ecS">03</b><small>sec</small></div>
+          </div>
+        </div>
+
         <div class="wel-cta">
-          <a class="btn btn-primary btn-lg" href="exam.html">Continue Qualifier →</a>
+          <a class="btn btn-primary btn-lg locked" id="startBtn" href="exam.html">Continue Qualifier →</a>
           <a class="btn btn-ghost btn-lg" href="index.html#how">How it works</a>
         </div>
       </div>

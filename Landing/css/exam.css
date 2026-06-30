@@ -110,21 +110,6 @@
 .res-breakdown .rb small { color: var(--muted); font-size: 0.76rem; }
 .res-actions { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; }
 
-/* ---------- start countdown ---------- */
-.exam-start { position: fixed; inset: 0; z-index: 110; display: grid; place-items: center; padding: 1.2rem; text-align: center;
-  background: radial-gradient(40rem 32rem at 50% 38%, rgba(124, 58, 237, 0.4), transparent 60%), rgba(6, 5, 20, 0.95); backdrop-filter: blur(8px); }
-.exam-start.hide { display: none; }
-.es-eyebrow { font-family: var(--display); font-weight: 700; font-size: 0.82rem; letter-spacing: 0.06em;
-  background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.es-title { font-family: var(--display); font-weight: 800; font-size: clamp(2rem, 6vw, 3rem); margin: 0.4rem 0 0.2rem; }
-.es-sub { color: var(--muted); }
-.es-count { font-family: var(--display); font-weight: 900; font-size: clamp(6rem, 26vw, 12rem); line-height: 1; margin: 0.5rem 0;
-  background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.es-count.go { font-size: clamp(4rem, 18vw, 8rem); }
-.es-count.pop { animation: esPop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4); }
-@keyframes esPop { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.es-note { color: var(--faint); font-size: 0.86rem; margin-top: 0.6rem; }
-
 /* ---------- responsive ---------- */
 @media (max-width: 860px) {
   .exam-wrap { grid-template-columns: 1fr; }
