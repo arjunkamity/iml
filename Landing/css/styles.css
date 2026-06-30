@@ -325,6 +325,9 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
     padding: calc(var(--nav-h) + 1.4rem) 1.3rem 2.6rem;
   }
 }
+.mh-org { background: #fff; border-radius: 16px; padding: 0.85rem 1rem; display: flex; justify-content: center;
+  margin-bottom: 1.2rem; box-shadow: 0 14px 32px -14px rgba(0, 0, 0, 0.55); }
+.mh-org img { height: 50px; width: auto; max-width: 100%; display: block; }
 .mh-eyebrow { font-family: var(--display); font-weight: 700; font-size: 0.82rem; letter-spacing: 0.02em;
   background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .mh-title { font-family: var(--display); font-weight: 800; font-size: clamp(2rem, 8.6vw, 2.85rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0.25rem 0; }
