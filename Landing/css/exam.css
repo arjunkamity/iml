@@ -61,9 +61,6 @@
 .opt.wrong .key { background: var(--red); border-color: transparent; color: #2a0710; }
 .exam-body.reviewing .opt { cursor: default; }
 
-.q-mark { display: inline-flex; align-items: center; gap: 0.55rem; margin-top: 1.3rem; color: var(--muted); font-weight: 600; font-size: 0.9rem; cursor: pointer; }
-.q-mark input { width: auto; accent-color: #a78bfa; }
-
 .q-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; margin-top: 1.2rem; }
 .q-foot .btn { flex: 0 0 auto; }
 .pal-toggle { display: none; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line-2); color: var(--text);
@@ -113,6 +110,21 @@
 .res-breakdown .rb small { color: var(--muted); font-size: 0.76rem; }
 .res-actions { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; }
 
+/* ---------- start countdown ---------- */
+.exam-start { position: fixed; inset: 0; z-index: 110; display: grid; place-items: center; padding: 1.2rem; text-align: center;
+  background: radial-gradient(40rem 32rem at 50% 38%, rgba(124, 58, 237, 0.4), transparent 60%), rgba(6, 5, 20, 0.95); backdrop-filter: blur(8px); }
+.exam-start.hide { display: none; }
+.es-eyebrow { font-family: var(--display); font-weight: 700; font-size: 0.82rem; letter-spacing: 0.06em;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.es-title { font-family: var(--display); font-weight: 800; font-size: clamp(2rem, 6vw, 3rem); margin: 0.4rem 0 0.2rem; }
+.es-sub { color: var(--muted); }
+.es-count { font-family: var(--display); font-weight: 900; font-size: clamp(6rem, 26vw, 12rem); line-height: 1; margin: 0.5rem 0;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.es-count.go { font-size: clamp(4rem, 18vw, 8rem); }
+.es-count.pop { animation: esPop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4); }
+@keyframes esPop { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.es-note { color: var(--faint); font-size: 0.86rem; margin-top: 0.6rem; }
+
 /* ---------- responsive ---------- */
 @media (max-width: 860px) {
   .exam-wrap { grid-template-columns: 1fr; }
@@ -128,6 +140,8 @@
   .btn-quit { padding: 0.42rem 0.65rem; font-size: 0.82rem; }
   .q-foot { gap: 0.5rem; }
   .q-foot .btn, .pal-toggle { padding: 0.7rem 0.8rem; font-size: 0.9rem; }
+  .res-actions { flex-direction: column; }
+  .res-actions .btn { width: 100%; }
 }
 @media (max-width: 860px) {
   .palette {

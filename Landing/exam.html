@@ -16,6 +16,17 @@
   <div class="bg-aurora"></div>
   <div class="bg-grid"></div>
 
+  <!-- start countdown -->
+  <div class="exam-start" id="examStart">
+    <div class="es-card">
+      <span class="es-eyebrow">● Digital Qualifier</span>
+      <h2 class="es-title">Get ready!</h2>
+      <p class="es-sub">Your exam begins in…</p>
+      <div class="es-count" id="esCount">3</div>
+      <p class="es-note">10 questions · 15 minutes · IQ · EQ · Values</p>
+    </div>
+  </div>
+
   <!-- top bar -->
   <header class="exam-top">
     <a href="dashboard.html" class="brand">
@@ -45,7 +56,6 @@
         </div>
         <h2 class="q-text" id="qText">Loading…</h2>
         <div class="q-opts" id="qOpts"></div>
-        <label class="q-mark"><input type="checkbox" id="markChk" /> <span>🔖 Mark for review</span></label>
       </div>
 
       <div class="q-foot">
@@ -65,7 +75,6 @@
         <div class="pal-grid" id="palGrid"></div>
         <ul class="pal-legend">
           <li><span class="lg sw-answered"></span> Answered</li>
-          <li><span class="lg sw-marked"></span> Marked</li>
           <li><span class="lg sw-current"></span> Current</li>
           <li><span class="lg sw-empty"></span> Not visited</li>
         </ul>

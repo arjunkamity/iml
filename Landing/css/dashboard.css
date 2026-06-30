@@ -118,5 +118,7 @@ body.dash { padding-top: var(--nav-h); }
   .dgrid { grid-template-columns: 1fr; }
   .wel-badge { display: none; }
   .user-name { display: none; }
-  .cta-card { flex-direction: column; align-items: flex-start; }
+  .cta-card { flex-direction: column; align-items: stretch; }
+  .wel-cta { flex-direction: column; }
+  .wel-cta .btn, .cta-card .btn { width: 100%; }
 }

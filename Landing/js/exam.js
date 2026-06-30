@@ -23,12 +23,12 @@
   ];
 
   var KEYS = ['A', 'B', 'C', 'D'];
-  var answers = {}, marked = {}, visited = {};
+  var answers = {}, visited = {};
   var current = 0, submitted = false, reviewing = false;
 
   var $ = function (id) { return document.getElementById(id); };
   var qCat = $('qCat'), qNum = $('qNum'), qText = $('qText'), qOpts = $('qOpts'),
-      markChk = $('markChk'), palGrid = $('palGrid'), palCounts = $('palCounts'),
+      palGrid = $('palGrid'), palCounts = $('palCounts'),
       examBar = $('examBar'), palette = $('palette');
   $('qTotal').textContent = QUESTIONS.length;
 
@@ -40,7 +40,6 @@
     qCat.className = 'q-cat ' + q.cat.toLowerCase();
     qNum.textContent = current + 1;
     qText.textContent = q.q;
-    markChk.checked = !!marked[current];
 
     qOpts.innerHTML = '';
     q.opts.forEach(function (text, i) {
@@ -78,13 +77,12 @@
       var b = document.createElement('button');
       b.textContent = i + 1;
       if (answers[i] != null) b.classList.add('answered');
-      if (marked[i]) b.classList.add('marked');
       if (i === current) b.classList.add('current');
       b.addEventListener('click', function () { goto(i); palette.classList.remove('open'); });
       palGrid.appendChild(b);
     });
     var ans = Object.keys(answers).length;
-    palCounts.innerHTML = '<span>Answered <b>' + ans + '</b></span><span>Left <b>' + (QUESTIONS.length - ans) + '</b></span><span>Marked <b>' + Object.keys(marked).filter(function (k) { return marked[k]; }).length + '</b></span>';
+    palCounts.innerHTML = '<span>Answered <b>' + ans + '</b></span><span>Left <b>' + (QUESTIONS.length - ans) + '</b></span>';
   }
 
   function goto(i) { current = Math.max(0, Math.min(QUESTIONS.length - 1, i)); renderQuestion(); }
@@ -94,8 +92,6 @@
   $('nextBtn').addEventListener('click', function () {
     if (current === QUESTIONS.length - 1) { openSubmitConfirm(); } else { goto(current + 1); }
   });
-  markChk.addEventListener('change', function () { marked[current] = markChk.checked; if (!markChk.checked) delete marked[current]; renderPalette(); });
-
   $('palToggle').addEventListener('click', function () { palette.classList.add('open'); });
   $('palClose').addEventListener('click', function () { palette.classList.remove('open'); });
   palette.addEventListener('click', function (e) { if (e.target === palette) palette.classList.remove('open'); });
@@ -161,7 +157,21 @@
     if (remaining <= 0) { clearInterval(timerInt); if (!submitted) doSubmit(); return; }
     remaining--;
   }
-  timerInt = setInterval(tick, 1000); tick();
+  function startExam() { timerInt = setInterval(tick, 1000); tick(); }
 
   renderQuestion();
+
+  /* demo start countdown (3 seconds) */
+  (function () {
+    var examStart = $('examStart'), esCount = $('esCount'), c = 3;
+    function pop() { esCount.classList.remove('pop'); void esCount.offsetWidth; esCount.classList.add('pop'); }
+    function step() {
+      if (c > 0) { esCount.textContent = c; pop(); c -= 1; setTimeout(step, 1000); }
+      else {
+        esCount.textContent = 'Go!'; esCount.classList.add('go'); pop();
+        setTimeout(function () { examStart.classList.add('hide'); startExam(); }, 700);
+      }
+    }
+    step();
+  })();
 })();
