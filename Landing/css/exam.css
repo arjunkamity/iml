@@ -63,8 +63,10 @@
 
 .q-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; margin-top: 1.2rem; }
 .q-foot .btn { flex: 0 0 auto; }
-.pal-toggle { display: none; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line-2); color: var(--text);
-  border-radius: 12px; padding: 0.7rem 1rem; font-weight: 600; font-family: inherit; cursor: pointer; }
+.et-pal { display: none; width: 40px; height: 40px; border-radius: 11px; place-items: center; cursor: pointer;
+  background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line-2); color: var(--muted); transition: background 0.2s, color 0.2s; }
+.et-pal:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.et-pal svg { display: block; }
 
 /* ---------- palette ---------- */
 .palette { position: sticky; top: 84px; }
@@ -114,7 +116,7 @@
 @media (max-width: 860px) {
   .exam-wrap { grid-template-columns: 1fr; }
   .et-mid { display: none; }
-  .pal-toggle { display: inline-block; }
+  .et-pal { display: grid; }
 }
 @media (max-width: 560px) {
   .et-logo-full { display: none; }
@@ -124,7 +126,7 @@
   .et-timer { font-size: 0.92rem; padding: 0.4rem 0.7rem; }
   .btn-quit { padding: 0.42rem 0.65rem; font-size: 0.82rem; }
   .q-foot { gap: 0.5rem; }
-  .q-foot .btn, .pal-toggle { padding: 0.7rem 0.8rem; font-size: 0.9rem; }
+  .q-foot .btn { padding: 0.7rem 0.8rem; font-size: 0.9rem; }
   .res-actions { flex-direction: column; }
   .res-actions .btn { width: 100%; }
 }
