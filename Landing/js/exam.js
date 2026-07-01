@@ -97,6 +97,7 @@
   palette.addEventListener('click', function (e) { if (e.target === palette) palette.classList.remove('open'); });
 
   document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && palette.classList.contains('open')) { palette.classList.remove('open'); return; }
     if (submitted) return;
     if (e.key === 'ArrowRight') goto(current + 1);
     else if (e.key === 'ArrowLeft') goto(current - 1);
