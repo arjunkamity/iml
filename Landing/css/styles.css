@@ -121,6 +121,8 @@ p { color: var(--muted); }
 .brand .logo { width: 30px; height: 30px; }
 .brand .b2 { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .nav-logo { height: 34px; width: auto; max-width: 64vw; display: block; }
+.nav-logo-brand { height: 46px; }
+@media (max-width: 480px) { .nav-logo-brand { height: 40px; } }
 .footer-logo { height: 38px; width: auto; display: block; }
 
 /* ---------- Navbar ---------- */
