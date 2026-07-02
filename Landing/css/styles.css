@@ -484,4 +484,26 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
   .stats { grid-template-columns: 1fr; }
   .cols-4 { grid-template-columns: 1fr; }
 }
+/* ---------- animated gradient border sweep (hover) ----------
+   The gradient starts at the top point and draws itself around the
+   border until the ring completes; it retracts on mouse-out. */
+@property --bs { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+.i3-card, .sb-grid, .cta-banner, .dcard, .dstat, .welcome, .auth-card, .q-card { position: relative; }
+.i3-card::before, .sb-grid::before, .cta-banner::before, .dcard::before,
+.dstat::before, .welcome::before, .auth-card::before, .q-card::before {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; z-index: 1;
+  padding: 1.5px;
+  background: conic-gradient(from 0deg,
+    #e8b64a, #f5cc5a calc(var(--bs) * 0.4), #3b82f6 calc(var(--bs) * 0.75), #ec4899 var(--bs), transparent var(--bs));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: --bs 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+}
+.i3-card:hover::before, .sb-grid:hover::before, .cta-banner:hover::before, .dcard:hover::before,
+.dstat:hover::before, .welcome:hover::before, .auth-card:hover::before, .q-card:hover::before {
+  opacity: 1; --bs: 360deg;
+}
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .reveal { opacity: 1; transform: none; } }
