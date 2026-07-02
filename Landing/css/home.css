@@ -64,9 +64,15 @@
 .sb-tx b { display: block; font-family: var(--display); font-weight: 800; font-size: 1.35rem; line-height: 1; color: var(--gold); }
 .sb-tx small { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
 @media (max-width: 700px) {
-  .sb-grid { grid-template-columns: 1fr 1fr; gap: 1rem 0.5rem; }
+  .sb-grid { grid-template-columns: 1fr 1fr; gap: 1rem 0.4rem; padding: 1.2rem 0.6rem; }
+  .sb-item { flex-direction: column; text-align: center; gap: 0.55rem; min-width: 0; }
   .sb-item:nth-child(odd) { border-left: 0; }
   .sb-item:nth-child(3), .sb-item:nth-child(4) { border-top: 1px solid var(--line); padding-top: 1rem; }
+  .sb-ic { width: 46px; height: 46px; }
+  .sb-ic svg { width: 24px; height: 24px; }
+  .sb-tx { text-align: center; }
+  .sb-tx b { font-size: 1.12rem; white-space: nowrap; }
+  .sb-tx small { font-size: 0.65rem; letter-spacing: 0.03em; }
 }
 
 /* ---------- info trio ---------- */

@@ -491,7 +491,7 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
 .i3-card, .sb-grid, .cta-banner, .dcard, .dstat, .welcome, .auth-card, .q-card { position: relative; }
 .i3-card::before, .sb-grid::before, .cta-banner::before, .dcard::before,
 .dstat::before, .welcome::before, .auth-card::before, .q-card::before {
-  content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; z-index: 1;
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1;
   padding: 1.5px;
   background: conic-gradient(from 0deg,
     #e8b64a, #f5cc5a calc(var(--bs) * 0.4), #3b82f6 calc(var(--bs) * 0.75), #ec4899 var(--bs), transparent var(--bs));

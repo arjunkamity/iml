@@ -18,5 +18,5 @@
 .reg-success-cta { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1.5rem; }
 .reg-success-cta .btn { width: 100%; }
 
-@media (max-width: 860px) { .auth-wide { max-width: 480px; } .auth-form { padding-top: 3.8rem; } }
+@media (max-width: 860px) { .auth-wide { max-width: none; } }
 @media (max-width: 520px) { .reg-row { grid-template-columns: 1fr; gap: 0; } }
