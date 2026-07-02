@@ -103,8 +103,8 @@ p { color: var(--muted); }
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-  font-family: var(--display); font-weight: 600; font-size: 0.96rem;
-  padding: 0.8rem 1.5rem; border-radius: var(--radius-btn); border: 1px solid var(--line-2);
+  font-family: var(--display); font-weight: 600; font-size: 0.9rem;
+  padding: 0.6rem 1.3rem; border-radius: var(--radius-btn); border: 1px solid var(--line-2);
   background: var(--surface-2); color: var(--text); cursor: pointer;
   transition: transform 0.08s ease, filter 0.2s ease, box-shadow 0.25s ease;
 }
@@ -114,7 +114,7 @@ p { color: var(--muted); }
 .btn-primary:hover { box-shadow: 0 16px 42px -10px rgba(59, 130, 246, 0.6); }
 .btn-ghost { background: transparent; }
 .btn-block { width: 100%; }
-.btn-lg { padding: 0.95rem 1.8rem; font-size: 1.02rem; }
+.btn-lg { padding: 0.7rem 1.5rem; font-size: 0.96rem; }
 
 /* ---------- Brand ---------- */
 .brand { font-family: var(--display); font-weight: 800; letter-spacing: 0.05em; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 0.55rem; }
