@@ -22,7 +22,7 @@
       if (!reduce) { bar.style.transition = 'width ' + DUR + 'ms linear'; bar.style.width = '100%'; }
     }
     clearTimeout(timer);
-    if (!reduce) timer = setTimeout(function () { go(i + 1); }, DUR);
+    if (!reduce && slides.length > 1) timer = setTimeout(function () { go(i + 1); }, DUR);
   }
 
   function go(n) {

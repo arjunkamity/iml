@@ -102,3 +102,31 @@
 .btn-gold-lg:hover { transform: translateY(-2px); filter: brightness(1.05); }
 .cta-note { color: var(--muted); font-size: 0.85rem; }
 @media (max-width: 640px) { .cta-banner { flex-direction: column; align-items: flex-start; } .cta-right { align-items: stretch; width: 100%; } .btn-gold-lg { justify-content: center; } }
+
+/* ---------- footer (PDF layout) ---------- */
+.footer { border-top: 1px solid var(--line); padding: 3rem 0 1.6rem; margin-top: 2.5rem; }
+.foot-grid { display: grid; grid-template-columns: 2fr 1.3fr 1fr 1.4fr; gap: 2rem; }
+.foot-logo { height: 46px; width: auto; margin-bottom: 1.1rem; }
+.foot-brand p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; max-width: 36ch; }
+.foot-col h4 { font-family: var(--display); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.1rem; }
+.foot-links { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem 1.2rem; }
+.foot-links a { color: var(--muted); font-size: 0.9rem; }
+.foot-links a:hover { color: #fff; }
+.foot-social { display: flex; gap: 0.6rem; }
+.fs { width: 40px; height: 40px; flex: 0 0 auto; border-radius: 50%; display: grid; place-items: center; color: #fff; transition: transform 0.18s; }
+.fs svg { width: 20px; height: 20px; }
+.fs:hover { transform: translateY(-3px); }
+.fs.yt { background: #ff0000; }
+.fs.ig { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); }
+.fs.fb { background: #1877f2; }
+.fs.li { background: #0a66c2; }
+.foot-contact { display: flex; align-items: center; gap: 0.6rem; color: var(--muted); font-size: 0.9rem; margin-bottom: 0.75rem; }
+.foot-contact svg { width: 18px; height: 18px; flex: 0 0 auto; color: var(--gold); }
+.foot-contact:hover { color: #fff; }
+.foot-org { display: block; margin-top: 0.5rem; color: var(--faint); font-size: 0.82rem; }
+.foot-org b { color: var(--muted); }
+.foot-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  margin-top: 2.4rem; padding-top: 1.4rem; border-top: 1px solid var(--line); color: var(--faint); font-size: 0.82rem; }
+.foot-legal a:hover { color: #fff; }
+@media (max-width: 860px) { .foot-grid { grid-template-columns: 1fr 1fr; gap: 1.8rem; } }
+@media (max-width: 520px) { .foot-grid { grid-template-columns: 1fr; } .foot-bar { flex-direction: column; align-items: flex-start; gap: 0.5rem; } }
