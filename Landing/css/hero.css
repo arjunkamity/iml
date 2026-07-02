@@ -66,7 +66,8 @@
 .hs-icon svg { width: 46%; height: 46%; animation: hsFloat 4s ease-in-out infinite; }
 
 /* ---- reason slides: split layout + infographic ---- */
-.hs-row { display: flex; flex-direction: row-reverse; align-items: center; gap: clamp(2rem, 5vw, 4.5rem); width: 100%; max-width: 1180px; }
+.hs-row { display: flex; flex-direction: row-reverse; align-items: center; gap: clamp(2rem, 5vw, 4.5rem); width: 100%;
+  max-width: calc(var(--maxw) - 3rem); } /* aligns with .container content edges */
 .hs-info { flex: 1 1 0; min-width: 0; display: flex; justify-content: center; }
 .hs-copy { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
 @media (max-width: 900px) {
@@ -235,7 +236,7 @@
 
 /* big screens: spread the composition and scale it up */
 @media (min-width: 1440px) {
-  .hs-row { max-width: 1340px; gap: 5rem; }
+  .hs-row { gap: 5rem; }
   .hs-info { flex: 1.2 1 0; }
   .hero-banner { max-width: 720px; }
   .hero-copy { max-width: 640px; }

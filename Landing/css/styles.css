@@ -88,6 +88,7 @@ p { color: var(--muted); }
 
 /* ---------- Layout ---------- */
 .container { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 1.5rem; }
+@media (min-width: 1440px) { :root { --maxw: 1388px; } } /* wider canvas on big screens (header, sections, hero) */
 .section { padding: clamp(3.5rem, 8vw, 6.5rem) 0; }
 .center { text-align: center; }
 .eyebrow {
