@@ -27,9 +27,9 @@ body { min-height: 100vh; }
   padding-inline: max(2.5rem, calc((100% - 460px) / 2)); /* keep a readable centred column */
   display: flex; flex-direction: column; justify-content: center; gap: 1.1rem;
   background:
-    radial-gradient(36rem 30rem at 18% 8%, rgba(124, 58, 237, 0.5), transparent 60%),
-    radial-gradient(32rem 28rem at 90% 100%, rgba(236, 72, 153, 0.4), transparent 58%),
-    linear-gradient(160deg, #2a1b67, #14123a 60%, #0b0a1d);
+    radial-gradient(36rem 30rem at 18% 8%, rgba(37, 99, 235, 0.42), transparent 60%),
+    radial-gradient(32rem 28rem at 90% 100%, rgba(232, 182, 74, 0.16), transparent 58%),
+    linear-gradient(160deg, #123061, #0d2144 60%, #081326);
 }
 .aa-sprites { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .aspr { position: absolute; opacity: 0.5; animation: aaFloat 8s ease-in-out infinite; }
