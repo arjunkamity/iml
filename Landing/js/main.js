@@ -90,27 +90,28 @@
   }
   function isPhone(v) { return /^[6-9]\d{9}$/.test((v || '').trim()); }
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var data = Object.fromEntries(new FormData(form).entries());
-    if (!data.name || !data.grade) { msg('Please enter the student name and class.'); return; }
-    if (!isPhone(data.phone || '')) { msg('Enter a valid 10-digit mobile number.'); return; }
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var data = Object.fromEntries(new FormData(form).entries());
+      if (!data.name || !data.grade) { msg('Please enter the student name and class.'); return; }
+      if (!isPhone(data.phone || '')) { msg('Enter a valid 10-digit mobile number.'); return; }
 
-    msg('');
-    // Demo only (no backend). In production POST these fields to the IML API.
-    form.style.display = 'none';
-    document.getElementById('successName').textContent =
-      data.name + ', welcome to the India Mind League!';
-    success.classList.add('show');
-    toast('Registration complete 🎉');
-  });
+      msg('');
+      form.style.display = 'none';
+      document.getElementById('successName').textContent =
+        data.name + ', welcome to the India Mind League!';
+      success.classList.add('show');
+      toast('Registration complete 🎉');
+    });
 
-  document.getElementById('regAgain').addEventListener('click', function () {
-    form.reset();
-    success.classList.remove('show');
-    form.style.display = 'block';
-    document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
-  });
+    var regAgain = document.getElementById('regAgain');
+    if (regAgain) regAgain.addEventListener('click', function () {
+      form.reset();
+      success.classList.remove('show');
+      form.style.display = 'block';
+    });
+  }
 
   /* Visionary message modal */
   var vModal = document.getElementById('visionaryModal');
