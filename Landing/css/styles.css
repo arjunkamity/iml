@@ -506,4 +506,27 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
   opacity: 1; --bs: 360deg;
 }
 
+/* same sweep for buttons + icon chips (inset 0: .btn-primary clips overflow) */
+.btn, .btn-gold, .btn-gold-lg, .btn-quit, .et-pal, .user-btn, .pal-close,
+.icon-tile, .ic, .pl-ring, .st-ring, .sb-ic, .ds-ic, .dl-ic, .aa-ic, .rico, .fs, .nav-social a { position: relative; }
+.btn::before, .btn-gold::before, .btn-gold-lg::before, .btn-quit::before, .et-pal::before, .user-btn::before, .pal-close::before,
+.icon-tile::before, .ic::before, .pl-ring::before, .st-ring::before, .sb-ic::before, .ds-ic::before,
+.dl-ic::before, .aa-ic::before, .rico::before, .fs::before, .nav-social a::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1;
+  padding: 1.5px;
+  background: conic-gradient(from 0deg,
+    #e8b64a, #f5cc5a calc(var(--bs) * 0.4), #3b82f6 calc(var(--bs) * 0.75), #ec4899 var(--bs), transparent var(--bs));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: --bs 0.55s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s ease;
+}
+.btn:hover::before, .btn-gold:hover::before, .btn-gold-lg:hover::before, .btn-quit:hover::before, .et-pal:hover::before,
+.user-btn:hover::before, .pal-close:hover::before, .icon-tile:hover::before, .ic:hover::before, .pl-ring:hover::before,
+.st-ring:hover::before, .sb-ic:hover::before, .ds-ic:hover::before, .dl-ic:hover::before, .aa-ic:hover::before,
+.rico:hover::before, .fs:hover::before, .nav-social a:hover::before {
+  opacity: 1; --bs: 360deg;
+}
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .reveal { opacity: 1; transform: none; } }
