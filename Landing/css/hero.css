@@ -46,8 +46,7 @@
 .hero-tag { font-family: var(--display); font-weight: 600; font-size: clamp(0.85rem, 2vw, 1.05rem); letter-spacing: 0.06em; text-transform: uppercase; color: #fff; }
 .hero-sub { font-family: var(--display); font-weight: 700; font-size: clamp(1.05rem, 2.5vw, 1.4rem); line-height: 1.25; margin: 0.9rem 0 0.3rem; }
 .hero-banner { width: 100%; max-width: 560px; margin: 0 auto; }
-.hero-banner img { display: block; width: 100%; height: auto; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 30px 70px -24px rgba(0, 0, 0, 0.75); }
+.hero-banner img { display: block; width: 100%; height: auto; border-radius: 20px; }
 @media (max-width: 900px) { .hero-copy { align-items: center; text-align: center; } .hero-rule { margin-left: auto; margin-right: auto; } }
 
 /* glowing icon badge for the reason slides */

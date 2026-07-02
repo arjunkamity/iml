@@ -344,7 +344,7 @@ input:focus, select:focus { outline: none; border-color: var(--violet-2); box-sh
 .mh-sub { font-family: var(--display); font-weight: 700; color: var(--text); font-size: 1.1rem; line-height: 1.3; margin: 0.5rem 0 0.3rem; }
 .mh-rule { width: 170px; margin: 0.7rem 0; }
 .mh-banner { margin-top: 1.6rem; width: 100%; }
-.mh-banner img { display: block; width: 100%; border-radius: 16px; border: 1px solid var(--line-2); box-shadow: var(--shadow); }
+.mh-banner img { display: block; width: 100%; border-radius: 16px; }
 .mh-cta { display: flex; gap: 0.7rem; margin-top: 1rem; }
 .mh-cta .btn { flex: 1; padding-left: 0.6rem; padding-right: 0.6rem; white-space: nowrap; }
 .mh-visual { position: relative; width: 100%; max-width: 340px; margin: 2.4rem auto 0; aspect-ratio: 1 / 1.06; }
