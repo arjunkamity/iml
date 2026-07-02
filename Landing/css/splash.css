@@ -10,6 +10,7 @@
   transition: opacity 0.9s ease, visibility 0.9s ease;
 }
 #splash.hide { opacity: 0; visibility: hidden; }
+html.iml-seen #splash { display: none !important; } /* intro already seen this session */
 #splash > * { grid-area: 1 / 1; justify-self: center; align-self: center; } /* stack centred */
 
 /* ---- Phase 1: Amity presents ---- */

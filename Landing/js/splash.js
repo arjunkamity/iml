@@ -4,6 +4,15 @@
   var splash = document.getElementById('splash');
   if (!splash) return;
 
+  // Show the intro only once per browser session.
+  var seen = false;
+  try { seen = !!sessionStorage.getItem('imlIntroSeen'); } catch (e) {}
+  if (seen) {
+    if (splash.parentNode) splash.parentNode.removeChild(splash); // hero/onboarding start immediately
+    return;
+  }
+  try { sessionStorage.setItem('imlIntroSeen', '1'); } catch (e) {}
+
   var rootEl = document.documentElement;
   rootEl.style.overflow = 'hidden'; // lock scroll during the reveal
 

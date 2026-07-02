@@ -17,8 +17,13 @@
   <link rel="stylesheet" href="css/splash.css" />
   <noscript><style>#splash{display:none!important}</style></noscript>
   <script>
-    // Onboarding intro is a MOBILE-only experience; hero carousel is DESKTOP-only.
-    if (window.matchMedia('(max-width: 768px)').matches) {
+    // Splash + onboarding run only ONCE per browser session.
+    var imlSeen = false;
+    try { imlSeen = !!sessionStorage.getItem('imlIntroSeen'); } catch (e) {}
+    if (imlSeen) {
+      document.documentElement.classList.add('iml-seen'); // hides #splash instantly (css)
+    } else if (window.matchMedia('(max-width: 768px)').matches) {
+      // Onboarding intro is a MOBILE-only experience; hero carousel is DESKTOP-only.
       document.documentElement.classList.add('intro');
     }
   </script>
