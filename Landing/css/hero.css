@@ -148,7 +148,7 @@
   background: rgba(var(--tint), 0.22); border: 1px solid rgba(var(--tint), 0.5); }
 .fcard small { display: block; color: var(--faint); font-weight: 600; font-size: 0.68rem; }
 .fcard b { font-family: var(--display); font-size: 0.86rem; }
-.fa { top: 4%; left: -2%; } .fb { top: 32%; right: -6%; animation-delay: 1s; }
+.fa { top: 4%; left: -2%; } .fb { top: 32%;  animation-delay: 1s; }
 .fc { bottom: 24%; left: -4%; animation-delay: 2s; } .fd { bottom: 16%; right: 4%; animation-delay: 1.5s; }
 @keyframes bfloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
 
@@ -209,7 +209,7 @@
 
 /* layered, glowing wave divider: masks the photo's cut-off edge + blends into the next section */
 .hs-wave { position: absolute; left: -1px; right: -1px; bottom: -1px; width: calc(100% + 2px);
-  height: clamp(98px, 10vw, 158px); z-index: 3; pointer-events: none; line-height: 0; }
+  height: clamp(98px, 10vw, 158px); z-index: -1; pointer-events: none; line-height: 0; }
 .hs-wave svg { width: 100%; height: 100%; display: block; }
 .hs-wave .w-l1 { fill: rgba(167, 139, 250, 0.20); }
 .hs-wave .w-l2 { fill: rgba(96, 165, 250, 0.20); }
