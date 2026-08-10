@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Student Profile — Admin | India Mind League</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="../images/Iml-logo-fav.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body data-page="student-detail">
+
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sidebar">
+    <a class="sb-brand" href="dashboard.html"><img src="../images/new-logo-cut.png" alt="India Mind League" /><span class="sb-tag">Admin</span></a>
+        <nav class="sb-nav" id="sbNav">
+
+      <div class="sb-sec">Overview</div>
+      <a href="dashboard.html"><i>▦</i> Dashboard</a>
+
+      <div class="sb-sec">Competitions</div>
+      <a href="competitions.html"><i>🏅</i> Competitions</a>
+      <a href="prizes.html"><i>🏆</i> Prizes &amp; Awards</a>
+      <a href="leaderboard.html"><i>🏆</i> Leaderboard</a>
+      <a href="results.html"><i>📊</i> Results</a>
+
+      <div class="sb-sec">Participants</div>
+      <a href="registrations.html" class="active"><i>📝</i> Registrations</a>
+      <a href="payments.html"><i>💳</i> Payment History</a>
+      <a href="schools.html"><i>🏫</i> Schools</a>
+
+      <div class="sb-sec">Content</div>
+      <a href="questions.html"><i>❓</i> Question Bank</a>
+      <a href="exams.html"><i>📅</i> Exam Dates</a>
+      <a href="grievances.html"><i>💬</i> Grievances</a>
+      <a href="notifications.html"><i>📣</i> Notifications</a>
+
+      <div class="sb-sec">Management Options</div>
+      <details class="sb-drop">
+        <summary>＋ Create <span class="caret">▾</span></summary>
+        <div class="sb-sub">
+          <a href="announcements.html?create=1">＋ Announcement</a>
+          <a href="news.html?create=1">＋ News item</a>
+          <a href="gallery.html?create=1">＋ Gallery album</a>
+          <a href="competitions.html?create=1">＋ Competition</a>
+        </div>
+      </details>
+      <a href="announcements.html"><i>📢</i> Announcements</a>
+      <a href="news.html"><i>🗞</i> News</a>
+      <a href="gallery.html"><i>🖼</i> Gallery</a>
+
+      <div class="sb-sec">Administration</div>
+      <a href="sponsors.html"><i>🤝</i> Sponsors</a>
+      <a href="plans.html"><i>💰</i> Sponsorship Plans</a>
+      <a href="admins.html"><i>🛡️</i> Admin Users</a>
+    </nav>
+    <a class="sb-site" href="../index.html">↗ View website</a>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <a class="tb-burger" href="#sidebar" aria-label="Menu">☰</a>
+      <h1 class="tb-title">Student Profile</h1>
+      <div class="tb-admin"><span class="tb-av">A</span><span class="tb-name">Admin</span></div>
+    </header>
+    <main class="content">
+      <div id="std"><div class="empty">Loading student…</div></div>
+    </main>
+  </div>
+
+  <script type="application/json" id="studentData">
+[
+  {
+    "id": "R1001", "name": "Aarav Mehta", "grade": "9", "school": "Amity International School, Saket",
+    "dob": "2011-04-12", "gender": "Male",
+    "phone": "9876500011", "email": "aarav.mehta@example.com", "parent": "Rohit Mehta", "parentPhone": "9810010001",
+    "address": "42, Green Park Extension, New Delhi",
+    "competitions": [ { "id": "C01", "date": "2026-06-20", "status": "Qualified" } ],
+    "payments": [ { "id": "PAY-1001", "mode": "UPI", "amount": 500, "status": "Paid", "date": "2026-06-20" } ],
+    "results": [ { "id": "T01", "comp": "C01", "date": "2026-06-26", "score": 5, "total": 5 } ]
+  },
+  {
+    "id": "R1002", "name": "Diya Sharma", "grade": "10", "school": "Amity International School, Noida",
+    "dob": "2010-08-23", "gender": "Female",
+    "phone": "9876500012", "email": "diya.sharma@example.com", "parent": "Neha Sharma", "parentPhone": "9810010002",
+    "address": "B-15, Sector 51, Noida",
+    "competitions": [ { "id": "C02", "date": "2026-06-21", "status": "Test Taken" }, { "id": "C01", "date": "2026-06-27", "status": "Qualified" } ],
+    "payments": [ { "id": "PAY-1002", "mode": "Card", "amount": 500, "status": "Paid", "date": "2026-06-21" } ],
+    "results": [ { "id": "T03", "comp": "C01", "date": "2026-06-27", "score": 3, "total": 5 }, { "id": "T06", "comp": "C02", "date": "2026-06-29", "score": 3, "total": 5 } ]
+  },
+  {
+    "id": "R1003", "name": "Kabir Rao", "grade": "11", "school": "Amity International School, Gurugram 46",
+    "dob": "2009-11-02", "gender": "Male",
+    "phone": "9876500013", "email": "kabir.rao@example.com", "parent": "Vikram Rao", "parentPhone": "9810010003",
+    "address": "E-204, Sushant Lok II, Gurugram",
+    "competitions": [ { "id": "C01", "date": "2026-06-21", "status": "Registered" }, { "id": "C02", "date": "2026-06-29", "status": "Test Taken" } ],
+    "payments": [ { "id": "PAY-1003", "mode": "Net Banking", "amount": 500, "status": "Failed", "date": "2026-06-21" } ],
+    "results": [ { "id": "T07", "comp": "C02", "date": "2026-06-29", "score": 1, "total": 5 } ]
+  },
+  {
+    "id": "R1004", "name": "Ananya Iyer", "grade": "12", "school": "Amity International School, Vasundhara",
+    "dob": "2008-03-18", "gender": "Female",
+    "phone": "9876500014", "email": "ananya.iyer@example.com", "parent": "Suresh Iyer", "parentPhone": "9810010004",
+    "address": "18, Sector 8, Vaishali, Ghaziabad",
+    "competitions": [ { "id": "C01", "date": "2026-06-22", "status": "Qualified" } ],
+    "payments": [ { "id": "PAY-1004", "mode": "UPI", "amount": 500, "status": "Paid", "date": "2026-06-22" } ],
+    "results": [ { "id": "T05", "comp": "C01", "date": "2026-06-28", "score": 5, "total": 5 } ]
+  },
+  {
+    "id": "R1005", "name": "Vivaan Gupta", "grade": "9", "school": "Amity International School, Mayur Vihar",
+    "dob": "2011-01-27", "gender": "Male",
+    "phone": "9876500015", "email": "vivaan.gupta@example.com", "parent": "Amit Gupta", "parentPhone": "9810010005",
+    "address": "C-77, Pocket C, Mayur Vihar Phase 2, New Delhi",
+    "competitions": [ { "id": "C02", "date": "2026-06-23", "status": "Registered" } ],
+    "payments": [ { "id": "PAY-1005", "mode": "UPI", "amount": 500, "status": "Pending", "date": "2026-06-23" } ],
+    "results": []
+  },
+  {
+    "id": "R1006", "name": "Myra Nair", "grade": "10", "school": "Amity International School, Saket",
+    "dob": "2010-06-09", "gender": "Female",
+    "phone": "9876500016", "email": "myra.nair@example.com", "parent": "Deepa Nair", "parentPhone": "9810010006",
+    "address": "305, Press Enclave, Saket, New Delhi",
+    "competitions": [ { "id": "C02", "date": "2026-06-24", "status": "Test Taken" }, { "id": "C01", "date": "2026-06-27", "status": "Test Taken" } ],
+    "payments": [ { "id": "PAY-1006", "mode": "Card", "amount": 500, "status": "Paid", "date": "2026-06-24" } ],
+    "results": [ { "id": "T04", "comp": "C01", "date": "2026-06-27", "score": 2, "total": 5 } ]
+  },
+  {
+    "id": "R1007", "name": "Reyansh Jain", "grade": "11", "school": "Amity International School, Noida",
+    "dob": "2009-09-30", "gender": "Male",
+    "phone": "9876500017", "email": "reyansh.jain@example.com", "parent": "Pankaj Jain", "parentPhone": "9810010007",
+    "address": "F-1203, Jaypee Greens, Noida",
+    "competitions": [ { "id": "C03", "date": "2026-06-25", "status": "Registered" } ],
+    "payments": [ { "id": "PAY-1007", "mode": "Net Banking", "amount": 500, "status": "Failed", "date": "2026-06-25" } ],
+    "results": []
+  },
+  {
+    "id": "R1008", "name": "Saanvi Kapoor", "grade": "12", "school": "Amity International School, Gurugram 46",
+    "dob": "2008-12-05", "gender": "Female",
+    "phone": "9876500018", "email": "saanvi.kapoor@example.com", "parent": "Karan Kapoor", "parentPhone": "9810010008",
+    "address": "77, Sector 46, Gurugram",
+    "competitions": [ { "id": "C01", "date": "2026-06-25", "status": "Qualified" } ],
+    "payments": [ { "id": "PAY-1008", "mode": "UPI", "amount": 500, "status": "Paid", "date": "2026-06-25" } ],
+    "results": [ { "id": "T02", "comp": "C01", "date": "2026-06-26", "score": 4, "total": 5 } ]
+  }
+]
+  </script>
+  <script src="competitions.js"></script>
+  <script src="admin-app.js"></script>
+
+</body>
+</html>

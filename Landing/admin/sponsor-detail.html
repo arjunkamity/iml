@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sponsor Profile — Admin | India Mind League</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="../images/Iml-logo-fav.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body data-page="sponsor-detail">
+
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sidebar">
+    <a class="sb-brand" href="dashboard.html"><img src="../images/new-logo-cut.png" alt="India Mind League" /><span class="sb-tag">Admin</span></a>
+        <nav class="sb-nav" id="sbNav">
+
+      <div class="sb-sec">Overview</div>
+      <a href="dashboard.html"><i>▦</i> Dashboard</a>
+
+      <div class="sb-sec">Competitions</div>
+      <a href="competitions.html"><i>🏅</i> Competitions</a>
+      <a href="prizes.html"><i>🏆</i> Prizes &amp; Awards</a>
+      <a href="leaderboard.html"><i>🏆</i> Leaderboard</a>
+      <a href="results.html"><i>📊</i> Results</a>
+
+      <div class="sb-sec">Participants</div>
+      <a href="registrations.html"><i>📝</i> Registrations</a>
+      <a href="payments.html"><i>💳</i> Payment History</a>
+      <a href="schools.html"><i>🏫</i> Schools</a>
+
+      <div class="sb-sec">Content</div>
+      <a href="questions.html"><i>❓</i> Question Bank</a>
+      <a href="exams.html"><i>📅</i> Exam Dates</a>
+      <a href="grievances.html"><i>💬</i> Grievances</a>
+      <a href="notifications.html"><i>📣</i> Notifications</a>
+
+      <div class="sb-sec">Management Options</div>
+      <details class="sb-drop">
+        <summary>＋ Create <span class="caret">▾</span></summary>
+        <div class="sb-sub">
+          <a href="announcements.html?create=1">＋ Announcement</a>
+          <a href="news.html?create=1">＋ News item</a>
+          <a href="gallery.html?create=1">＋ Gallery album</a>
+          <a href="competitions.html?create=1">＋ Competition</a>
+        </div>
+      </details>
+      <a href="announcements.html"><i>📢</i> Announcements</a>
+      <a href="news.html"><i>🗞</i> News</a>
+      <a href="gallery.html"><i>🖼</i> Gallery</a>
+
+      <div class="sb-sec">Administration</div>
+      <a href="sponsors.html" class="active"><i>🤝</i> Sponsors</a>
+      <a href="plans.html"><i>💰</i> Sponsorship Plans</a>
+      <a href="admins.html"><i>🛡️</i> Admin Users</a>
+    </nav>
+    <a class="sb-site" href="../index.html">↗ View website</a>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <a class="tb-burger" href="#sidebar" aria-label="Menu">☰</a>
+      <h1 class="tb-title">Sponsor Profile</h1>
+      <div class="tb-admin"><span class="tb-av">A</span><span class="tb-name">Admin</span></div>
+    </header>
+    <main class="content">
+      <div id="spd"><div class="empty">Loading sponsor…</div></div>
+      <div class="modal-root" id="modalRoot" hidden></div>
+      <div class="toast" id="toast"></div>
+    </main>
+  </div>
+
+  <script type="application/json" id="sponsorData">
+[
+  {
+    "id": "SP01", "name": "TechNova Solutions", "contact": "R. Malhotra",
+    "email": "r.malhotra@technova.in", "phone": "9810010001", "tier": "Gold", "status": "Active",
+    "amount": 500000, "since": "2026", "website": "technova.in", "events": ["C01", "C03"],
+    "products": [
+      { "name": "Noise-Cancelling Headphones", "desc": "Studio-grade wireless headphones, up to 30 hrs battery — great for focused prep.", "price": 3499, "mrp": 5499, "link": "https://technova.in/headphones", "photo": "" },
+      { "name": "USB-C Hub 7-in-1", "desc": "Dual 4K HDMI, 100W PD, plug-and-play for laptops. Pocket-size companion.", "price": 1299, "mrp": 1999, "link": "https://technova.in/usbchub", "photo": "" },
+      { "name": "Wireless Mouse", "desc": "Silent click, 1600 DPI, 12-month battery life. Comes in gold & navy.", "price": 699, "mrp": 999, "link": "https://technova.in/mouse", "photo": "" }
+    ],
+    "sponsored": [
+      { "comp": "C01", "type": "Title sponsor", "amount": 200000 },
+      { "comp": "C03", "type": "Co-sponsor", "amount": 300000 }
+    ],
+    "payments": [
+      { "id": "PAY-SP01", "amount": 200000, "mode": "Net Banking", "date": "2026-05-10", "status": "Paid" },
+      { "id": "PAY-SP02", "amount": 300000, "mode": "Net Banking", "date": "2026-06-15", "status": "Paid" }
+    ]
+  },
+  {
+    "id": "SP02", "name": "Apex EdTech", "contact": "Priya Sood",
+    "email": "priya@apexedtech.in", "phone": "9810010002", "tier": "Silver", "status": "Active",
+    "amount": 250000, "since": "2026", "website": "apexedtech.in", "events": ["C01", "C02"],
+    "products": [
+      { "name": "Math Practice Kit (9-10)", "desc": "300+ graded problems with answer keys — build speed before the qualifier.", "price": 499, "mrp": 599, "link": "https://apexedtech.in/mathkit", "photo": "" },
+      { "name": "Mock Test Bundle", "desc": "5 full-length digital mocks with detailed analytics. Available for all grades.", "price": 999, "mrp": 1499, "link": "https://apexedtech.in/mocks", "photo": "" }
+    ],
+    "sponsored": [
+      { "comp": "C01", "type": "Co-sponsor", "amount": 150000 },
+      { "comp": "C02", "type": "Title sponsor", "amount": 100000 }
+    ],
+    "payments": [
+      { "id": "PAY-SP03", "amount": 150000, "mode": "UPI", "date": "2026-05-18", "status": "Paid" },
+      { "id": "PAY-SP04", "amount": 100000, "mode": "UPI", "date": "2026-06-02", "status": "Paid" }
+    ]
+  },
+  {
+    "id": "SP03", "name": "GreenLeaf Books", "contact": "Aman Verma",
+    "email": "aman@greenleaf.in", "phone": "9810010003", "tier": "Bronze", "status": "Disabled",
+    "amount": 75000, "since": "2025", "website": "greenleaf.in", "events": ["C02"],
+    "products": [
+      { "name": "IML Quiz Handbook Vol 1", "desc": "General knowledge, logical reasoning & GK puzzles — the official practice book.", "price": 249, "mrp": 299, "link": "https://greenleaf.in/imlvol1", "photo": "" },
+      { "name": "Rapid GK Compendium 2026", "desc": "Current affairs & static GK in 12 quick chapters with self-tests.", "price": 399, "mrp": 549, "link": "https://greenleaf.in/gkcomp", "photo": "" }
+    ],
+    "sponsored": [
+      { "comp": "C02", "type": "Merchandise partner", "amount": 75000 }
+    ],
+    "payments": [
+      { "id": "PAY-SP05", "amount": 75000, "mode": "Card", "date": "2026-04-25", "status": "Paid" }
+    ]
+  },
+  {
+    "id": "SP04", "name": "FutureBank", "contact": "Neha Kulkarni",
+    "email": "neha@futurebank.in", "phone": "9810010004", "tier": "Gold", "status": "Pending",
+    "amount": 400000, "since": "2026", "website": "futurebank.in", "events": ["C03"],
+    "products": [],
+    "sponsored": [
+      { "comp": "C03", "type": "Title sponsor", "amount": 400000 }
+    ],
+    "payments": []
+  }
+]
+  </script>
+  <script src="competitions.js"></script>
+  <script src="plans.js"></script>
+  <script src="admin-app.js"></script>
+
+</body>
+</html>

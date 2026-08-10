@@ -1,0 +1,443 @@
+// India Mind League — Prisma schema (PostgreSQL)
+// Source: D:\INDIA MIND LEAGUE\Landing\admin\backend-api-plan.md §4
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// 4.1 Identity & access
+// ---------------------------------------------------------------------------
+
+model Admin {
+  id           Int       @id @default(autoincrement())
+  name         String    @db.VarChar(120)
+  email        String    @unique @db.VarChar(190)
+  passwordHash String    @map("password_hash") @db.Text
+  role         String    @default("Editor") @db.VarChar(30) // Super Admin | Editor | Viewer
+  status       String    @default("Active") @db.VarChar(20) // Active | Disabled
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  modules      AdminModule[]
+  refreshTokens RefreshToken[]
+  resolvedGrievances Grievance[] @relation("GrievanceResolver")
+  notificationsCreated Notification[] @relation("NotificationCreator")
+
+  @@map("admins")
+}
+
+// replaces ad.modules[]
+model AdminModule {
+  adminId    Int    @map("admin_id")
+  moduleCode String @map("module_code") @db.VarChar(30) // dash, comp, reg, sch, q, ex, nt, ad, lb, res, pay, spon, plan, prize, ann, news, gal, gri
+  admin      Admin  @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@id([adminId, moduleCode])
+  @@map("admin_modules")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  adminId   Int      @map("admin_id")
+  tokenHash String   @map("token_hash") @db.Text
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@map("refresh_tokens")
+}
+
+model Otp {
+  id        Int      @id @default(autoincrement())
+  email     String   @db.VarChar(190)
+  code      String   @db.VarChar(10)
+  purpose   String   @default("login") @db.VarChar(30) // login | register | reset
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(6)
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([email, purpose])
+  @@map("otps")
+}
+
+// ---------------------------------------------------------------------------
+// 4.2 Participants
+// ---------------------------------------------------------------------------
+
+model School {
+  id          Int     @id @default(autoincrement())
+  code        String  @unique @db.VarChar(10) // S01
+  name        String  @db.VarChar(190)
+  city        String? @db.VarChar(90)
+  contact     String? @db.VarChar(40)
+  coordinator String? @db.VarChar(120)
+  students    Student[]
+
+  @@map("schools")
+}
+
+model Student {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique @db.VarChar(10) // R1001
+  name        String   @db.VarChar(120)
+  grade       String   @db.VarChar(6) // 9, 10, 11, 12
+  schoolId    Int?     @map("school_id")
+  dob         DateTime? @db.Date
+  gender      String?  @db.VarChar(12)
+  phone       String?  @db.VarChar(20)
+  email       String?  @db.VarChar(190)
+  passwordHash String? @map("password_hash")
+  parent      String?  @db.VarChar(120)
+  parentPhone String?  @map("parent_phone") @db.VarChar(20)
+  address     String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  school      School?  @relation(fields: [schoolId], references: [id])
+  registrations Registration[]
+  grievances  Grievance[]
+
+  @@map("students")
+}
+
+// ---------------------------------------------------------------------------
+// 4.3 Competitions & stages
+// ---------------------------------------------------------------------------
+
+model Competition {
+  id          Int       @id @default(autoincrement())
+  code        String    @unique @db.VarChar(10) // C01
+  title       String    @db.VarChar(190)
+  grades      String    @db.VarChar(20) // 9-12
+  startDate   DateTime  @map("start_date") @db.Date
+  endDate     DateTime  @map("end_date") @db.Date
+  status      String    @default("Draft") @db.VarChar(20) // Draft | Open | Live | Closed
+  isMulti     Boolean   @default(false) @map("is_multi")
+  description String?   @db.Text
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  stages      CompetitionStage[]
+  registrations Registration[]
+  questions   Question[]
+  exams       Exam[]
+  notifications Notification[]
+  sponsorEvents SponsorEvent[]
+  prizes      Prize[]
+
+  @@map("competitions")
+}
+
+model CompetitionStage {
+  id            Int       @id @default(autoincrement())
+  competitionId Int       @map("competition_id")
+  position      Int
+  name          String    @db.VarChar(120)
+  mode          String    @db.VarChar(30) // Online | Offline | Hybrid | Peer Interview
+  passMark      Decimal   @map("pass_mark") @db.Decimal(5, 2) // percentage 0-100
+  isFree        Boolean   @default(true) @map("is_free")
+  price         Decimal   @default(0) @db.Decimal(10, 2)
+  description   String?   @db.Text
+  competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  rules         StageRule[]
+  registrationStages RegistrationStage[]
+  attempts      Attempt[]
+  payments      Payment[]
+
+  @@unique([competitionId, position])
+  @@map("competition_stages")
+}
+
+model StageRule {
+  id       Int    @id @default(autoincrement())
+  stageId  Int    @map("stage_id")
+  rule     String @db.Text
+  position Int    @default(0)
+  stage    CompetitionStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+
+  @@map("stage_rules")
+}
+
+// ---------------------------------------------------------------------------
+// 4.4 Registrations & progression (pay-to-accept)
+// ---------------------------------------------------------------------------
+
+model Registration {
+  id            Int      @id @default(autoincrement())
+  code          String   @unique @db.VarChar(10) // R1001
+  studentId     Int      @map("student_id")
+  competitionId Int      @map("competition_id")
+  status        String   @default("Registered") @db.VarChar(30) // Registered | Test Taken | Qualified | Eliminated
+  registeredAt  DateTime @default(now()) @map("registered_at") @db.Date
+  student       Student  @relation(fields: [studentId], references: [id])
+  competition   Competition @relation(fields: [competitionId], references: [id])
+  stages        RegistrationStage[]
+  attempts      Attempt[]
+  payments      Payment[]
+
+  @@unique([studentId, competitionId])
+  @@map("registrations")
+}
+
+// The per-stage journey of one participant.
+model RegistrationStage {
+  registrationId Int       @map("registration_id")
+  stageId        Int       @map("stage_id")
+  status         String    @default("Locked") @db.VarChar(30)
+  // Locked (next stage not yet paid/unlocked) | Paid | Attempted | Qualified | Eliminated
+  score          Decimal?  @db.Decimal(5, 2)
+  qualified      Boolean?
+  unlockedAt     DateTime? @map("unlocked_at") @db.Timestamptz(6)
+  paidAt         DateTime? @map("paid_at") @db.Timestamptz(6)
+  registration   Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  stage          CompetitionStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+
+  @@id([registrationId, stageId])
+  @@map("registration_stage")
+}
+
+// ---------------------------------------------------------------------------
+// 4.5 Assessments
+// ---------------------------------------------------------------------------
+
+model Question {
+  id            Int        @id @default(autoincrement())
+  code          String     @unique @db.VarChar(12) // Q1
+  competitionId Int?       @map("competition_id")
+  grade         String     @db.VarChar(6)
+  category      String     @db.VarChar(20) // IQ | EQ | Values
+  qtype         String     @default("text") @db.VarChar(12) // text | video | image
+  media         String?    @db.Text
+  mode          String     @default("single") @db.VarChar(10) // single | multi
+  label         String?    @db.VarChar(60)
+  ref           String?    @db.VarChar(30)
+  timeLimitSecs Int?       @map("time_limit_secs")
+  prompt        String     @db.Text
+  options       Json       @default("[]")
+  correct       Json       @default("[]") // correct index(es)
+  createdAt     DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  competition   Competition? @relation(fields: [competitionId], references: [id])
+  attemptAnswers AttemptAnswer[]
+
+  @@map("questions")
+}
+
+model Exam {
+  id            Int       @id @default(autoincrement())
+  code          String    @unique @db.VarChar(10) // E01
+  competitionId Int?      @map("competition_id")
+  title         String    @db.VarChar(190)
+  grade         String?   @db.VarChar(20)
+  date          DateTime? @db.Date
+  time          DateTime? @db.Time(0)
+  durationMin   Int?      @map("duration_min")
+  timing        Json      @default("{}") // {mode:'common',secs:60} | {mode:'custom'}
+  status        String    @default("Scheduled") @db.VarChar(20) // Draft | Scheduled | Live | Closed
+  competition   Competition? @relation(fields: [competitionId], references: [id])
+
+  @@map("exams")
+}
+
+model Attempt {
+  id             Int       @id @default(autoincrement())
+  code           String    @unique @db.VarChar(10) // T01
+  registrationId Int       @map("registration_id")
+  stageId        Int?      @map("stage_id")
+  startedAt      DateTime  @map("started_at") @db.Timestamptz(6)
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(6)
+  score          Decimal   @default(0) @db.Decimal(5, 2)
+  total          Decimal   @default(0) @db.Decimal(5, 2)
+  timing         Json      @default("{}")
+  registration   Registration @relation(fields: [registrationId], references: [id])
+  stage          CompetitionStage? @relation(fields: [stageId], references: [id])
+  answers        AttemptAnswer[]
+
+  @@map("attempts")
+}
+
+model AttemptAnswer {
+  id         Int       @id @default(autoincrement())
+  attemptId  Int       @map("attempt_id")
+  questionId Int?      @map("question_id")
+  answer     Json?
+  isCorrect  Boolean?  @map("is_correct")
+  takenSecs  Int?      @map("taken_secs")
+  timeUp     Boolean   @default(false) @map("time_up")
+  startedAt  DateTime? @map("started_at") @db.Timestamptz(6)
+  answeredAt DateTime? @map("answered_at") @db.Timestamptz(6)
+  attempt    Attempt   @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question   Question? @relation(fields: [questionId], references: [id])
+
+  @@index([attemptId])
+  @@map("attempt_answers")
+}
+
+// ---------------------------------------------------------------------------
+// 4.6 Payments
+// ---------------------------------------------------------------------------
+
+model Payment {
+  id             Int       @id @default(autoincrement())
+  code           String    @unique @db.VarChar(20) // PAY-1001
+  registrationId Int       @map("registration_id")
+  stageId        Int?      @map("stage_id") // stage being paid for
+  amount         Decimal   @db.Decimal(10, 2)
+  mode           String    @db.VarChar(30) // UPI | Card | Net Banking | Offline
+  status         String    @default("Pending") @db.VarChar(20) // Pending | Paid | Failed
+  providerTxn    String?   @map("provider_txn") @db.VarChar(120)
+  paidAt         DateTime? @map("paid_at") @db.Timestamptz(6)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  registration   Registration @relation(fields: [registrationId], references: [id])
+  stage          CompetitionStage? @relation(fields: [stageId], references: [id])
+
+  @@map("payments")
+}
+
+// ---------------------------------------------------------------------------
+// 4.7 Content & comms
+// ---------------------------------------------------------------------------
+
+model Announcement {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique @db.VarChar(10) // AN1
+  title     String   @db.VarChar(190)
+  category  String?  @db.VarChar(40)
+  audience  String?  @db.VarChar(60)
+  publishOn DateTime? @map("publish_on") @db.Date
+  status    String   @default("Draft") @db.VarChar(20) // Draft | Active
+  pinned    Boolean  @default(false)
+  message   String?  @db.Text
+
+  @@map("announcements")
+}
+
+model News {
+  id        Int       @id @default(autoincrement())
+  code      String    @unique @db.VarChar(10) // NW1
+  title     String    @db.VarChar(190)
+  category  String?   @db.VarChar(40)
+  author    String?   @db.VarChar(90)
+  publishOn DateTime? @map("publish_on") @db.Date
+  status    String    @default("Draft") @db.VarChar(20) // Draft | Published
+  photo     String?   @db.Text
+  summary   String?   @db.Text
+
+  @@map("news")
+}
+
+model Gallery {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique @db.VarChar(10) // GA1
+  name        String   @db.VarChar(190)
+  date        DateTime? @db.Date
+  visibility  String   @default("Public") @db.VarChar(20) // Public | Private
+  cover       String?  @db.Text
+  description String?  @db.Text
+  photos      Json     @default("[]")
+  status      String   @default("Active") @db.VarChar(20)
+
+  @@map("gallery")
+}
+
+model Grievance {
+  id         Int       @id @default(autoincrement())
+  code       String    @unique @db.VarChar(10) // GV1
+  gtype      String    @db.VarChar(30) // Complaint | Feedback | Suggestion
+  studentId  Int?      @map("student_id")
+  name       String?   @db.VarChar(120)
+  contact    String?   @db.VarChar(40)
+  subject    String?   @db.VarChar(190)
+  message    String    @db.Text
+  status     String    @default("New") @db.VarChar(30) // New | In Progress | Resolved
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  resolvedBy Int?      @map("resolved_by")
+  resolvedAt DateTime? @map("resolved_at") @db.Timestamptz(6)
+  student    Student?  @relation(fields: [studentId], references: [id])
+  resolver   Admin?    @relation("GrievanceResolver", fields: [resolvedBy], references: [id])
+
+  @@map("grievances")
+}
+
+model Notification {
+  id            Int       @id @default(autoincrement())
+  channel       String    @db.VarChar(12) // EMAIL | SMS
+  audience      String    @db.VarChar(60)
+  competitionId Int?      @map("competition_id")
+  subject       String?   @db.VarChar(190)
+  message       String    @db.Text
+  html          Boolean   @default(false)
+  status        String    @default("Draft") @db.VarChar(20) // Draft | Sent | Failed
+  sentAt        DateTime? @map("sent_at") @db.Timestamptz(6)
+  createdBy     Int?      @map("created_by")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  competition   Competition? @relation(fields: [competitionId], references: [id])
+  creator       Admin?    @relation("NotificationCreator", fields: [createdBy], references: [id])
+
+  @@map("notifications")
+}
+
+// ---------------------------------------------------------------------------
+// 4.8 Sponsorship
+// ---------------------------------------------------------------------------
+
+model Sponsor {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique @db.VarChar(10) // SP01
+  name      String   @db.VarChar(190)
+  contact   String?  @db.VarChar(120)
+  email     String?  @db.VarChar(190)
+  phone     String?  @db.VarChar(20)
+  tier      String?  @db.VarChar(30) // Gold | Silver | Bronze
+  status    String   @default("Active") @db.VarChar(20) // Active | Disabled | Pending
+  amount    Decimal? @db.Decimal(12, 2)
+  since     String?  @db.VarChar(4)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  events    SponsorEvent[]
+
+  @@map("sponsors")
+}
+
+model SponsorEvent {
+  sponsorId     Int @map("sponsor_id")
+  competitionId Int @map("competition_id")
+  sponsor       Sponsor @relation(fields: [sponsorId], references: [id], onDelete: Cascade)
+  competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@id([sponsorId, competitionId])
+  @@map("sponsor_events")
+}
+
+model Plan {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique @db.VarChar(10) // PL1
+  name      String   @db.VarChar(60)
+  minAmount Decimal  @map("min_amount") @db.Decimal(12, 2)
+  benefits  String?  @db.Text
+  extras    Json     @default("[]")
+  active    Boolean  @default(true)
+
+  @@map("plans")
+}
+
+model Prize {
+  id            Int      @id @default(autoincrement())
+  code          String   @unique @db.VarChar(10) // PR1
+  competitionId Int      @map("competition_id")
+  rankLabel     String   @map("rank_label") @db.VarChar(30) // 1st | 2nd | 3rd | Consolation
+  money         Decimal? @db.Decimal(12, 2)
+  award         String?  @db.VarChar(60)
+  note          String?  @db.Text
+  competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@map("prizes")
+}
+
+// ---------------------------------------------------------------------------
+// 4.9 Views (queried via raw SQL — not mapped as models)
+// ---------------------------------------------------------------------------
+// CREATE VIEW leaderboard AS ...
+// CREATE VIEW dashboard_summary AS ...

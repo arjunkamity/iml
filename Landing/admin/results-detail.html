@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Attempt Detail — Admin | India Mind League</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="../images/Iml-logo-fav.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body data-page="results-detail">
+
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sidebar">
+    <a class="sb-brand" href="dashboard.html"><img src="../images/new-logo-cut.png" alt="India Mind League" /><span class="sb-tag">Admin</span></a>
+        <nav class="sb-nav" id="sbNav">
+
+      <div class="sb-sec">Overview</div>
+      <a href="dashboard.html"><i>▦</i> Dashboard</a>
+
+      <div class="sb-sec">Competitions</div>
+      <a href="competitions.html"><i>🏅</i> Competitions</a>
+      <a href="prizes.html"><i>🏆</i> Prizes &amp; Awards</a>
+      <a href="leaderboard.html"><i>🏆</i> Leaderboard</a>
+      <a href="results.html" class="active"><i>📊</i> Results</a>
+
+      <div class="sb-sec">Participants</div>
+      <a href="registrations.html"><i>📝</i> Registrations</a>
+      <a href="payments.html"><i>💳</i> Payment History</a>
+      <a href="schools.html"><i>🏫</i> Schools</a>
+
+      <div class="sb-sec">Content</div>
+      <a href="questions.html"><i>❓</i> Question Bank</a>
+      <a href="exams.html"><i>📅</i> Exam Dates</a>
+      <a href="grievances.html"><i>💬</i> Grievances</a>
+      <a href="notifications.html"><i>📣</i> Notifications</a>
+
+      <div class="sb-sec">Management Options</div>
+      <details class="sb-drop">
+        <summary>＋ Create <span class="caret">▾</span></summary>
+        <div class="sb-sub">
+          <a href="announcements.html?create=1">＋ Announcement</a>
+          <a href="news.html?create=1">＋ News item</a>
+          <a href="gallery.html?create=1">＋ Gallery album</a>
+          <a href="competitions.html?create=1">＋ Competition</a>
+        </div>
+      </details>
+      <a href="announcements.html"><i>📢</i> Announcements</a>
+      <a href="news.html"><i>🗞</i> News</a>
+      <a href="gallery.html"><i>🖼</i> Gallery</a>
+
+      <div class="sb-sec">Administration</div>
+      <a href="sponsors.html"><i>🤝</i> Sponsors</a>
+      <a href="plans.html"><i>💰</i> Sponsorship Plans</a>
+      <a href="admins.html"><i>🛡️</i> Admin Users</a>
+    </nav>
+    <a class="sb-site" href="../index.html">↗ View website</a>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <a class="tb-burger" href="#sidebar" aria-label="Menu">☰</a>
+      <h1 class="tb-title">Attempt Detail</h1>
+      <div class="tb-admin"><span class="tb-av">A</span><span class="tb-name">Admin</span></div>
+    </header>
+    <main class="content">
+      <div id="rd"><div class="empty">Loading attempt…</div></div>
+    </main>
+  </div>
+
+  <script type="application/json" id="resData">
+[
+  {
+    "id": "T01", "student": "Aarav Mehta", "grade": "9", "school": "Amity International School, Saket",
+    "comp": "C01",
+    "date": "2026-06-26", "startedAt": "10:30:12", "finishedAt": "10:33:47", "score": 5, "total": 5,
+    "timing": { "mode": "common", "secs": 60 },
+    "answers": [
+      { "q": "Which number completes the series? 2, 6, 12, 20, 30, ___", "a": "C. 42", "ok": true, "started": "10:30:12", "answered": "10:30:38", "taken": 26, "limit": 60 },
+      { "q": "If CAT is coded as 3-1-20, what is the code for DOG?", "a": "A. 4-15-7", "ok": true, "started": "10:30:38", "answered": "10:31:12", "taken": 34, "limit": 60 },
+      { "q": "A teammate is upset after losing a round. The best first response is to…", "a": "B. Acknowledge how they feel and offer support", "ok": true, "started": "10:31:12", "answered": "10:32:12", "taken": 60, "limit": 60, "timeUp": true },
+      { "q": "You find a wallet that belongs to a classmate. What should you do?", "a": "B. Return it to them or a teacher", "ok": true, "started": "10:32:12", "answered": "10:33:01", "taken": 49, "limit": 60 },
+      { "q": "Which fraction is the largest?", "a": "A. 1/2", "ok": true, "started": "10:33:01", "answered": "10:33:47", "taken": 46, "limit": 60 }
+    ]
+  },
+  {
+    "id": "T02", "student": "Saanvi Kapoor", "grade": "12", "school": "Amity International School, Gurugram 46",
+    "comp": "C01",
+    "date": "2026-06-26", "startedAt": "11:40:05", "finishedAt": "11:44:02", "score": 4, "total": 5,
+    "timing": { "mode": "common", "secs": 60 },
+    "answers": [
+      { "q": "Which number completes the series? 2, 6, 12, 20, 30, ___", "a": "C. 42", "ok": true, "started": "11:40:05", "answered": "11:40:41", "taken": 36, "limit": 60 },
+      { "q": "Find the odd one out.", "a": "D. Cube", "ok": true, "started": "11:40:41", "answered": "11:41:22", "taken": 41, "limit": 60 },
+      { "q": "You feel nervous before a big test. A healthy way to handle it is to…", "a": "B. Take slow breaths and make a plan", "ok": true, "started": "11:41:22", "answered": "11:42:20", "taken": 58, "limit": 60 },
+      { "q": "Which fraction is the largest?", "a": "B. 2/5", "ok": false, "correct": "A. 1/2", "started": "11:42:20", "answered": "11:43:18", "taken": 58, "limit": 60 },
+      { "q": "During a team task, the fairest way to decide is to…", "a": "B. Listen to everyone and agree together", "ok": true, "started": "11:43:18", "answered": "11:44:02", "taken": 44, "limit": 60 }
+    ]
+  },
+  {
+    "id": "T03", "student": "Diya Sharma", "grade": "10", "school": "Amity International School, Noida",
+    "comp": "C01",
+    "date": "2026-06-27", "startedAt": "09:15:30", "finishedAt": "09:19:54", "score": 3, "total": 5,
+    "timing": { "mode": "common", "secs": 60 },
+    "answers": [
+      { "q": "Which number completes the series? 2, 6, 12, 20, 30, ___", "a": "B. 40", "ok": false, "correct": "C. 42", "started": "09:15:30", "answered": "09:16:02", "taken": 32, "limit": 60 },
+      { "q": "Find the odd one out.", "a": "D. Cube", "ok": true, "started": "09:16:02", "answered": "09:16:38", "taken": 36, "limit": 60 },
+      { "q": "A teammate is upset after losing a round. The best first response is to…", "a": "B. Acknowledge how they feel and offer support", "ok": true, "started": "09:16:38", "answered": "09:17:26", "taken": 48, "limit": 60 },
+      { "q": "You find a wallet that belongs to a classmate. What should you do?", "a": "A. Keep it", "ok": false, "correct": "B. Return it to them or a teacher", "started": "09:17:26", "answered": "09:18:44", "taken": 78, "limit": 60, "timeUp": true },
+      { "q": "During a team task, the fairest way to decide is to…", "a": "B. Listen to everyone and agree together", "ok": true, "started": "09:18:44", "answered": "09:19:54", "taken": 70, "limit": 60, "timeUp": true }
+    ]
+  },
+  {
+    "id": "T04", "student": "Myra Nair", "grade": "10", "school": "Amity International School, Saket",
+    "comp": "C01",
+    "date": "2026-06-27", "startedAt": "12:20:00", "finishedAt": "12:23:40", "score": 2, "total": 5,
+    "timing": { "mode": "custom" },
+    "answers": [
+      { "q": "If CAT is coded as 3-1-20, what is the code for DOG?", "a": "A. 4-15-7", "ok": true, "started": "12:20:00", "answered": "12:20:22", "taken": 22, "limit": 30 },
+      { "q": "Find the odd one out.", "a": "A. Square", "ok": false, "correct": "D. Cube", "started": "12:20:22", "answered": "12:21:07", "taken": 45, "limit": 45, "timeUp": true },
+      { "q": "A teammate is upset after losing a round. The best first response is to…", "a": "D. Point out their mistakes", "ok": false, "correct": "B. Acknowledge how they feel and offer support", "started": "12:21:07", "answered": "12:22:07", "taken": 60, "limit": 60, "timeUp": true },
+      { "q": "You find a wallet that belongs to a classmate. What should you do?", "a": "B. Return it to them or a teacher", "ok": true, "started": "12:22:07", "answered": "12:22:41", "taken": 34, "limit": 45 },
+      { "q": "Which fraction is the largest?", "a": "C. 3/7", "ok": false, "correct": "A. 1/2", "started": "12:22:41", "answered": "12:23:40", "taken": 59, "limit": 90 }
+    ]
+  },
+  {
+    "id": "T05", "student": "Ananya Iyer", "grade": "12", "school": "Amity International School, Vasundhara",
+    "comp": "C01",
+    "date": "2026-06-28", "startedAt": "09:58:00", "finishedAt": "10:02:11", "score": 5, "total": 5,
+    "timing": { "mode": "common", "secs": 60 },
+    "answers": [
+      { "q": "Which number completes the series? 2, 6, 12, 20, 30, ___", "a": "C. 42", "ok": true, "started": "09:58:00", "answered": "09:58:29", "taken": 29, "limit": 60 },
+      { "q": "If CAT is coded as 3-1-20, what is the code for DOG?", "a": "A. 4-15-7", "ok": true, "started": "09:58:29", "answered": "09:59:08", "taken": 39, "limit": 60 },
+      { "q": "You feel nervous before a big test. A healthy way to handle it is to…", "a": "B. Take slow breaths and make a plan", "ok": true, "started": "09:59:08", "answered": "10:00:01", "taken": 53, "limit": 60 },
+      { "q": "Which fraction is the largest?", "a": "A. 1/2", "ok": true, "started": "10:00:01", "answered": "10:00:52", "taken": 51, "limit": 60 },
+      { "q": "During a team task, the fairest way to decide is to…", "a": "B. Listen to everyone and agree together", "ok": true, "started": "10:00:52", "answered": "10:02:11", "taken": 79, "limit": 60, "timeUp": true }
+    ]
+  },
+  {
+    "id": "T06", "student": "Diya Sharma", "grade": "10", "school": "Amity International School, Noida",
+    "comp": "C02",
+    "date": "2026-06-29", "startedAt": "11:05:20", "finishedAt": "11:09:05", "score": 3, "total": 5,
+    "timing": { "mode": "common", "secs": 60 },
+    "answers": [
+      { "q": "Which number completes the series? 2, 6, 12, 20, 30, ___", "a": "C. 42", "ok": true, "started": "11:05:20", "answered": "11:05:52", "taken": 32, "limit": 60 },
+      { "q": "If CAT is coded as 3-1-20, what is the code for DOG?", "a": "A. 4-15-7", "ok": true, "started": "11:05:52", "answered": "11:06:30", "taken": 38, "limit": 60 },
+      { "q": "A teammate is upset after losing a round. The best first response is to…", "a": "B. Acknowledge how they feel and offer support", "ok": true, "started": "11:06:30", "answered": "11:07:28", "taken": 58, "limit": 60 },
+      { "q": "You find a wallet that belongs to a classmate. What should you do?", "a": "A. Keep it", "ok": false, "correct": "B. Return it to them or a teacher", "started": "11:07:28", "answered": "11:08:30", "taken": 62, "limit": 60, "timeUp": true },
+      { "q": "Which fraction is the largest?", "a": "B. 2/5", "ok": false, "correct": "A. 1/2", "started": "11:08:30", "answered": "11:09:05", "taken": 35, "limit": 60 }
+    ]
+  },
+  {
+    "id": "T07", "student": "Kabir Rao", "grade": "11", "school": "Amity International School, Gurugram 46",
+    "comp": "C02",
+    "date": "2026-06-29", "startedAt": "14:40:00", "finishedAt": "14:44:33", "score": 1, "total": 5,
+    "timing": { "mode": "common", "secs": 60 },
+    "answers": [
+      { "q": "Which number completes the series? 2, 6, 12, 20, 30, ___", "a": "A. 32", "ok": false, "correct": "C. 42", "started": "14:40:00", "answered": "14:40:55", "taken": 55, "limit": 60 },
+      { "q": "If CAT is coded as 3-1-20, what is the code for DOG?", "a": "D. 4-8-6", "ok": false, "correct": "A. 4-15-7", "started": "14:40:55", "answered": "14:42:12", "taken": 77, "limit": 60, "timeUp": true },
+      { "q": "A teammate is upset after losing a round. The best first response is to…", "a": "B. Acknowledge how they feel and offer support", "ok": true, "started": "14:42:12", "answered": "14:43:04", "taken": 52, "limit": 60 },
+      { "q": "You find a wallet that belongs to a classmate. What should you do?", "a": "B. Return it to them or a teacher", "ok": true, "started": "14:43:04", "answered": "14:44:01", "taken": 57, "limit": 60 },
+      { "q": "Which fraction is the largest?", "a": "C. 3/7", "ok": false, "correct": "A. 1/2", "started": "14:44:01", "answered": "14:44:33", "taken": 32, "limit": 60 }
+    ]
+  }
+]
+  </script>
+  <script src="competitions.js"></script>
+  <script src="qualifiers.js"></script>
+  <script src="admin-app.js"></script>
+
+</body>
+</html>
