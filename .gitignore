@@ -5,6 +5,10 @@ node_modules/
 dist/
 build/
 .angular/
+#app
+
+app/api
+app/web
 
 # Env / secrets
 .env

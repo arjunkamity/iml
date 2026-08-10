@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Announcements — Admin | India Mind League</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="../images/Iml-logo-fav.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body data-page="announcements">
+
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sidebar">
+    <a class="sb-brand" href="dashboard.html"><img src="../images/new-logo-cut.png" alt="India Mind League" /><span class="sb-tag">Admin</span></a>
+        <nav class="sb-nav" id="sbNav">
+
+      <div class="sb-sec">Overview</div>
+      <a href="dashboard.html"><i>▦</i> Dashboard</a>
+
+      <div class="sb-sec">Competitions</div>
+      <a href="competitions.html"><i>🏅</i> Competitions</a>
+      <a href="prizes.html"><i>🏆</i> Prizes &amp; Awards</a>
+      <a href="leaderboard.html"><i>🏆</i> Leaderboard</a>
+      <a href="results.html"><i>📊</i> Results</a>
+
+      <div class="sb-sec">Participants</div>
+      <a href="registrations.html"><i>📝</i> Registrations</a>
+      <a href="payments.html"><i>💳</i> Payment History</a>
+      <a href="schools.html"><i>🏫</i> Schools</a>
+
+      <div class="sb-sec">Content</div>
+      <a href="questions.html"><i>❓</i> Question Bank</a>
+      <a href="exams.html"><i>📅</i> Exam Dates</a>
+      <a href="grievances.html"><i>💬</i> Grievances</a>
+      <a href="notifications.html"><i>📣</i> Notifications</a>
+
+      <div class="sb-sec">Management Options</div>
+      <details class="sb-drop">
+        <summary>＋ Create <span class="caret">▾</span></summary>
+        <div class="sb-sub">
+          <a href="announcements.html?create=1">＋ Announcement</a>
+          <a href="news.html?create=1">＋ News item</a>
+          <a href="gallery.html?create=1">＋ Gallery album</a>
+          <a href="competitions.html?create=1">＋ Competition</a>
+        </div>
+      </details>
+      <a href="announcements.html" class="active"><i>📢</i> Announcements</a>
+      <a href="news.html"><i>🗞</i> News</a>
+      <a href="gallery.html"><i>🖼</i> Gallery</a>
+
+      <div class="sb-sec">Administration</div>
+      <a href="sponsors.html"><i>🤝</i> Sponsors</a>
+      <a href="plans.html"><i>💰</i> Sponsorship Plans</a>
+      <a href="admins.html"><i>🛡️</i> Admin Users</a>
+    </nav>
+    <a class="sb-site" href="../index.html">↗ View website</a>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <a class="tb-burger" href="#sidebar" aria-label="Menu">☰</a>
+      <h1 class="tb-title">Announcements</h1>
+      <div class="tb-admin"><span class="tb-av">A</span><span class="tb-name">Admin</span></div>
+    </header>
+    <main class="content">
+
+      <div class="bar">
+        <span class="grow"></span>
+        <button class="btn btn-gold" data-add="ann" type="button">＋ New Announcement</button>
+      </div>
+
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>ID</th><th>Announcement</th><th>Category</th><th>Audience</th><th>Date</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+        <tbody data-tbody="ann">
+          <tr data-ent="ann" data-json='{"id":"AN1","title":"Digital Qualifier windows confirmed","category":"Exam","audience":"All Registered","date":"2026-06-28","status":"Active","pinned":true,"message":"Dear participant, your Digital Qualifier opens on 15 July at 10:00 AM. Log in from your dashboard and keep your credentials ready."}'>
+            <td>AN1</td><td class="b" style="max-width:360px">Digital Qualifier windows confirmed <span class="bdg gold">Pinned</span><small>Dear participant, your Digital Qualifier opens on 15 July at 10:00 AM. Log in from your dashboard…</small></td><td><span class="bdg blue">Exam</span></td><td>All Registered</td><td>2026-06-28</td><td><span class="bdg green">Active</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="ann" data-json='{"id":"AN2","title":"Practice mock test is now live","category":"Exam","audience":"Grades 9-12","date":"2026-06-27","status":"Active","pinned":false,"message":"The practice mock test is live on the portal. Attempt it anytime before 14 July to familiarise yourself with the interface."}'>
+            <td>AN2</td><td class="b" style="max-width:360px">Practice mock test is now live<small>The practice mock test is live on the portal. Attempt it anytime before 14 July to familiarise…</small></td><td><span class="bdg blue">Exam</span></td><td>Grades 9-12</td><td>2026-06-27</td><td><span class="bdg green">Active</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="ann" data-json='{"id":"AN3","title":"Coordinator briefing — IML Stage 1","category":"Event","audience":"Schools","date":"2026-06-25","status":"Active","pinned":false,"message":"Dear coordinator, please find the Stage-1 schedule and guidelines attached. Reach out to your zonal contact for clarifications."}'>
+            <td>AN3</td><td class="b" style="max-width:360px">Coordinator briefing — IML Stage 1<small>Dear coordinator, please find the Stage-1 schedule and guidelines attached. Reach out to your…</small></td><td><span class="bdg purple">Event</span></td><td>Schools</td><td>2026-06-25</td><td><span class="bdg green">Active</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="ann" data-json='{"id":"AN4","title":"National Finals dates announced","category":"Results","audience":"Qualified only","date":"2026-06-22","status":"Draft","pinned":false,"message":"National Finals will be held on 21-22 August. Venue and travel details will follow shortly."}'>
+            <td>AN4</td><td class="b" style="max-width:360px">National Finals dates announced<small>National Finals will be held on 21-22 August. Venue and travel details will follow shortly.</small></td><td><span class="bdg green">Results</span></td><td>Qualified only</td><td>2026-06-22</td><td><span class="bdg grey">Draft</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <div class="modal-root" id="modalRoot" hidden></div>
+      <div class="toast" id="toast"></div>
+      <script src="competitions.js"></script>
+      <script src="admin-app.js"></script>
+    </main>
+  </div>
+
+</body>
+</html>

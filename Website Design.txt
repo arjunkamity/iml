@@ -1,0 +1,100 @@
+Dear Sir,
+
+ 
+
+Request your kind support for our upcoming project, that we are conceptualizing India Mind League (IML), a flagship intellectual championship by the Amity Group of Schools under the visionary guidance of Dr. (Mrs.) Amita Chauhan, Chairperson, Amity Group of Schools.
+
+ 
+
+The initiative is designed to move students beyond marks-driven learning and create a future-ready platform that nurtures Intelligence Quotient (IQ), Emotional Quotient (EQ), decision-making ability, leadership, ethics, and real-world problem-solving skills. Envisioned as a blend of academic excellence, critical thinking, and youth leadership, India Mind League aims to identify and showcase India's next generation of thinkers, innovators, and responsible leaders through a multi-stage competitive format.
+
+ 
+
+The first phase of the project involves the creation of a Digital Qualifier Platform that will enable large-scale participation from schools across Delhi NCR and support the seamless execution of the online screening round.
+
+ 
+
+We request your support in evaluating the technical requirements and preparing an execution roadmap for the platform.
+
+ 
+
+Key Requirements
+
+1. School Registration Module
+
+School onboarding and registration
+Unique school code generation
+School coordinator login and management
+2. Student Registration Module
+
+Student profile creation
+School code validation
+Parent contact and email capture
+OTP-based authentication
+3. Digital Quiz Engine
+
+Mobile and web responsive platform
+Timed quiz functionality
+One-time attempt mechanism
+Auto-save and auto-submit feature
+Question randomization (if required)
+4. Practice Quiz Section
+
+Sample questions
+Tutorial and instruction pages
+Mock test functionality
+5. Scoring & Evaluation System
+
+Automated score calculation
+Accuracy tracking
+Ranking and tie-break logic
+Result generation
+6. Dashboard & Reporting
+
+Admin dashboard for Amity
+School-wise participation reports
+Student performance reports
+Leaderboards
+Shortlisted candidate reports
+7. Certificate Automation
+
+Participation certificate generation
+Download and email options
+8. Security & Scalability
+
+OTP verification
+Data security protocols
+Concurrent user handling
+Backup and recovery mechanism
+Proposed Execution Stages
+
+Phase 1: Requirement Mapping & Wireframe Design
+Phase 2: Registration & Login Development
+Phase 3: Quiz Engine, Dashboard & Reporting Development
+Phase 4: Testing & Pilot Run
+Phase 5: Deployment, Monitoring & Technical Support
+
+ 
+
+We would appreciate your assessment on:
+
+Technical feasibility and recommended architecture.
+Estimated development timeline.
+Resource requirement (internal/external).
+Recommended technology stack.
+Hosting and scalability considerations.
+Security and data protection measures.
+Any additional features that may enhance user experience, analytics, and reporting.
+ 
+
+We need to discuss initial wireframe approach, development roadmap, and evaluating technical possibilities together. For Your quick reference check basic look of microsite.
+
+ 
+
+Please let us know your thoughts & our meeting on 17th June 2026 at 2:00-3pm is scheduled for detailed discussion with our QUIZ CONTENT TEAM along with Divya Ma’am, Principal AIS SAKET.
+
+ 
+
+Looking forward to your support.
+
+ 

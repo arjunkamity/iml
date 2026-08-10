@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Edit Competition — Admin | India Mind League</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="../images/Iml-logo-fav.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body data-page="competition-edit">
+
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sidebar">
+    <a class="sb-brand" href="dashboard.html"><img src="../images/new-logo-cut.png" alt="India Mind League" /><span class="sb-tag">Admin</span></a>
+        <nav class="sb-nav" id="sbNav">
+
+      <div class="sb-sec">Overview</div>
+      <a href="dashboard.html"><i>▦</i> Dashboard</a>
+
+      <div class="sb-sec">Competitions</div>
+      <a href="competitions.html" class="active"><i>🏅</i> Competitions</a>
+      <a href="prizes.html"><i>🏆</i> Prizes &amp; Awards</a>
+      <a href="leaderboard.html"><i>🏆</i> Leaderboard</a>
+      <a href="results.html"><i>📊</i> Results</a>
+
+      <div class="sb-sec">Participants</div>
+      <a href="registrations.html"><i>📝</i> Registrations</a>
+      <a href="payments.html"><i>💳</i> Payment History</a>
+      <a href="schools.html"><i>🏫</i> Schools</a>
+
+      <div class="sb-sec">Content</div>
+      <a href="questions.html"><i>❓</i> Question Bank</a>
+      <a href="exams.html"><i>📅</i> Exam Dates</a>
+      <a href="grievances.html"><i>💬</i> Grievances</a>
+      <a href="notifications.html"><i>📣</i> Notifications</a>
+
+      <div class="sb-sec">Management Options</div>
+      <details class="sb-drop">
+        <summary>＋ Create <span class="caret">▾</span></summary>
+        <div class="sb-sub">
+          <a href="announcements.html?create=1">＋ Announcement</a>
+          <a href="news.html?create=1">＋ News item</a>
+          <a href="gallery.html?create=1">＋ Gallery album</a>
+          <a href="competitions.html?create=1">＋ Competition</a>
+        </div>
+      </details>
+      <a href="announcements.html"><i>📢</i> Announcements</a>
+      <a href="news.html"><i>🗞</i> News</a>
+      <a href="gallery.html"><i>🖼</i> Gallery</a>
+
+      <div class="sb-sec">Administration</div>
+      <a href="sponsors.html"><i>🤝</i> Sponsors</a>
+      <a href="plans.html"><i>💰</i> Sponsorship Plans</a>
+      <a href="admins.html"><i>🛡️</i> Admin Users</a>
+    </nav>
+    <a class="sb-site" href="../index.html">↗ View website</a>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <a class="tb-burger" href="#sidebar" aria-label="Menu">☰</a>
+      <h1 class="tb-title">Edit Competition</h1>
+      <div class="tb-admin"><span class="tb-av">A</span><span class="tb-name">Admin</span></div>
+    </header>
+    <main class="content" id="holder">
+
+      <a class="btn btn-sm" style="margin-bottom:1rem" href="competitions.html">← Back to competitions</a>
+
+      <div id="editFormWrap" hidden>
+        <form id="editForm" novalidate>
+          <div id="ceTabs">
+            <div class="tabs">
+              <button class="tab on" type="button" data-t="basic">Basic</button>
+              <button class="tab" type="button" data-t="stages">Stages</button>
+            </div>
+
+            <div data-p="basic" class="pane">
+              <div class="card">
+                <h3>Competition Details</h3>
+                <div class="f"><label>Title *</label><input id="fTitle" placeholder="e.g. Digital Qualifier 2026" /></div>
+                <div class="f-row">
+                  <div class="f"><label>Grades</label><select id="fGrades"><option>9</option><option>10</option><option>11</option><option>12</option><option>9-10</option><option>11-12</option><option>9-12</option></select></div>
+                  <div class="f"><label>Status</label><select id="fStatus"><option>Draft</option><option>Open</option><option>Live</option><option>Closed</option></select></div>
+                </div>
+                <div class="f-row">
+                  <div class="f"><label>Start date *</label><input id="fStart" type="date" /></div>
+                  <div class="f"><label>End date *</label><input id="fEnd" type="date" /></div>
+                </div>
+                <div class="f"><label>Enrolled students</label><input id="fEnrolled" type="number" /></div>
+                <div class="f"><label>Description</label><textarea id="fDesc" placeholder="What is this competition about?"></textarea></div>
+              </div>
+            </div>
+
+            <div data-p="stages" class="pane" hidden>
+              <div class="card">
+                <div class="f">
+                  <label>Competition type</label>
+                  <div class="mods">
+                    <label class="chk"><input type="radio" name="stageType" value="single" checked /><span>Single Stage</span></label>
+                    <label class="chk"><input type="radio" name="stageType" value="multi" /><span>Multi Stage</span></label>
+                  </div>
+                </div>
+
+                <div id="singleWrap">
+                  <div class="f-row">
+                    <div class="f"><label>Stage name</label><input id="sName" placeholder="e.g. National Final" /></div>
+                    <div class="f"><label>Mode</label><select id="sMode"><option>Online</option><option>Offline</option><option>Hybrid</option><option>Peer Interview</option></select></div>
+                  </div>
+                  <div class="f-row">
+                    <div class="f"><label>Passing score (%)</label><input id="sPass" type="number" min="0" max="100" placeholder="e.g. 40" /></div>
+                    <div class="f">
+                      <label>Registration</label>
+                      <div class="mods">
+                        <label class="chk"><input type="radio" name="sReg" value="free" checked /><span>Free</span></label>
+                        <label class="chk"><input type="radio" name="sReg" value="paid" /><span>Paid</span></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="f" id="sPriceWrap" hidden><label>Registration price (₹)</label><input id="sPrice" type="number" min="0" placeholder="e.g. 150" /></div>
+                  <div class="f"><label>Stage description</label><textarea id="sDesc" placeholder="What happens in this stage…"></textarea></div>
+                  <div class="f">
+                    <label>Rules</label>
+                    <div class="rule-list" id="sRuleList"></div>
+                    <button class="btn btn-sm rule-add" type="button" id="sRuleAdd">＋ Add rule</button>
+                  </div>
+                </div>
+
+                <div id="multiWrap" hidden>
+                  <div id="stageCards"></div>
+                  <button class="btn btn-sm" type="button" id="addStage" style="margin-top:.4rem">＋ Add Stage</button>
+                </div>
+
+                <p class="hint">Participants who score equal to or above the passing score in a stage qualify to the next stage. Set a registration price per stage so qualifying participants pay to accept their spot in the next stage.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bar">
+            <a class="btn" href="competitions.html">Cancel</a>
+            <span class="grow"></span>
+            <div id="formErr" class="form-err"></div>
+            <button class="btn btn-gold" type="submit" id="saveEdit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="notFound" class="empty" hidden>Competition not found. <a href="competitions.html" style="color:var(--gold)">← Back to competitions</a></div>
+
+      <script type="application/json" id="compData">
+[
+  { "id": "C01", "title": "Digital Qualifier 2026", "grades": "9-12", "start": "2026-07-01", "end": "2026-07-31", "enrolled": 12, "status": "Live", "multi": true,
+    "desc": "India Mind League's first digital qualifier — top scorers advance to the school zone rounds.",
+    "stages": [
+      { "name": "Stage 1", "mode": "Online", "pass": 40, "price": 150, "free": false, "desc": "General Knowledge & Logical Reasoning quiz.",
+        "rules": ["60 seconds per question", "No negative marking"] },
+      { "name": "Stage 2", "mode": "Online", "pass": 50, "price": 200, "free": false, "desc": "Advanced aptitude + current affairs.",
+        "rules": ["One attempt only", "Scores above 50% qualify to National Finals"] }
+    ] },
+  { "id": "C02", "title": "School Zone Challenge", "grades": "9-10", "start": "2026-08-01", "end": "2026-08-15", "enrolled": 8, "status": "Open", "multi": true,
+    "desc": "Inter-school challenge with three progressive stages from online quiz to face-to-face interview.",
+    "stages": [
+      { "name": "Stage 1", "mode": "Online", "pass": 40, "price": 100, "free": true, "desc": "GK + Maths sprint.",
+        "rules": ["Common timing for all", "Use a stable internet connection"] },
+      { "name": "Stage 2", "mode": "Hybrid", "pass": 50, "price": 150, "free": false, "desc": "Offline written + online tie-breaker.",
+        "rules": ["Written paper at the school venue", "Online tie-breaker the same evening"] },
+      { "name": "Stage 3", "mode": "Peer Interview", "pass": 60, "price": 200, "free": false, "desc": "Panel interview with peers and mentors.",
+        "rules": ["5 minutes per candidate", "Carry your school ID"] }
+    ] },
+  { "id": "C03", "title": "National Finals", "grades": "11-12", "start": "2026-09-01", "end": "2026-09-20", "enrolled": 0, "status": "Draft", "multi": false,
+    "desc": "National finals — champions of each zone compete for the top scholarship.",
+    "stages": [
+      { "name": "National Final", "mode": "Peer Interview", "pass": 60, "price": 250, "free": false, "desc": "Grand finale interview + on-stage rapid fire.",
+        "rules": ["Formal attire", "30-minute slot including rapid fire"] }
+    ] }
+]
+      </script>
+
+      <script>
+        (function () {
+          'use strict';
+          var id = (location.search.match(/[?&]id=([^&]+)/) || [])[1];
+          var list = [];
+          try { list = JSON.parse(document.getElementById('compData').textContent || '[]'); } catch (e) {}
+          var rec = list.filter(function (x) { return String(x.id) === id; })[0];
+
+          var formWrap = document.getElementById('editFormWrap'), nf = document.getElementById('notFound');
+          if (!rec) { nf.hidden = false; return; }
+          formWrap.hidden = false;
+
+          var MODES = ['Online', 'Offline', 'Hybrid', 'Peer Interview'];
+          document.getElementById('fTitle').value = rec.title || '';
+          document.getElementById('fGrades').value = rec.grades || '9-12';
+          document.getElementById('fStatus').value = rec.status || 'Draft';
+          document.getElementById('fStart').value = rec.start || '';
+          document.getElementById('fEnd').value = rec.end || '';
+          document.getElementById('fEnrolled').value = rec.enrolled || 0;
+          document.getElementById('fDesc').value = rec.desc || '';
+
+          function escHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+          /* ---- tabs ---- */
+          var tabs = document.querySelectorAll('#ceTabs .tab');
+          var panes = document.querySelectorAll('#ceTabs [data-p]');
+          function showTab(name) {
+            panes.forEach(function (p) { p.hidden = p.getAttribute('data-p') !== name; });
+            tabs.forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-t') === name); });
+          }
+          tabs.forEach(function (b) { b.addEventListener('click', function () { showTab(b.getAttribute('data-t')); }); });
+          showTab('basic');
+
+          /* ---- stages ---- */
+          var singleWrap = document.getElementById('singleWrap'), multiWrap = document.getElementById('multiWrap');
+          var stageCards = document.getElementById('stageCards');
+          var radios = document.querySelectorAll('input[name="stageType"]');
+          var stages = (rec.stages && rec.stages.length ? rec.stages.slice() : [{ name: 'Stage 1', mode: 'Online', pass: 40, price: 0, free: true }]);
+          var isMulti = !!rec.multi && stages.length > 1;
+          var cardSeq = 0;
+
+          function modeSel(selVal) {
+            return '<select class="stMode">' + MODES.map(function (m) {
+              return '<option value="' + m + '"' + (m === selVal ? ' selected' : '') + '>' + m + '</option>';
+            }).join('') + '</select>';
+          }
+          function regToggle(card, rn, free) {
+            var paidInp = card.querySelector('.stRegPaid');
+            var wrap = card.querySelector('.stPriceWrap');
+            var set = function (f) {
+              card.querySelector('.stRegFree').checked = !!f;
+              paidInp.checked = !f;
+              wrap.hidden = !!f;
+            };
+            card.querySelector('.stRegFree').addEventListener('change', function () { set(true); });
+            paidInp.addEventListener('change', function () { set(false); });
+            set(free);
+          }
+          function ruleRow(v, cls) {
+            var row = document.createElement('div');
+            row.className = 'rule-row';
+            row.innerHTML = '<span class="rule-bullet">•</span><input class="' + (cls || 'stRule') + '" value="' + escHtml(v) + '" placeholder="Rule…" /><button class="btn btn-sm btn-danger rule-del" type="button" title="Remove rule">✕</button>';
+            row.querySelector('.rule-del').addEventListener('click', function () { row.remove(); });
+            return row;
+          }
+          function stageCard(s, i) {
+            var card = document.createElement('div');
+            card.className = 'stage-card';
+            var rn = 'stReg' + (cardSeq++);
+            card.innerHTML =
+              '<div class="sc-head"><b>Stage ' + (i + 1) + '</b><button class="btn btn-sm btn-danger sc-del" type="button" title="Remove stage">✕</button></div>' +
+              '<div class="f"><label>Stage name</label><input class="stName" value="' + escHtml(s.name) + '" /></div>' +
+              '<div class="f-row">' +
+              '<div class="f"><label>Mode</label>' + modeSel(s.mode) + '</div>' +
+              '<div class="f"><label>Passing score (%)</label><input class="stPass" type="number" min="0" max="100" value="' + (s.pass == null ? '' : s.pass) + '" /></div>' +
+              '</div>' +
+              '<div class="f"><label>Registration</label><div class="mods">' +
+              '<label class="chk"><input type="radio" name="' + rn + '" class="stRegFree" value="free" /><span>Free</span></label>' +
+              '<label class="chk"><input type="radio" name="' + rn + '" class="stRegPaid" value="paid" /><span>Paid</span></label>' +
+              '</div></div>' +
+              '<div class="f stPriceWrap" hidden><label>Registration price (₹)</label><input class="stPrice" type="number" min="0" value="' + (s.price == null ? '' : s.price) + '" placeholder="e.g. 150" /></div>' +
+              '<div class="f"><label>Stage description</label><textarea class="stDesc" placeholder="What happens in this stage…">' + escHtml(s.desc) + '</textarea></div>' +
+              '<div class="f"><label>Rules</label><div class="rule-list"></div><button class="btn btn-sm rule-add" type="button">＋ Add rule</button></div>';
+            card.querySelector('.sc-del').addEventListener('click', function () { card.remove(); renumber(); });
+            var rl = card.querySelector('.rule-list');
+            (s.rules || []).forEach(function (v) { rl.appendChild(ruleRow(v, 'stRule')); });
+            card.querySelector('.rule-add').addEventListener('click', function () { rl.appendChild(ruleRow('', 'stRule')); });
+            regToggle(card, rn, s.free !== false);
+            return card;
+          }
+          function renumber() {
+            stageCards.querySelectorAll('.sc-head b').forEach(function (b, i) { b.textContent = 'Stage ' + (i + 1); });
+          }
+          function renderStages() {
+            stageCards.innerHTML = '';
+            stages.forEach(function (s, i) { stageCards.appendChild(stageCard(s, i)); });
+            renumber();
+          }
+
+          function fillSingle(first) {
+            document.getElementById('sName').value = first.name || '';
+            document.getElementById('sMode').value = first.mode || 'Online';
+            document.getElementById('sPass').value = first.pass == null ? '' : first.pass;
+            document.getElementById('sPrice').value = first.price == null ? '' : first.price;
+            document.getElementById('sDesc').value = first.desc || '';
+            var free = first.free !== false;
+            document.querySelector('input[name="sReg"][value="free"]').checked = free;
+            document.querySelector('input[name="sReg"][value="paid"]').checked = !free;
+            document.getElementById('sPriceWrap').hidden = free;
+            var rl = document.getElementById('sRuleList');
+            rl.innerHTML = '';
+            (first.rules || []).forEach(function (v) { rl.appendChild(ruleRow(v, 'sRule')); });
+          }
+          document.getElementById('sRuleAdd').addEventListener('click', function () {
+            document.getElementById('sRuleList').appendChild(ruleRow('', 'sRule'));
+          });
+          document.querySelectorAll('input[name="sReg"]').forEach(function (r) {
+            r.addEventListener('change', function () {
+              document.getElementById('sPriceWrap').hidden = r.value === 'free';
+            });
+          });
+
+          function showType() {
+            var multi = document.querySelector('input[name="stageType"]:checked').value === 'multi';
+            singleWrap.hidden = multi;
+            multiWrap.hidden = !multi;
+            if (multi && !stageCards.childElementCount) renderStages();
+            else if (!multi) fillSingle(stages[0] || { name: '', mode: 'Online', pass: '', desc: '', rules: [] });
+          }
+          radios.forEach(function (r) { r.addEventListener('change', showType); });
+
+          document.getElementById('addStage').addEventListener('click', function () {
+            var n = stageCards.childElementCount + 1;
+            stageCards.appendChild(stageCard({ name: 'Stage ' + n, mode: 'Online', pass: '', price: 0, free: true, desc: '', rules: [] }, n - 1));
+            renumber();
+          });
+
+          if (isMulti) document.querySelector('input[name="stageType"][value="multi"]').checked = true;
+          else document.querySelector('input[name="stageType"][value="single"]').checked = true;
+          showType();
+
+          document.getElementById('editForm').addEventListener('submit', function (e) { e.preventDefault(); });
+
+          document.getElementById('saveEdit').addEventListener('click', function () {
+            var title = document.getElementById('fTitle').value.trim();
+            var start = document.getElementById('fStart').value, end = document.getElementById('fEnd').value;
+            var err = document.getElementById('formErr');
+            err.style.display = 'none';
+            if (!title) { err.textContent = 'Competition title is required'; err.style.display = 'block'; return; }
+            if (!start || !end) { err.textContent = 'Pick start and end dates'; err.style.display = 'block'; return; }
+
+            var multi = document.querySelector('input[name="stageType"]:checked').value === 'multi';
+            var outStages = [];
+            if (multi) {
+              stageCards.querySelectorAll('.stage-card').forEach(function (card) {
+                var name = card.querySelector('.stName').value.trim();
+                var mode = card.querySelector('.stMode').value;
+                var pass = parseInt(card.querySelector('.stPass').value, 10);
+                var free = card.querySelector('.stRegFree').checked;
+                var price = free ? 0 : parseInt(card.querySelector('.stPrice').value, 10);
+                var desc = card.querySelector('.stDesc').value.trim();
+                var rules = [];
+                card.querySelectorAll('.stRule').forEach(function (inp) {
+                  var v = inp.value.trim();
+                  if (v) rules.push(v);
+                });
+                if (!name) { err.textContent = 'Every stage needs a name'; err.style.display = 'block'; return; }
+                if (isNaN(pass) || pass < 0 || pass > 100) { err.textContent = 'Passing score must be between 0 and 100 for "' + name + '"'; err.style.display = 'block'; return; }
+                if (!free && (isNaN(price) || price < 0)) { err.textContent = 'Registration price must be 0 or more for "' + name + '"'; err.style.display = 'block'; return; }
+                outStages.push({ name: name, mode: mode, pass: pass, price: price, free: free, desc: desc, rules: rules });
+              });
+            } else {
+              var sName = document.getElementById('sName').value.trim();
+              var sMode = document.getElementById('sMode').value;
+              var sPass = parseInt(document.getElementById('sPass').value, 10);
+              var sFree = document.querySelector('input[name="sReg"]:checked').value === 'free';
+              var sPrice = sFree ? 0 : parseInt(document.getElementById('sPrice').value, 10);
+              var sDesc = document.getElementById('sDesc').value.trim();
+              var sRules = [];
+              document.querySelectorAll('#singleWrap .sRule').forEach(function (inp) {
+                var v = inp.value.trim();
+                if (v) sRules.push(v);
+              });
+              if (!sName) { err.textContent = 'Stage name is required'; err.style.display = 'block'; return; }
+              if (isNaN(sPass) || sPass < 0 || sPass > 100) { err.textContent = 'Passing score must be between 0 and 100'; err.style.display = 'block'; return; }
+              if (!sFree && (isNaN(sPrice) || sPrice < 0)) { err.textContent = 'Registration price must be 0 or more'; err.style.display = 'block'; return; }
+              outStages = [{ name: sName, mode: sMode, pass: sPass, price: sPrice, free: sFree, desc: sDesc, rules: sRules }];
+            }
+            if (err.style.display === 'block') return;
+            if (!outStages.length) { err.textContent = 'Add at least one stage'; err.style.display = 'block'; return; }
+            err.style.display = 'none';
+
+            var updated = Object.assign({}, rec, {
+              title: title,
+              grades: document.getElementById('fGrades').value,
+              status: document.getElementById('fStatus').value,
+              start: start,
+              end: end,
+              enrolled: parseInt(document.getElementById('fEnrolled').value, 10) || 0,
+              desc: document.getElementById('fDesc').value.trim(),
+              multi: multi,
+              stages: outStages
+            });
+            sessionStorage.setItem('iml_pending_comp_edit', JSON.stringify(updated));
+            location.href = 'competitions.html';
+          });
+        })();
+      </script>
+    </main>
+  </div>
+
+</body>
+</html>
