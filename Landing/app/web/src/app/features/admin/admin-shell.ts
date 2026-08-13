@@ -19,6 +19,7 @@ const NAV = [
       { label: 'Registrations', link: 'registrations', mod: 'reg' },
       { label: 'Payment History', link: 'payments', mod: 'pay' },
       { label: 'Schools', link: 'schools', mod: 'sch' },
+      { label: 'Classes & Grades', link: 'grades', mod: 'gr' },
     ],
   },
   {
@@ -48,7 +49,7 @@ const NAV = [
   },
 ];
 
-const MENU = ['dash', 'comp', 'prize', 'lb', 'res', 'reg', 'pay', 'sch', 'q', 'ex', 'gri', 'nt', 'ann', 'news', 'gal', 'spon', 'plan', 'ad'];
+const MENU = ['dash', 'comp', 'prize', 'lb', 'res', 'reg', 'pay', 'sch', 'gr', 'q', 'ex', 'gri', 'nt', 'ann', 'news', 'gal', 'spon', 'plan', 'ad'];
 
 @Component({
   selector: 'app-admin-shell',

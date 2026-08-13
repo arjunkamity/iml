@@ -58,6 +58,10 @@ export class AuthService {
     return localStorage.getItem(TOKEN_KEY);
   }
 
+  get refreshToken(): string | null {
+    return localStorage.getItem(REFRESH_KEY);
+  }
+
   get isAuthenticated(): boolean {
     return !!this.user();
   }
@@ -87,6 +91,20 @@ export class AuthService {
 
   requestStudentOtp(email: string): Observable<OtpChallenge> {
     return this.api.post<OtpChallenge>('/auth/student/request-otp', { email });
+  }
+
+  studentLogin(email: string, password: string): Observable<AuthUser> {
+    return this.api
+      .post<{
+        accessToken: string;
+        student: { id: number; name: string; email?: string };
+      }>('/auth/student/login', { email, password })
+      .pipe(
+        map((res) => {
+          this.setSession(res.accessToken, '', mapStudent(res.student));
+          return mapStudent(res.student);
+        }),
+      );
   }
 
   verifyStudentOtp(email: string, code: string): Observable<AuthUser> {

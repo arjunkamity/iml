@@ -129,6 +129,18 @@ const COMPETITIONS: Array<{
   },
 ];
 
+// Admin-managed grade/class options shown in every grade dropdown in the app.
+const GRADES = [
+  { name: '9', position: 1 },
+  { name: '10', position: 2 },
+  { name: '11', position: 3 },
+  { name: '12', position: 4 },
+  { name: '9-10', position: 5 },
+  { name: '11-12', position: 6 },
+  { name: '9-12', position: 7 },
+  { name: 'All', position: 8 },
+];
+
 const SCHOOLS = [
   { code: 'S01', name: 'Amity International School, Saket', city: 'New Delhi', contact: '011-4000 0001', coordinator: 'Mrs. R. Khanna' },
   { code: 'S02', name: 'Amity International School, Noida', city: 'Noida', contact: '0120-400 0002', coordinator: 'Mr. S. Bhatia' },
@@ -236,7 +248,7 @@ const GRIEVANCES = [
 ];
 
 const ADMINS = [
-  { code: 'A01', name: 'Arjun Sharma', email: 'arjun@amity.edu', role: 'Super Admin', status: 'Active', modules: ['dash', 'comp', 'reg', 'sch', 'q', 'ex', 'nt', 'ad', 'lb', 'res'] },
+  { code: 'A01', name: 'Arjun Sharma', email: 'arjun@amity.edu', role: 'Super Admin', status: 'Active', modules: ['dash', 'comp', 'prize', 'gr', 'reg', 'sch', 'q', 'ex', 'nt', 'ad', 'lb', 'res'] },
   { code: 'A02', name: 'Priya Malhotra', email: 'priya@amity.edu', role: 'Editor', status: 'Active', modules: ['q', 'ex', 'res', 'lb'] },
   { code: 'A03', name: 'Rahul Bose', email: 'rahul@amity.edu', role: 'Viewer', status: 'Disabled', modules: ['q'] },
 ];
@@ -296,6 +308,12 @@ async function main() {
   await prisma.otp.deleteMany();
   await prisma.student.deleteMany();
   await prisma.school.deleteMany();
+  await prisma.grade.deleteMany();
+
+  // ---- grades ----
+  for (const g of GRADES) {
+    await prisma.grade.create({ data: g });
+  }
 
   // ---- schools ----
   const schoolIdByCode = new Map<string, number>();

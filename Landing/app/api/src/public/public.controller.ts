@@ -17,8 +17,23 @@ export class PublicController {
     return this.service.competitions();
   }
 
+  @Get('grades')
+  grades() {
+    return this.service.grades();
+  }
+
   @Get('leaderboard')
   leaderboard(@Query() q: { comp?: string }) {
     return this.service.leaderboard(q.comp);
+  }
+
+  @Get('leaderboard/schools')
+  leaderboardSchools(@Query() q: { comp?: string }) {
+    return this.service.leaderboardSchools(q.comp);
+  }
+
+  @Get('gallery')
+  gallery() {
+    return this.service.gallery();
   }
 }

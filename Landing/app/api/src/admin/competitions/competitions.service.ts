@@ -234,7 +234,9 @@ export class CompetitionService {
     const where: Prisma.RegistrationStageWhereInput = {
       stage: { competitionId: comp.id },
     };
-    if (q.stage) where.stage = { competitionId: comp.id, position: q.stage };
+    const stagePos = q.stage != null ? Number(q.stage) : undefined;
+    if (Number.isInteger(stagePos) && stagePos! > 0)
+      where.stage = { competitionId: comp.id, position: stagePos };
     if (q.status) where.status = q.status;
     return this.prisma.registrationStage.findMany({
       where,
@@ -256,6 +258,15 @@ export class CompetitionService {
       include: { competition: { select: { code: true, title: true } } },
       orderBy: { id: 'asc' },
     });
+  }
+
+  async getPrize(code: string) {
+    const prize = await this.prisma.prize.findUnique({
+      where: { code },
+      include: { competition: { select: { code: true, title: true } } },
+    });
+    if (!prize) throw new NotFoundException('Prize not found');
+    return prize;
   }
 
   async createPrize(dto: CreatePrizeDto) {

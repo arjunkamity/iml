@@ -81,12 +81,23 @@ export const ADMIN_UI_CSS = `
   .f textarea { min-height: 96px; resize: vertical; }
   .f select option { background: var(--panel-2, #10254a); }
   .f .hint { font-size: 0.78rem; color: var(--faint, #6e7f9e); margin-top: 0.3rem; }
+  .time-pick { display: flex; align-items: center; gap: 0.4rem; }
+  .time-pick select { width: auto; flex: 1; min-width: 0; }
+  .time-pick select.ap { flex: 0 0 auto; }
+  .time-pick .tsep { color: var(--faint, #6e7f9e); font-weight: 800; }
   .mods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem 0.9rem; }
   .mods .chk { display: flex; align-items: center; gap: 0.45rem; font-size: 0.85rem; cursor: pointer; }
   .mods .chk input { width: auto; accent-color: var(--gold, #e8b64a); flex: 0 0 auto; }
   .dl { display: grid; grid-template-columns: 130px 1fr; gap: 0.45rem 1rem; font-size: 0.92rem; }
   .dl dt { color: var(--faint, #6e7f9e); font-weight: 600; }
   .dl dd { font-weight: 600; margin: 0; }
+  .sec { font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--faint, #6e7f9e);
+    font-weight: 800; margin: 1.15rem 0 0.5rem; }
+  table.mini { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  table.mini th { text-align: left; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint, #6e7f9e);
+    padding: 0.45rem 0.5rem; border-bottom: 1px solid var(--line, rgba(255,255,255,0.09)); }
+  table.mini td { padding: 0.5rem; border-bottom: 1px solid var(--line, rgba(255,255,255,0.07)); }
+  table.mini tr:last-child td { border-bottom: 0; }
   .resp { border: 1px solid var(--line, rgba(255,255,255,0.09)); border-radius: 12px; padding: 0.8rem 0.95rem; margin-bottom: 0.65rem; background: rgba(0, 0, 0, 0.18); }
   .resp .q { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.35rem; }
   .resp .a { font-size: 0.84rem; color: var(--muted, #9fb0d0); }

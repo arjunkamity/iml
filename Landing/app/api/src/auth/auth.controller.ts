@@ -12,6 +12,7 @@ import { AdminLoginDto } from './dto/admin-login.dto';
 import { RequestOtpDto } from './dto/request-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { RefreshDto } from './dto/refresh.dto';
+import { StudentLoginDto } from './dto/student-login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import type { JwtPayload } from './interfaces/jwt-payload.interface';
@@ -24,6 +25,12 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   adminLogin(@Body() dto: AdminLoginDto) {
     return this.auth.adminLogin(dto);
+  }
+
+  @Post('student/login')
+  @HttpCode(HttpStatus.OK)
+  studentLogin(@Body() dto: StudentLoginDto) {
+    return this.auth.studentLogin(dto);
   }
 
   @Post('student/request-otp')

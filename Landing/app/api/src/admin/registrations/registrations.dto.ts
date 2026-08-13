@@ -19,7 +19,7 @@ export class RegistrationStudentDto {
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(6)
+  @MaxLength(20)
   grade!: string;
 
   @IsOptional()
@@ -94,7 +94,7 @@ export class PatchStudentDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(6)
+  @MaxLength(20)
   grade?: string;
 
   @IsOptional()

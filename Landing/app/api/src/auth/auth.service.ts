@@ -12,6 +12,7 @@ import { AdminLoginDto } from './dto/admin-login.dto';
 import { RequestOtpDto } from './dto/request-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { RefreshDto } from './dto/refresh.dto';
+import { StudentLoginDto } from './dto/student-login.dto';
 import type { JwtPayload } from './interfaces/jwt-payload.interface';
 
 const ACCESS_TTL = '15m';
@@ -66,8 +67,34 @@ export class AuthService {
     };
   }
 
-  // ---- student OTP (dev stub: code returned in response + logged) ----
+  // ---- student password login ----
 
+  async studentLogin({ email, password }: StudentLoginDto) {
+    const normalized = email.toLowerCase().trim();
+    const student = await this.prisma.student.findFirst({
+      where: { email: normalized },
+    });
+    if (!student) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+    if (!student.passwordHash) {
+      throw new UnauthorizedException(
+        'No password set for this account. Sign in with OTP and set one in Security.',
+      );
+    }
+    let ok = false;
+    try {
+      ok = await argonVerify(student.passwordHash, password);
+    } catch {
+      ok = false;
+    }
+    if (!ok) throw new UnauthorizedException('Invalid email or password');
+
+    const tokens = await this.issueTokens({ sub: student.id, kind: 'student' });
+    return { ...tokens, student: this.safeStudent(student) };
+  }
+
+  // ---- student OTP (dev stub: code returned in response + logged) ----
   async requestOtp({ email }: RequestOtpDto) {
     const normalized = email.toLowerCase().trim();
     const student = await this.prisma.student.findFirst({

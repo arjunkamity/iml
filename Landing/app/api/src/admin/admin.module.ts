@@ -15,6 +15,8 @@ import { SponsorshipController } from './sponsorship/sponsorship.controller';
 import { SponsorshipService } from './sponsorship/sponsorship.service';
 import { AdminsController } from './admins/admins.controller';
 import { AdminService } from './admins/admins.service';
+import { GradeController } from './grades/grades.controller';
+import { GradeService } from './grades/grades.service';
 
 @Module({
   controllers: [
@@ -26,6 +28,7 @@ import { AdminService } from './admins/admins.service';
     ResultController,
     SponsorshipController,
     AdminsController,
+    GradeController,
   ],
   providers: [
     DashboardService,
@@ -36,6 +39,7 @@ import { AdminService } from './admins/admins.service';
     ResultService,
     SponsorshipService,
     AdminService,
+    GradeService,
   ],
 })
 export class AdminModule {}

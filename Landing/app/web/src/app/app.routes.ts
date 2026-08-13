@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/guards/auth.guard';
+import { roleGuard } from '@core/guards/role.guard';
 import { AdminLoginPage } from '@admin/admin-login.page';
 
 export const routes: Routes = [
@@ -15,6 +16,12 @@ export const routes: Routes = [
     path: 'account',
     loadChildren: () => import('@account/account.routes').then((m) => m.ACCOUNT_ROUTES),
     canActivate: [authGuard],
+  },
+  {
+    path: 'exam/:code',
+    loadComponent: () =>
+      import('@account/exam/account-exam.page').then((m) => m.AccountExamPage),
+    canActivate: [authGuard, roleGuard('student')],
   },
   {
     path: 'admin',

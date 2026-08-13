@@ -82,6 +82,20 @@ model School {
   @@map("schools")
 }
 
+// Admin-managed grade / class lookup — drives every grade dropdown in the app
+// (register page, competitions, registrations, questions, exams, student profile).
+// The value stored in Student.grade / Competition.grades / etc. is `name`.
+model Grade {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(20) // 9, 10, 11, 12, 9-12
+  active    Boolean  @default(true)
+  position  Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("grades")
+}
+
 model Student {
   id          Int      @id @default(autoincrement())
   code        String   @unique @db.VarChar(10) // R1001

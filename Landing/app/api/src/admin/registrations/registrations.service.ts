@@ -135,7 +135,7 @@ export class RegistrationService {
         schoolId,
       },
     });
-    await this.prisma.registration.create({
+    const registration = await this.prisma.registration.create({
       data: {
         code,
         studentId: student.id,
@@ -145,6 +145,21 @@ export class RegistrationService {
       },
       include: registrationInclude,
     });
+
+    const stageRows = await this.prisma.competitionStage.findMany({
+      where: { competitionId: competition.id },
+      orderBy: { position: 'asc' },
+    });
+    if (stageRows.length) {
+      await this.prisma.registrationStage.createMany({
+        data: stageRows.map((s, i) => ({
+          registrationId: registration.id,
+          stageId: s.id,
+          status: i === 0 ? 'Unlocked' : 'Locked',
+          unlockedAt: i === 0 ? new Date() : null,
+        })),
+      });
+    }
     return this.getRegistration(code);
   }
 

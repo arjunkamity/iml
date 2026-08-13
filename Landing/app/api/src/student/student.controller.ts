@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   Req,
@@ -13,6 +14,7 @@ import { StudentService } from './student.service';
 import {
   CreateStudentGrievanceDto,
   SetStudentPasswordDto,
+  SubmitAttemptDto,
   UpdateStudentProfileDto,
 } from './student.dto';
 
@@ -47,9 +49,42 @@ export class StudentController {
     return this.studentService.schedules(Number(req.user.sub));
   }
 
+  @Get('exams/:code')
+  examDetails(
+    @Req() req: { user: { sub: number } },
+    @Param('code') code: string,
+  ) {
+    return this.studentService.examDetails(code, Number(req.user.sub));
+  }
+
+  @Post('exams/:code/start')
+  startExam(
+    @Req() req: { user: { sub: number } },
+    @Param('code') code: string,
+  ) {
+    return this.studentService.startExam(code, Number(req.user.sub));
+  }
+
+  @Post('exams/:code/submit')
+  submitExam(
+    @Req() req: { user: { sub: number } },
+    @Param('code') code: string,
+    @Body() dto: SubmitAttemptDto,
+  ) {
+    return this.studentService.submitExam(code, Number(req.user.sub), dto);
+  }
+
   @Get('results')
   results(@Req() req: { user: { sub: number } }) {
     return this.studentService.results(Number(req.user.sub));
+  }
+
+  @Get('results/:code')
+  resultDetail(
+    @Req() req: { user: { sub: number } },
+    @Param('code') code: string,
+  ) {
+    return this.studentService.resultDetail(code, Number(req.user.sub));
   }
 
   @Get('payments')

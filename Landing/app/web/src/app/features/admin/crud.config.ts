@@ -9,6 +9,7 @@ export type FieldType =
   | 'password'
   | 'lines'
   | 'indices'
+  | 'time'
   | 'student';
 
 export interface FieldDef {
@@ -21,11 +22,11 @@ export interface FieldDef {
   help?: string;
   rows?: number;
   col?: boolean;
-  ref?: 'competitions' | 'schools' | 'registrations';
+  ref?: 'competitions' | 'schools' | 'registrations' | 'grades';
   editOnly?: boolean;
 }
 
-export type ColumnType = 'text' | 'badge' | 'date' | 'datetime' | 'money' | 'array' | 'boolean' | 'link';
+export type ColumnType = 'text' | 'badge' | 'date' | 'datetime' | 'time' | 'money' | 'array' | 'boolean' | 'link';
 
 export interface ColumnDef {
   key: string;
@@ -39,7 +40,7 @@ export interface FilterDef {
   key: string;
   label: string;
   options: string[];
-  ref?: 'competitions';
+  ref?: 'competitions' | 'grades';
 }
 
 export interface CrudConfig {
@@ -56,6 +57,8 @@ export interface CrudConfig {
   canCreate?: boolean;
   canEdit?: boolean;
   canDelete?: boolean;
+  canView?: boolean;
+  profile?: { base: string; title?: string; fields: FieldDef[] };
   createText?: string;
   listTransform?: (row: Record<string, unknown>) => Record<string, unknown>;
   createTransform?: (form: Record<string, unknown>) => Record<string, unknown>;
@@ -110,7 +113,7 @@ export const CRUD_MODULES: Record<string, CrudConfig> = {
     fields: [
       { key: 'competitionCode', label: 'Competition', type: 'select', required: true, ref: 'competitions' },
       { key: 'name', label: 'Student name', type: 'text', required: true },
-      { key: 'grade', label: 'Grade', type: 'text', required: true, placeholder: 'e.g. 9' },
+      { key: 'grade', label: 'Grade', type: 'select', required: true, ref: 'grades' },
       { key: 'email', label: 'Student email', type: 'email', col: true },
       { key: 'phone', label: 'Student phone', type: 'text', col: true },
       { key: 'schoolCode', label: 'School', type: 'select', ref: 'schools' },
@@ -119,6 +122,19 @@ export const CRUD_MODULES: Record<string, CrudConfig> = {
     canCreate: true,
     canEdit: false,
     canDelete: true,
+    canView: true,
+    profile: {
+      base: '/students',
+      title: 'Student Profile',
+      fields: [
+        { key: 'name', label: 'Student name', type: 'text', required: true },
+        { key: 'grade', label: 'Grade', type: 'select', required: true, ref: 'grades' },
+        { key: 'email', label: 'Student email', type: 'email', col: true },
+        { key: 'phone', label: 'Student phone', type: 'text', col: true },
+        { key: 'parent', label: 'Parent / guardian', type: 'text', col: true },
+        { key: 'schoolCode', label: 'School', type: 'select', ref: 'schools', col: true },
+      ],
+    },
     createText: 'New registration',
     createTransform: (f) => ({
       competitionCode: f['competitionCode'],
@@ -182,7 +198,29 @@ export const CRUD_MODULES: Record<string, CrudConfig> = {
     canCreate: true,
     canEdit: true,
     canDelete: false,
+    canView: true,
     createText: 'Add school',
+  },
+  gr: {
+    mod: 'gr',
+    title: 'Classes & Grades',
+    base: '/grades',
+    keyField: 'name',
+    search: true,
+    columns: [
+      { key: 'name', label: 'Grade / Class' },
+      { key: 'position', label: 'Order' },
+      { key: 'active', label: 'Active', type: 'boolean' },
+    ],
+    fields: [
+      { key: 'name', label: 'Grade / Class (e.g. 9, 9-12)', type: 'text', required: true },
+      { key: 'position', label: 'Sort order', type: 'number' },
+      { key: 'active', label: 'Active', type: 'checkbox' },
+    ],
+    canCreate: true,
+    canEdit: true,
+    canDelete: true,
+    createText: 'Add grade',
   },
   q: {
     mod: 'q',
@@ -191,7 +229,7 @@ export const CRUD_MODULES: Record<string, CrudConfig> = {
     filters: [
       { key: 'comp', label: 'Competition', options: [], ref: 'competitions' },
       { key: 'category', label: 'Category', options: ['IQ', 'EQ', 'Values'] },
-      { key: 'grade', label: 'Grade', options: ['9', '10', '11', '12'] },
+      { key: 'grade', label: 'Grade', options: [], ref: 'grades' },
     ],
     columns: [
       { key: 'code', label: 'Code' },
@@ -203,7 +241,7 @@ export const CRUD_MODULES: Record<string, CrudConfig> = {
     ],
     fields: [
       { key: 'competitionCode', label: 'Competition', type: 'select', ref: 'competitions' },
-      { key: 'grade', label: 'Grade', type: 'text', required: true },
+      { key: 'grade', label: 'Grade', type: 'select', required: true, ref: 'grades' },
       { key: 'category', label: 'Category', type: 'select', required: true, options: ['IQ', 'EQ', 'Values'] },
       { key: 'qtype', label: 'Type', type: 'select', options: ['text', 'video', 'image'] },
       { key: 'mode', label: 'Answer mode', type: 'select', options: ['single', 'multi'] },
@@ -237,16 +275,16 @@ export const CRUD_MODULES: Record<string, CrudConfig> = {
       { key: 'title', label: 'Exam' },
       { key: 'grade', label: 'Grade' },
       { key: 'date', label: 'Date', type: 'date' },
-      { key: 'time', label: 'Time' },
+      { key: 'time', label: 'Time', type: 'time' },
       { key: 'durationMin', label: 'Min' },
       { key: 'status', label: 'Status', type: 'badge', badgeMap: { Draft: 'grey', Scheduled: 'blue', Live: 'green', Closed: 'red' } },
     ],
     fields: [
       { key: 'competitionCode', label: 'Competition', type: 'select', ref: 'competitions' },
       { key: 'title', label: 'Title', type: 'text', required: true },
-      { key: 'grade', label: 'Grade band', type: 'text', col: true },
+      { key: 'grade', label: 'Grade band', type: 'select', ref: 'grades', col: true },
       { key: 'date', label: 'Date', type: 'date', col: true },
-      { key: 'time', label: 'Start time', type: 'text', col: true, placeholder: '10:00' },
+      { key: 'time', label: 'Start time', type: 'time', col: true },
       { key: 'durationMin', label: 'Duration (min)', type: 'number', col: true },
       { key: 'status', label: 'Status', type: 'select', options: ['Draft', 'Scheduled', 'Live', 'Closed'] },
     ],
@@ -463,7 +501,7 @@ export const CRUD_MODULES: Record<string, CrudConfig> = {
       { key: 'password', label: 'Password (6+ chars)', type: 'password', help: 'Required on create; leave blank to keep on edit', editOnly: true },
       { key: 'role', label: 'Role', type: 'select', options: ['Super Admin', 'Editor', 'Viewer'] },
       { key: 'status', label: 'Status', type: 'select', options: ['Active', 'Disabled'] },
-      { key: 'modules', label: 'Module access', type: 'lines', help: 'Codes: dash comp prize lb res reg pay sch q ex gri nt ann news gal spon plan ad' },
+      { key: 'modules', label: 'Module access', type: 'lines', help: 'Codes: dash comp prize lb res reg pay sch gr q ex gri nt ann news gal spon plan ad' },
     ],
     canCreate: true,
     canEdit: true,

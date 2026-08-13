@@ -26,6 +26,7 @@ export const ADMIN_ROUTES: Routes = [
       { path: 'registrations', component: AdminCrudPage, ...mod('Registrations', 'reg') },
       { path: 'payments', component: AdminCrudPage, ...mod('Payment History', 'pay') },
       { path: 'schools', component: AdminCrudPage, ...mod('Schools', 'sch') },
+      { path: 'grades', component: AdminCrudPage, ...mod('Classes & Grades', 'gr') },
       { path: 'questions', component: AdminCrudPage, ...mod('Question Bank', 'q') },
       { path: 'exams', component: AdminCrudPage, ...mod('Exam Dates', 'ex') },
       { path: 'grievances', component: AdminCrudPage, ...mod('Grievances', 'gri') },

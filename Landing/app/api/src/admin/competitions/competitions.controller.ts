@@ -95,6 +95,11 @@ export class CompetitionController {
     return this.service.listPrizes(q);
   }
 
+  @Get('prizes/:code')
+  getPrize(@Param('code') code: string) {
+    return this.service.getPrize(code);
+  }
+
   @Post('prizes')
   createPrize(@Body() dto: CreatePrizeDto) {
     return this.service.createPrize(dto);

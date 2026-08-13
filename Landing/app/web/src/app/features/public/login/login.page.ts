@@ -44,17 +44,38 @@ import { AuthService } from '@core/services/auth.service';
         <section class="auth-form">
           <img class="af-logo" src="img/new-logo-cut.png" alt="India Mind League" />
           <h1 class="af-title">Student Login</h1>
-          <p class="af-lead">Sign in with a one-time password — no password to remember.</p>
+          <p class="af-lead">Sign in with a one-time password, or your email and password.</p>
 
-          <div class="seg" [class.phone]="method() === 'phone'" role="tablist" aria-label="Login method">
+          <div class="seg" [class.phone]="method() === 'phone'" [class.password]="method() === 'password'" role="tablist" aria-label="Login method">
             <button type="button" class="seg-btn" [class.active]="method() === 'email'" (click)="setMethod('email')">
               <svg class="seg-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email
+            </button>
+            <button type="button" class="seg-btn" [class.active]="method() === 'password'" (click)="setMethod('password')">
+              <svg class="seg-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11V7a7 7 0 0 1 14 0v4"/><rect x="3" y="11" width="18" height="10" rx="2"/></svg>Password
             </button>
             <button type="button" class="seg-btn" [class.active]="method() === 'phone'" (click)="setMethod('phone')">
               <svg class="seg-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>Phone
             </button>
             <span class="seg-thumb"></span>
           </div>
+
+          @if (method() === 'password') {
+            <form (ngSubmit)="loginWithPassword()" novalidate>
+              <div class="field">
+                <label for="pwEmail">Email address</label>
+                <input id="pwEmail" name="pwEmail" type="email" [(ngModel)]="pwEmail" autocomplete="email" placeholder="you@example.com" />
+              </div>
+              <div class="field">
+                <label for="pwPassword">Password</label>
+                <input id="pwPassword" name="pwPassword" type="password" [(ngModel)]="pwPassword" autocomplete="current-password" placeholder="••••••••" />
+              </div>
+              @if (message()) {
+                <div class="form-msg alert error" [class.ok]="!messageIsError()">{{ message() }}</div>
+              }
+              <button class="btn btn-gold-solid btn-block btn-lg" type="submit" [disabled]="busy()">{{ busy() ? 'Signing in…' : 'Login →' }}</button>
+              <p class="otp-resend">Forgot your password? Use the <button type="button" class="linkbtn" (click)="setMethod('email')">OTP option</button>.</p>
+            </form>
+          }
 
           @if (step() === 1) {
             <form (ngSubmit)="sendOtp()" novalidate>
@@ -110,7 +131,7 @@ export class LoginPage implements OnDestroy {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
-  readonly method = signal<'email' | 'phone'>('email');
+  readonly method = signal<'email' | 'phone' | 'password'>('email');
   readonly step = signal<1 | 2>(1);
   readonly busy = signal(false);
   readonly message = signal('');
@@ -120,6 +141,8 @@ export class LoginPage implements OnDestroy {
 
   contact = '';
   sentTo = '';
+  pwEmail = '';
+  pwPassword = '';
   digits: string[] = ['', '', '', '', '', ''];
   private resendTimer: ReturnType<typeof setInterval> | null = null;
   private lastRequested = '';
@@ -128,13 +151,41 @@ export class LoginPage implements OnDestroy {
     this.clearTimer();
   }
 
-  setMethod(m: 'email' | 'phone') {
+  setMethod(m: 'email' | 'phone' | 'password') {
     this.method.set(m);
     this.message.set('');
     if (m === 'phone') {
       this.message.set('Phone OTP is not enabled yet — please sign in with your registered email.');
       this.messageIsError.set(true);
     }
+  }
+
+  loginWithPassword() {
+    const email = this.pwEmail.trim();
+    const password = this.pwPassword;
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      this.message.set('Enter a valid email address.');
+      this.messageIsError.set(true);
+      return;
+    }
+    if (!password) {
+      this.message.set('Enter your password.');
+      this.messageIsError.set(true);
+      return;
+    }
+    this.busy.set(true);
+    this.message.set('');
+    this.auth.studentLogin(email, password).subscribe({
+      next: () => {
+        this.busy.set(false);
+        this.router.navigate(['/account']);
+      },
+      error: (err) => {
+        this.busy.set(false);
+        this.message.set(this.errText(err));
+        this.messageIsError.set(true);
+      },
+    });
   }
 
   sendOtp() {

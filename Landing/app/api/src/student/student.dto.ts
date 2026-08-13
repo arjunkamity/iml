@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
 import {
   IsDateString,
-  IsEmail,
   IsIn,
   IsNotEmpty,
   IsOptional,
@@ -75,6 +74,26 @@ export class CreateStudentGrievanceDto {
   message!: string;
 }
 
+class AnswerDto {
+  @IsNotEmpty()
+  questionId!: number;
+
+  @IsOptional()
+  answer?: (number | string)[];
+
+  @IsOptional()
+  takenSecs?: number;
+}
+
+export class SubmitAttemptDto {
+  @IsString()
+  @IsNotEmpty()
+  attemptCode!: string;
+
+  @IsOptional()
+  answers?: AnswerDto[];
+}
+
 export class SetStudentPasswordDto {
   @IsOptional()
   @IsString()
@@ -85,15 +104,4 @@ export class SetStudentPasswordDto {
   @MinLength(6)
   @MaxLength(72)
   newPassword!: string;
-}
-
-export class StudentLoginDto {
-  @IsEmail()
-  @IsNotEmpty()
-  @MaxLength(190)
-  email!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  password!: string;
 }
