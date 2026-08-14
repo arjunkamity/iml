@@ -11,6 +11,7 @@ import { AuthService } from '../../core/auth.service';
       <div class="brand"><span class="b1">INDIA</span><span class="b2">MIND</span><span class="b1">LEAGUE</span></div>
       <nav>
         <a routerLink="dashboard" routerLinkActive="active">My Dashboard</a>
+        <a routerLink="pay" routerLinkActive="active">Payments</a>
         <span class="muted" style="margin-left:.5rem;">{{ auth.user()?.name }}</span>
         <button class="btn btn-sm" (click)="auth.logout()">Logout</button>
       </nav>

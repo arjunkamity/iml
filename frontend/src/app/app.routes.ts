@@ -17,6 +17,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/auth/register.component').then((m) => m.RegisterComponent),
   },
+  {
+    // Destination the backend redirects the browser to after Paytm's
+    // callback resolves — must match FRONTEND_PAYMENT_RESULT_URL on the API.
+    path: 'payment/result',
+    loadComponent: () =>
+      import('./features/payment/payment-result.component').then((m) => m.PaymentResultComponent),
+  },
 
   // Admin
   {
@@ -97,6 +104,11 @@ export const routes: Routes = [
         path: 'result/:attemptId',
         loadComponent: () =>
           import('./features/student/quiz-result.component').then((m) => m.QuizResultComponent),
+      },
+      {
+        path: 'pay',
+        loadComponent: () =>
+          import('./features/student/pay.component').then((m) => m.PayComponent),
       },
     ],
   },

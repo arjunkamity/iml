@@ -12,6 +12,8 @@ app/web
 
 # Env / secrets
 .env
+.env.*
+!.env.example
 
 # Claude local settings
 .claude/settings.local.json

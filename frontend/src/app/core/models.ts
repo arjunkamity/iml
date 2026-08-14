@@ -66,3 +66,30 @@ export interface AttemptResult {
   DurationTakenSeconds: number;
   SubmittedAt: string;
 }
+
+export type PaymentPurpose = 'STAGE1_REGISTRATION' | 'STAGE3_BOOTCAMP';
+export type PaymentStatus = 'CREATED' | 'PENDING' | 'SUCCESS' | 'FAILED' | 'CANCELLED';
+
+/** Paytm Web Checkout form params — POSTed as a hidden auto-submit form. */
+export interface InitiatePaymentResponse {
+  orderId: string;
+  amount: number;
+  action: string;
+  params: Record<string, string>;
+}
+
+export interface PaymentRecord {
+  PaymentId: number | string;
+  OrderId: string;
+  UserId: number | string;
+  Purpose: PaymentPurpose;
+  Amount: number;
+  Currency: string;
+  Status: PaymentStatus;
+  PaytmTxnId: string | null;
+  PaymentMode: string | null;
+  TxnDate: string | null;
+  ResponseMsg: string | null;
+  CreatedAt: string;
+  UpdatedAt: string;
+}

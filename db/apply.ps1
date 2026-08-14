@@ -12,6 +12,7 @@ $files = @(
     'migrations\003_quiz_content.sql',
     'migrations\004_attempts_scoring.sql',
     'migrations\005_views.sql',
+    'migrations\006_payments.sql',
     'seed\010_seed_reference.sql'
 )
 foreach ($f in $files) {

@@ -8,6 +8,7 @@ import { StudentsModule } from './students/students.module';
 import { QuizzesModule } from './quizzes/quizzes.module';
 import { ReportsModule } from './reports/reports.module';
 import { CertificatesModule } from './certificates/certificates.module';
+import { PaymentsModule } from './payments/payments.module';
 import { HealthController } from './health/health.controller';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -22,6 +23,7 @@ import { AppService } from './app.service';
     QuizzesModule,
     ReportsModule,
     CertificatesModule,
+    PaymentsModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService],
