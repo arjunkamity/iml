@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Registrations — Admin | India Mind League</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="../images/Iml-logo-fav.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body data-page="registrations">
+
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sidebar">
+    <a class="sb-brand" href="dashboard.html"><img src="../images/new-logo-cut.png" alt="India Mind League" /><span class="sb-tag">Admin</span></a>
+        <nav class="sb-nav" id="sbNav">
+
+      <div class="sb-sec">Overview</div>
+      <a href="dashboard.html"><i>▦</i> Dashboard</a>
+
+      <div class="sb-sec">Competitions</div>
+      <a href="competitions.html"><i>🏅</i> Competitions</a>
+      <a href="prizes.html"><i>🏆</i> Prizes &amp; Awards</a>
+      <a href="leaderboard.html"><i>🏆</i> Leaderboard</a>
+      <a href="results.html"><i>📊</i> Results</a>
+
+      <div class="sb-sec">Participants</div>
+      <a href="registrations.html" class="active"><i>📝</i> Registrations</a>
+      <a href="payments.html"><i>💳</i> Payment History</a>
+      <a href="schools.html"><i>🏫</i> Schools</a>
+
+      <div class="sb-sec">Content</div>
+      <a href="questions.html"><i>❓</i> Question Bank</a>
+      <a href="exams.html"><i>📅</i> Exam Dates</a>
+      <a href="grievances.html"><i>💬</i> Grievances</a>
+      <a href="notifications.html"><i>📣</i> Notifications</a>
+
+      <div class="sb-sec">Management Options</div>
+      <details class="sb-drop">
+        <summary>＋ Create <span class="caret">▾</span></summary>
+        <div class="sb-sub">
+          <a href="announcements.html?create=1">＋ Announcement</a>
+          <a href="news.html?create=1">＋ News item</a>
+          <a href="gallery.html?create=1">＋ Gallery album</a>
+          <a href="competitions.html?create=1">＋ Competition</a>
+        </div>
+      </details>
+      <a href="announcements.html"><i>📢</i> Announcements</a>
+      <a href="news.html"><i>🗞</i> News</a>
+      <a href="gallery.html"><i>🖼</i> Gallery</a>
+
+      <div class="sb-sec">Administration</div>
+      <a href="sponsors.html"><i>🤝</i> Sponsors</a>
+      <a href="plans.html"><i>💰</i> Sponsorship Plans</a>
+      <a href="admins.html"><i>🛡️</i> Admin Users</a>
+    </nav>
+    <a class="sb-site" href="../index.html">↗ View website</a>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <a class="tb-burger" href="#sidebar" aria-label="Menu">☰</a>
+      <h1 class="tb-title">Registrations</h1>
+      <div class="tb-admin"><span class="tb-av">A</span><span class="tb-name">Admin</span></div>
+    </header>
+    <main class="content">
+
+      <div class="bar">
+        <select class="filter" id="fComp" data-comp aria-label="Filter by competition"></select>
+        <span class="grow"></span>
+        <button class="btn btn-gold" data-add="reg" type="button">＋ Add Registration</button>
+      </div>
+
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>ID</th><th>Student</th><th>Grade</th><th>School</th><th>Competition</th><th>Mobile</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+        <tbody data-tbody="reg">
+          <tr data-ent="reg" data-json='{"id":"R1001","name":"Aarav Mehta","grade":"9","school":"Amity International School, Saket","parent":"Rohit Mehta","phone":"9876500011","email":"aarav.mehta@example.com","date":"2026-06-20","comp":"C01","status":"Qualified"}'>
+            <td>R1001</td><td><div class="sp-cell"><span class="sp-logo avatar">A</span><span class="meta" style="font-weight:700">Aarav Mehta<small>aarav.mehta@example.com</small></span></div></td><td>9</td><td>Amity International School, Saket</td><td><span class="bdg blue">Digital Qualifier 2026</span></td><td>9876500011</td><td><span class="bdg green">Qualified</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="reg" data-json='{"id":"R1002","name":"Diya Sharma","grade":"10","school":"Amity International School, Noida","parent":"Neha Sharma","phone":"9876500012","email":"diya.sharma@example.com","date":"2026-06-21","comp":"C02","status":"Test Taken"}'>
+            <td>R1002</td><td><div class="sp-cell"><span class="sp-logo avatar">D</span><span class="meta" style="font-weight:700">Diya Sharma<small>diya.sharma@example.com</small></span></div></td><td>10</td><td>Amity International School, Noida</td><td><span class="bdg blue">School Zone Challenge</span></td><td>9876500012</td><td><span class="bdg blue">Test Taken</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="reg" data-json='{"id":"R1003","name":"Kabir Rao","grade":"11","school":"Amity International School, Gurugram 46","parent":"Vikram Rao","phone":"9876500013","email":"kabir.rao@example.com","date":"2026-06-21","comp":"C01","status":"Registered"}'>
+            <td>R1003</td><td><div class="sp-cell"><span class="sp-logo avatar">K</span><span class="meta" style="font-weight:700">Kabir Rao<small>kabir.rao@example.com</small></span></div></td><td>11</td><td>Amity International School, Gurugram 46</td><td><span class="bdg blue">Digital Qualifier 2026</span></td><td>9876500013</td><td><span class="bdg grey">Registered</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="reg" data-json='{"id":"R1004","name":"Ananya Iyer","grade":"12","school":"Amity International School, Vasundhara","parent":"Suresh Iyer","phone":"9876500014","email":"ananya.iyer@example.com","date":"2026-06-22","comp":"C01","status":"Qualified"}'>
+            <td>R1004</td><td><div class="sp-cell"><span class="sp-logo avatar">A</span><span class="meta" style="font-weight:700">Ananya Iyer<small>ananya.iyer@example.com</small></span></div></td><td>12</td><td>Amity International School, Vasundhara</td><td><span class="bdg blue">Digital Qualifier 2026</span></td><td>9876500014</td><td><span class="bdg green">Qualified</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="reg" data-json='{"id":"R1005","name":"Vivaan Gupta","grade":"9","school":"Amity International School, Mayur Vihar","parent":"Amit Gupta","phone":"9876500015","email":"vivaan.gupta@example.com","date":"2026-06-23","comp":"C02","status":"Registered"}'>
+            <td>R1005</td><td><div class="sp-cell"><span class="sp-logo avatar">V</span><span class="meta" style="font-weight:700">Vivaan Gupta<small>vivaan.gupta@example.com</small></span></div></td><td>9</td><td>Amity International School, Mayur Vihar</td><td><span class="bdg blue">School Zone Challenge</span></td><td>9876500015</td><td><span class="bdg grey">Registered</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="reg" data-json='{"id":"R1006","name":"Myra Nair","grade":"10","school":"Amity International School, Saket","parent":"Deepa Nair","phone":"9876500016","email":"myra.nair@example.com","date":"2026-06-24","comp":"C02","status":"Test Taken"}'>
+            <td>R1006</td><td><div class="sp-cell"><span class="sp-logo avatar">M</span><span class="meta" style="font-weight:700">Myra Nair<small>myra.nair@example.com</small></span></div></td><td>10</td><td>Amity International School, Saket</td><td><span class="bdg blue">School Zone Challenge</span></td><td>9876500016</td><td><span class="bdg blue">Test Taken</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="reg" data-json='{"id":"R1007","name":"Reyansh Jain","grade":"11","school":"Amity International School, Noida","parent":"Pankaj Jain","phone":"9876500017","email":"reyansh.jain@example.com","date":"2026-06-25","comp":"C03","status":"Registered"}'>
+            <td>R1007</td><td><div class="sp-cell"><span class="sp-logo avatar">R</span><span class="meta" style="font-weight:700">Reyansh Jain<small>reyansh.jain@example.com</small></span></div></td><td>11</td><td>Amity International School, Noida</td><td><span class="bdg blue">National Finals</span></td><td>9876500017</td><td><span class="bdg grey">Registered</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="reg" data-json='{"id":"R1008","name":"Saanvi Kapoor","grade":"12","school":"Amity International School, Gurugram 46","parent":"Karan Kapoor","phone":"9876500018","email":"saanvi.kapoor@example.com","date":"2026-06-25","comp":"C01","status":"Qualified"}'>
+            <td>R1008</td><td><div class="sp-cell"><span class="sp-logo avatar">S</span><span class="meta" style="font-weight:700">Saanvi Kapoor<small>saanvi.kapoor@example.com</small></span></div></td><td>12</td><td>Amity International School, Gurugram 46</td><td><span class="bdg blue">Digital Qualifier 2026</span></td><td>9876500018</td><td><span class="bdg green">Qualified</span></td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="view">View</button><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <div class="modal-root" id="modalRoot" hidden></div>
+      <div class="toast" id="toast"></div>
+      <script src="competitions.js"></script>
+      <script src="admin-app.js"></script>
+    </main>
+  </div>
+
+</body>
+</html>

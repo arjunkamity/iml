@@ -12,6 +12,8 @@ app/web
 
 # Env / secrets
 .env
+.env.*
+!.env.example
 
 # Claude local settings
 .claude/settings.local.json
@@ -31,3 +33,6 @@ Landing/sounds/*.mp4
 
 # Generated API spec (regenerated on backend start)
 backend/openapi.json
+
+# Private keys
+*.pem

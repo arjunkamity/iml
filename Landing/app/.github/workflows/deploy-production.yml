@@ -1,0 +1,183 @@
+name: Deploy Production
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: iml-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Azure VM
+    runs-on:
+      - self-hosted
+      - Linux
+      - X64
+
+    steps:
+      - name: Deploy with automatic rollback
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          APP_DIR="/var/www/iml"
+          API_DIR="$APP_DIR/api"
+          WEB_DIR="$APP_DIR/web"
+          BACKUP_DIR="/var/www/iml-backups"
+
+          mkdir -p "$BACKUP_DIR"
+
+          cd "$APP_DIR"
+
+          PREVIOUS_COMMIT=$(git rev-parse HEAD)
+          echo "Previous production commit: $PREVIOUS_COMMIT"
+
+          # Backup current Angular production files
+          rm -rf "$BACKUP_DIR/web-current"
+
+          if [ -d "$WEB_DIR/dist/iml-web/browser" ]; then
+            mkdir -p "$BACKUP_DIR/web-current"
+            cp -a "$WEB_DIR/dist/iml-web/browser/." \
+              "$BACKUP_DIR/web-current/"
+          fi
+
+          rollback() {
+            echo ""
+            echo "======================================"
+            echo "DEPLOYMENT FAILED - STARTING ROLLBACK"
+            echo "======================================"
+
+            cd "$APP_DIR"
+
+            echo "Restoring commit $PREVIOUS_COMMIT"
+            git reset --hard "$PREVIOUS_COMMIT"
+
+            echo "Restoring API"
+            cd "$API_DIR"
+
+            npm ci
+            npx prisma generate
+            npm run build
+
+            pm2 restart iml-api
+            pm2 save
+
+            echo "Restoring Angular build"
+
+            if [ -d "$BACKUP_DIR/web-current" ]; then
+              rm -rf "$WEB_DIR/dist/iml-web/browser"
+              mkdir -p "$WEB_DIR/dist/iml-web/browser"
+
+              cp -a "$BACKUP_DIR/web-current/." \
+                "$WEB_DIR/dist/iml-web/browser/"
+            fi
+
+            sudo -n nginx -t
+            sudo -n systemctl reload nginx
+
+            echo "Waiting for previous API..."
+            sleep 5
+
+            curl --fail --silent --show-error \
+              http://127.0.0.1:3000/api/v1
+
+            echo ""
+            echo "ROLLBACK COMPLETED"
+          }
+
+          trap rollback ERR
+
+          echo "======================================"
+          echo "Starting production deployment"
+          echo "======================================"
+
+          cd "$APP_DIR"
+
+          echo "Fetching latest main"
+          git fetch origin main
+
+          git checkout main
+          git reset --hard origin/main
+
+          NEW_COMMIT=$(git rev-parse HEAD)
+
+          echo "Deploying commit: $NEW_COMMIT"
+
+          echo "--------------------------------------"
+          echo "Building API"
+          echo "--------------------------------------"
+
+          cd "$API_DIR"
+
+          npm ci
+
+          npx prisma generate
+
+          npm run build
+
+          echo "--------------------------------------"
+          echo "Building Angular"
+          echo "--------------------------------------"
+
+          cd "$WEB_DIR"
+
+          npm ci
+
+          npm run build
+
+          echo "--------------------------------------"
+          echo "Applying database migrations"
+          echo "--------------------------------------"
+
+          cd "$API_DIR"
+
+          npx prisma migrate deploy
+
+          echo "--------------------------------------"
+          echo "Restarting API"
+          echo "--------------------------------------"
+
+          pm2 restart iml-api
+          pm2 save
+
+          echo "Waiting for API..."
+          sleep 5
+
+          echo "--------------------------------------"
+          echo "API health check"
+          echo "--------------------------------------"
+
+          curl --fail \
+               --silent \
+               --show-error \
+               http://127.0.0.1:3000/api/v1
+
+          echo ""
+
+          echo "--------------------------------------"
+          echo "NGINX validation"
+          echo "--------------------------------------"
+
+          sudo -n nginx -t
+          sudo -n systemctl reload nginx
+
+          echo "--------------------------------------"
+          echo "Public API health check"
+          echo "--------------------------------------"
+
+          curl --fail \
+               --silent \
+               --show-error \
+               https://indiamindleague.com/api/v1
+
+          echo ""
+
+          trap - ERR
+
+          echo "======================================"
+          echo "DEPLOYMENT SUCCESSFUL"
+          echo "Commit: $NEW_COMMIT"
+          echo "======================================"

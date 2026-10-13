@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Prizes &amp; Awards — Admin | India Mind League</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="../images/Iml-logo-fav.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body data-page="prizes">
+
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sidebar">
+    <a class="sb-brand" href="dashboard.html"><img src="../images/new-logo-cut.png" alt="India Mind League" /><span class="sb-tag">Admin</span></a>
+        <nav class="sb-nav" id="sbNav">
+
+      <div class="sb-sec">Overview</div>
+      <a href="dashboard.html"><i>▦</i> Dashboard</a>
+
+      <div class="sb-sec">Competitions</div>
+      <a href="competitions.html"><i>🏅</i> Competitions</a>
+      <a href="prizes.html" class="active"><i>🏆</i> Prizes &amp; Awards</a>
+      <a href="leaderboard.html"><i>🏆</i> Leaderboard</a>
+      <a href="results.html"><i>📊</i> Results</a>
+
+      <div class="sb-sec">Participants</div>
+      <a href="registrations.html"><i>📝</i> Registrations</a>
+      <a href="payments.html"><i>💳</i> Payment History</a>
+      <a href="schools.html"><i>🏫</i> Schools</a>
+
+      <div class="sb-sec">Content</div>
+      <a href="questions.html"><i>❓</i> Question Bank</a>
+      <a href="exams.html"><i>📅</i> Exam Dates</a>
+      <a href="grievances.html"><i>💬</i> Grievances</a>
+      <a href="notifications.html"><i>📣</i> Notifications</a>
+
+      <div class="sb-sec">Management Options</div>
+      <details class="sb-drop">
+        <summary>＋ Create <span class="caret">▾</span></summary>
+        <div class="sb-sub">
+          <a href="announcements.html?create=1">＋ Announcement</a>
+          <a href="news.html?create=1">＋ News item</a>
+          <a href="gallery.html?create=1">＋ Gallery album</a>
+          <a href="competitions.html?create=1">＋ Competition</a>
+        </div>
+      </details>
+      <a href="announcements.html"><i>📢</i> Announcements</a>
+      <a href="news.html"><i>🗞</i> News</a>
+      <a href="gallery.html"><i>🖼</i> Gallery</a>
+
+      <div class="sb-sec">Administration</div>
+      <a href="sponsors.html"><i>🤝</i> Sponsors</a>
+      <a href="plans.html"><i>💰</i> Sponsorship Plans</a>
+      <a href="admins.html"><i>🛡️</i> Admin Users</a>
+    </nav>
+    <a class="sb-site" href="../index.html">↗ View website</a>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <a class="tb-burger" href="#sidebar" aria-label="Menu">☰</a>
+      <h1 class="tb-title">Prizes &amp; Awards</h1>
+      <div class="tb-admin"><span class="tb-av">A</span><span class="tb-name">Admin</span></div>
+    </header>
+    <main class="content">
+
+      <div class="grid g4" style="margin-bottom:1rem">
+        <div class="card stat"><b id="stPool">—</b><small>Total prize pool</small></div>
+        <div class="card stat"><b id="stPrizes">—</b><small>Prizes designed</small></div>
+        <div class="card stat"><b id="stTop">—</b><small>Top prize</small></div>
+        <div class="card stat"><b id="stComps">—</b><small>Competitions covered</small></div>
+      </div>
+
+      <div class="bar">
+        <select class="filter" id="fComp" data-comp aria-label="Filter by competition"></select>
+        <span class="grow"></span>
+        <button class="btn btn-gold" data-add="prize">＋ Add Prize / Award</button>
+      </div>
+
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>ID</th><th>Competition</th><th>Rank</th><th>Prize Money</th><th>Award</th><th>Note</th><th style="text-align:right">Actions</th></tr></thead>
+        <tbody data-tbody="prize">
+          <tr data-ent="prize" data-json='{"id":"PR1","comp":"C01","rank":"1st","money":25000,"award":"Trophy","note":"Winner trophy + certificate"}'>
+            <td>PR1</td><td><span class="bdg blue">Digital Qualifier 2026</span></td><td class="b">1st</td><td class="b" style="color:var(--gold-2)">₹25,000</td><td><span class="bdg gold">Trophy</span></td><td>Winner trophy + certificate</td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="prize" data-json='{"id":"PR2","comp":"C01","rank":"2nd","money":15000,"award":"Medal","note":""}'>
+            <td>PR2</td><td><span class="bdg blue">Digital Qualifier 2026</span></td><td class="b">2nd</td><td class="b" style="color:var(--gold-2)">₹15,000</td><td><span class="bdg purple">Medal</span></td><td>—</td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="prize" data-json='{"id":"PR3","comp":"C01","rank":"3rd","money":10000,"award":"Medal","note":""}'>
+            <td>PR3</td><td><span class="bdg blue">Digital Qualifier 2026</span></td><td class="b">3rd</td><td class="b" style="color:var(--gold-2)">₹10,000</td><td><span class="bdg purple">Medal</span></td><td>—</td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="prize" data-json='{"id":"PR4","comp":"C01","rank":"Consolation","money":5000,"award":"Certificate","note":"Top 10 finalists"}'>
+            <td>PR4</td><td><span class="bdg blue">Digital Qualifier 2026</span></td><td class="b">Consolation</td><td class="b" style="color:var(--gold-2)">₹5,000</td><td><span class="bdg blue">Certificate</span></td><td>Top 10 finalists</td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="prize" data-json='{"id":"PR5","comp":"C02","rank":"1st","money":10000,"award":"Trophy","note":""}'>
+            <td>PR5</td><td><span class="bdg blue">School Zone Challenge</span></td><td class="b">1st</td><td class="b" style="color:var(--gold-2)">₹10,000</td><td><span class="bdg gold">Trophy</span></td><td>—</td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="prize" data-json='{"id":"PR6","comp":"C02","rank":"2nd","money":7000,"award":"Medal","note":""}'>
+            <td>PR6</td><td><span class="bdg blue">School Zone Challenge</span></td><td class="b">2nd</td><td class="b" style="color:var(--gold-2)">₹7,000</td><td><span class="bdg purple">Medal</span></td><td>—</td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="prize" data-json='{"id":"PR7","comp":"C02","rank":"3rd","money":5000,"award":"Certificate","note":"School zone toppers"}'>
+            <td>PR7</td><td><span class="bdg blue">School Zone Challenge</span></td><td class="b">3rd</td><td class="b" style="color:var(--gold-2)">₹5,000</td><td><span class="bdg blue">Certificate</span></td><td>School zone toppers</td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="prize" data-json='{"id":"PR8","comp":"C03","rank":"1st","money":50000,"award":"Scholarship","note":"Winner scholarship"}'>
+            <td>PR8</td><td><span class="bdg blue">National Finals</span></td><td class="b">1st</td><td class="b" style="color:var(--gold-2)">₹50,000</td><td><span class="bdg pink">Scholarship</span></td><td>Winner scholarship</td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="prize" data-json='{"id":"PR9","comp":"C03","rank":"2nd","money":30000,"award":"Trophy","note":""}'>
+            <td>PR9</td><td><span class="bdg blue">National Finals</span></td><td class="b">2nd</td><td class="b" style="color:var(--gold-2)">₹30,000</td><td><span class="bdg gold">Trophy</span></td><td>—</td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+          <tr data-ent="prize" data-json='{"id":"PR10","comp":"C03","rank":"3rd","money":20000,"award":"Medal","note":""}'>
+            <td>PR10</td><td><span class="bdg blue">National Finals</span></td><td class="b">3rd</td><td class="b" style="color:var(--gold-2)">₹20,000</td><td><span class="bdg purple">Medal</span></td><td>—</td>
+            <td style="text-align:right"><div class="acts"><div class="dotmenu"><button class="dot-btn" type="button" aria-label="Actions">⋮</button><div class="dot-menu"><button type="button" data-act="edit">Edit</button><button type="button" data-act="del" class="danger">Delete</button></div></div></div></td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <div class="modal-root" id="modalRoot" hidden></div>
+      <div class="toast" id="toast"></div>
+      <script src="competitions.js"></script>
+      <script src="admin-app.js"></script>
+    </main>
+  </div>
+
+</body>
+</html>
