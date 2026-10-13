@@ -27,4 +27,14 @@ password: 60mL2Zero2siX
 DATABASE_URL="postgresql://imlappuser:60mL2Zero2siX@127.0.0.1:5432/imldb"
 
 login to VM : ssh -i "D:\INDIA MIND LEAGUE\acip-vm-iml01_key.pem" azureuser@20.244.83.255
+
+
+API : http://127.0.0.1:3000/api/v1
+
+admins
+
+akumar@akcds.amity.edu	r3sMXd1sQCKPUU9c2uKJ6ZIpECdw
+rkrishnani@amity.edu	b8CAzJxSg4qrWWZttu5y8VqVDgd0
+
+ 
  

@@ -1,5 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '@core/services/api.service';
 import { ADMIN_UI_CSS } from './admin-ui';
 
@@ -18,6 +20,7 @@ interface ResultRow {
   total: number;
   startedAt: string;
   finishedAt: string;
+  certificateNumber: string | null;
 }
 
 interface AnswerDetail {
@@ -36,6 +39,7 @@ interface AnswerDetail {
     options: unknown[];
     correct: number[];
     timeLimitSecs?: number | null;
+    group?: { code: string; title: string } | null;
   } | null;
 }
 
@@ -73,7 +77,7 @@ function pad(n: number): string {
 @Component({
   selector: 'app-admin-results',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   template: `
     @if (detail()) {
       <div class="rd">
@@ -114,7 +118,12 @@ function pad(n: number): string {
               @for (a of detail()!.answers; track a.id; let i = $index) {
                 <tr>
                   <td>{{ i + 1 }}</td>
-                  <td class="b" style="max-width:380px">{{ a.question?.prompt ?? '—' }}</td>
+                  <td class="b" style="max-width:380px">
+                    @if (a.question?.group; as g) {
+                      <small style="color:var(--gold-2,#f5cc5a);font-weight:700;">&#9638; {{ g.code }} · {{ g.title }}</small>
+                    }
+                    {{ a.question?.prompt ?? '—' }}
+                  </td>
                   <td>
                     {{ answerText(a) }}
                     @if (a.isCorrect === false) {
@@ -151,19 +160,20 @@ function pad(n: number): string {
       <div class="bar">
         <select class="filter" [(ngModel)]="comp" (ngModelChange)="go(1)">
           <option value="">All competitions</option>
-          @for (c of comps(); track c) {
-            <option [value]="c">{{ c }}</option>
+          @for (c of comps(); track c.code) {
+            <option [value]="c.code">{{ c.title }}</option>
           }
         </select>
         <input class="search" placeholder="Search student…" [(ngModel)]="search" (keyup.enter)="go(1)" />
         <div class="grow"></div>
+        <a class="btn btn-gold btn-sm" routerLink="/admin/selection">Next Stage Selection →</a>
       </div>
 
       @if (error) {
         <div class="err">{{ error }}</div>
       }
 
-      <div class="tbl-wrap">
+      <div class="tbl-wrap" (scroll)="closeMenu()">
         <table>
           <thead>
             <tr><th>Attempt</th><th>Student</th><th>Competition</th><th>Stage</th><th>Score</th><th>Finished</th><th></th></tr>
@@ -180,6 +190,26 @@ function pad(n: number): string {
                 <td>
                   <div class="acts">
                     <button class="btn btn-sm" (click)="view(r)">View responses</button>
+                    <div class="kebab-wrap">
+                      <button class="btn btn-sm kebab-btn" title="Certificate actions" (click)="$event.stopPropagation(); toggleMenu(r.code, $event)">&#8942;</button>
+                      @if (openMenuFor() === r.code) {
+                        <div class="kebab-menu" [style.position]="'fixed'" [style.top.px]="menuPos()?.top" [style.right.px]="menuPos()?.right" (click)="$event.stopPropagation()">
+                          <button
+                            type="button"
+                            [disabled]="!r.certificateNumber || downloading() === r.code"
+                            (click)="downloadCertificate(r)"
+                          >
+                            {{ downloading() === r.code ? 'Downloading…' : 'Download Certificate' }}
+                          </button>
+                          <button type="button" [disabled]="generating() === r.code" (click)="generateCertificate(r)">
+                            {{ generating() === r.code ? 'Sending…' : r.certificateNumber ? 'Resend Certificate email' : 'Generate Certificate' }}
+                          </button>
+                          @if (!r.certificateNumber) {
+                            <small>Not issued yet — this will render it now and email the student.</small>
+                          }
+                        </div>
+                      }
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -198,6 +228,10 @@ function pad(n: number): string {
         </div>
       }
     }
+
+    @if (toast()) {
+      <div class="toast">{{ toast() }}</div>
+    }
   `,
   styles: [
     ADMIN_UI_CSS,
@@ -205,6 +239,12 @@ function pad(n: number): string {
     @media (max-width: 900px) {
       .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
+    /* .kebab-* itself comes from the shared ADMIN_UI_CSS above — this used
+       to redeclare an identical copy (min-width: 220px vs. the shared
+       180px being the only difference), which silently overrode the
+       shared block's position-related rules by source order whenever
+       either one changed. Widened the shared .kebab-menu instead of
+       keeping a second copy in sync by hand. */
     `,
   ],
 })
@@ -213,15 +253,29 @@ export class AdminResultsPage {
   readonly rows = signal<ResultRow[]>([]);
   readonly total = signal(0);
   readonly page = signal(1);
-  readonly comps = signal<string[]>([]);
+  readonly comps = signal<{ code: string; title: string }[]>([]);
   readonly detail = signal<AttemptDetail | null>(null);
+  readonly openMenuFor = signal<string | null>(null);
+  protected readonly menuPos = signal<{ top: number; right: number } | null>(null);
+  readonly downloading = signal<string | null>(null);
+  readonly generating = signal<string | null>(null);
+  readonly toast = signal('');
   search = '';
   comp = '';
   error = '';
 
+  // Closes the kebab menu on any click outside it — the button and the
+  // menu itself both stop propagation, so this only ever fires for a
+  // genuine click elsewhere on the page.
+  @HostListener('document:click')
+  protected closeMenu(): void {
+    this.openMenuFor.set(null);
+    this.menuPos.set(null);
+  }
+
   constructor() {
-    this.api.get<{ data: Array<{ code: string }> }>('/competitions', { limit: 100 }).subscribe({
-      next: (r) => this.comps.set(r.data.map((c) => c.code)),
+    this.api.get<{ data: Array<{ code: string; title: string }> }>('/competitions', { limit: 100 }).subscribe({
+      next: (r) => this.comps.set(r.data.map((c) => ({ code: c.code, title: c.title }))),
       error: () => undefined,
     });
     this.load();
@@ -263,6 +317,84 @@ export class AdminResultsPage {
         this.error = errText(e);
       },
     });
+  }
+
+  toggleMenu(code: string, event: MouseEvent) {
+    if (this.openMenuFor() === code) {
+      this.closeMenu();
+      return;
+    }
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    this.menuPos.set({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
+    this.openMenuFor.set(code);
+  }
+
+  downloadCertificate(r: ResultRow) {
+    if (!r.certificateNumber || this.downloading()) return;
+    this.openMenuFor.set(null);
+    this.downloading.set(r.code);
+    this.api.downloadBlob(`/certificates/${r.certificateNumber}/download`).subscribe({
+      next: (blob) => {
+        this.downloading.set(null);
+        this.triggerDownload(blob, `${r.certificateNumber}.pdf`);
+      },
+      error: async (e: HttpErrorResponse) => {
+        this.downloading.set(null);
+        this.showToast(await this.blobErrorText(e));
+      },
+    });
+  }
+
+  /** "Generate Certificate" for a not-yet-issued one, "Resend" for an
+   * already-issued one — same endpoint either way, see ResultService
+   * .generateCertificate() (idempotent on issuance, always re-sends). */
+  generateCertificate(r: ResultRow) {
+    if (this.generating()) return;
+    this.openMenuFor.set(null);
+    this.generating.set(r.code);
+    this.api.post<{ certificateNumber: string }>(`/results/${r.code}/certificate/generate`).subscribe({
+      next: (res) => {
+        this.generating.set(null);
+        this.rows.set(this.rows().map((row) => (row.code === r.code ? { ...row, certificateNumber: res.certificateNumber } : row)));
+        this.showToast(r.certificateNumber ? 'Certificate email resent' : 'Certificate generated and emailed');
+      },
+      error: (e) => {
+        this.generating.set(null);
+        this.showToast(errText(e));
+      },
+    });
+  }
+
+  private triggerDownload(blob: Blob, filename: string): void {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  /** With responseType:'blob', a failed request's error body is ALSO a
+   * Blob, not parsed JSON — errText() alone can't read the real message
+   * out of it, so unwrap it here first (same as admin-settings.page.ts's
+   * sample-certificate download). */
+  private async blobErrorText(e: HttpErrorResponse): Promise<string> {
+    if (e.error instanceof Blob) {
+      try {
+        const parsed = JSON.parse(await e.error.text());
+        return parsed.message ?? 'Could not download this certificate.';
+      } catch {
+        return 'Could not download this certificate.';
+      }
+    }
+    return errText(e);
+  }
+
+  private showToast(msg: string) {
+    this.toast.set(msg);
+    setTimeout(() => {
+      if (this.toast() === msg) this.toast.set('');
+    }, 2600);
   }
 
   when(v: string) {

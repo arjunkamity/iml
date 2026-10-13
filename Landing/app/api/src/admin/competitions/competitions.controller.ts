@@ -1,3 +1,5 @@
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import type { JwtPayload } from '../../auth/interfaces/jwt-payload.interface';
 import {
   Body,
   Controller,
@@ -7,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -22,6 +25,7 @@ import {
   PatchCompetitionDto,
   PatchPrizeDto,
   PatchStageDto,
+  PutQuestionMixDto,
 } from './competitions.dto';
 
 @Controller()
@@ -55,6 +59,16 @@ export class CompetitionController {
     return this.service.remove(code);
   }
 
+  @Get('competitions/:code/question-mix')
+  questionMix(@Param('code') code: string) {
+    return this.service.getQuestionMix(code);
+  }
+
+  @Put('competitions/:code/question-mix')
+  putQuestionMix(@Param('code') code: string, @Body() dto: PutQuestionMixDto) {
+    return this.service.putQuestionMix(code, dto.rules);
+  }
+
   @Get('competitions/:code/stages')
   stages(@Param('code') code: string) {
     return this.service.stages(code);
@@ -80,6 +94,23 @@ export class CompetitionController {
     @Param('stageId', ParseIntPipe) stageId: number,
   ) {
     return this.service.removeStage(code, stageId);
+  }
+
+  @Get('competitions/:code/stages/:stageId/selection-preview')
+  selectionPreview(@Param('code') code: string, @Param('stageId', ParseIntPipe) stageId: number) {
+    return this.service.selectionPreview(code, stageId);
+  }
+
+  // Deliberately takes no body — see CompetitionService.commitSelection()
+  // for why: the server always computes and applies its own ranking,
+  // never a client-submitted list of who qualifies.
+  @Post('competitions/:code/stages/:stageId/selection-commit')
+  commitSelection(
+    @Param('code') code: string,
+    @Param('stageId', ParseIntPipe) stageId: number,
+    @CurrentUser() u: JwtPayload,
+  ) {
+    return this.service.commitSelection(code, stageId, { id: u.sub });
   }
 
   @Get('competitions/:code/qualifiers')

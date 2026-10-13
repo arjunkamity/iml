@@ -24,7 +24,9 @@ import { nextActionFor, type NextAction } from '../journey';
     } @else if (results().length) {
       @if (nextAction() && nextAction()!.kind !== 'done') {
         <div class="res-banner" [class.rb-pay]="nextAction()!.kind === 'pay'">
-          <span class="rb-ic">{{ nextAction()!.kind === 'pay' ? '&#128179;' : '&#9989;' }}</span>
+          <!-- real Unicode characters, not HTML entity strings — see the
+               same fix in account-dashboard.page.ts's next-action banner. -->
+          <span class="rb-ic">{{ nextAction()!.kind === 'pay' ? '💳' : '✅' }}</span>
           <div class="rb-body">
             <b>{{ nextAction()!.title }}</b>
             <small>{{ nextAction()!.text }}</small>
@@ -55,22 +57,29 @@ import { nextActionFor, type NextAction } from '../journey';
         @for (result of results(); track result.code) {
           <a class="res-row" [routerLink]="['/account/results', result.code]">
             <div class="rr-percent" [class.rr-low]="result.percent < 40" [class.rr-mid]="result.percent >= 40 && result.percent < 60">
-              <b>{{ result.percent }}%</b>
+              <b>{{ result.scoreDisplay }}</b>
             </div>
             <div class="rr-main">
               <h3>{{ result.stage ?? 'Qualifier' }}</h3>
               <small>{{ result.competition }}</small>
             </div>
-            <div class="rr-score">
-              <b>{{ result.score }}</b><span>/{{ result.total }}</span>
-              <small>Score</small>
-            </div>
+            @if (result.scoringMode === 'FRACTION') {
+              <div class="rr-score">
+                <b>{{ result.score }}</b><span>/{{ result.total }}</span>
+                <small>Score</small>
+              </div>
+            }
             <div class="rr-cats">
               @for (cat of result.categories; track cat.name) {
                 <span><i [class.iq]="cat.name === 'IQ'" [class.eq]="cat.name === 'EQ'">{{ cat.name }}</i>{{ cat.correct }}/{{ cat.total }}</span>
               }
             </div>
             <div class="rr-date"><small>{{ formatDateTime(result.finishedAt) }}</small></div>
+            @if (result.certificateNumber) {
+              <!-- button, not a nested <a> — the whole row is itself a
+                   routerLink anchor, and anchors can't nest -->
+              <button type="button" class="rr-cert" title="Download Certificate" (click)="downloadCertificate($event, result)">&#127942;</button>
+            }
             <span class="rr-arrow">&#8594;</span>
           </a>
         }
@@ -129,6 +138,9 @@ import { nextActionFor, type NextAction } from '../journey';
     .rr-cats i.eq { background: rgba(236, 72, 153, 0.16); border-color: rgba(236, 72, 153, 0.4); color: #f9a8d4; }
     .rr-date { flex: 0 0 auto; }
     .rr-date small { color: var(--faint); font-size: 0.74rem; }
+    .rr-cert { flex: 0 0 auto; width: 34px; height: 34px; display: grid; place-items: center; font-size: 1.05rem;
+      border-radius: 10px; background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.4); cursor: pointer; }
+    .rr-cert:hover { background: rgba(251, 191, 36, 0.2); }
     .rr-arrow { flex: 0 0 auto; color: var(--violet-2); font-size: 1.1rem; }
     @media (max-width: 720px) {
       .res-row { flex-wrap: wrap; gap: 0.6rem 1rem; }
@@ -174,4 +186,14 @@ export class AccountResultsPage implements OnInit {
   }
 
   protected formatDateTime = formatDateTime;
+
+  /** Public, unauthenticated endpoint — opened in a new tab rather than
+   * given an href, since this button lives inside a row that's itself a
+   * routerLink anchor (anchors can't nest). */
+  protected downloadCertificate(e: Event, result: ResultView): void {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!result.certificateNumber) return;
+    window.open(`/api/v1/public/certificates/${result.certificateNumber}/download`, '_blank', 'noopener');
+  }
 }

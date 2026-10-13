@@ -23,8 +23,9 @@ export const ADMIN_UI_CSS = `
     background: rgba(0, 0, 0, 0.3); border: 1px solid var(--line, rgba(255,255,255,0.09)); color: var(--text, #eef2fb); }
   .search::placeholder { color: var(--faint, #6e7f9e); }
   .search:focus, select:focus, input:focus, textarea:focus { outline: none; border-color: var(--gold, #e8b64a); box-shadow: 0 0 0 3px rgba(232, 182, 74, 0.18); }
-  .filter { padding: 0.55rem 0.7rem; border-radius: 10px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--line, rgba(255,255,255,0.09)); color: var(--text, #eef2fb); }
-  .filter option { background: var(--panel, #0c1c38); }
+  .filter { width: auto; flex: 0 0 auto; min-width: 150px; max-width: 220px;
+    padding: 0.55rem 0.7rem; border-radius: 10px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--line, rgba(255,255,255,0.09)); color: var(--text, #eef2fb); }
+  .filter option { background: var(--panel, #0c1c38); color: var(--text, #eef2fb); }
 
   .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.05rem; border-radius: 10px;
     border: 1px solid var(--line-2, rgba(255,255,255,0.16)); background: rgba(255, 255, 255, 0.05); font-weight: 700;
@@ -34,6 +35,36 @@ export const ADMIN_UI_CSS = `
   .btn-gold:hover { filter: brightness(1.06); background: linear-gradient(180deg, #f5cc5a, #e0a92e); }
   .btn-danger { color: #fecdd3; border-color: rgba(251, 113, 133, 0.5); background: rgba(251, 113, 133, 0.12); }
   .btn-danger:hover { background: rgba(251, 113, 133, 0.22); }
+
+  /* Shared row-actions "3 dots" menu — a compact dropdown instead of a
+     row of buttons that can overflow once a row has more than 2-3
+     possible actions (View / Edit / Archive / Delete / ...). */
+  .kebab-wrap { position: relative; display: inline-block; }
+  .kebab-btn { padding: 0.35rem 0.55rem; font-weight: 800; line-height: 1; }
+  .kebab-menu {
+    /* position/top/right here are the fallback for anything not yet
+       passing computed menuPos coordinates — every page using this menu
+       now sets [style.position]="'fixed'" plus [style.top.px]/[style.right.px]
+       from the button's own getBoundingClientRect(), which override these
+       via inline-style precedence. That's what keeps the menu from being
+       clipped by an ancestor .tbl-wrap's overflow:auto (needed for
+       horizontal scroll on narrow viewports — overflow:auto on any axis
+       clips a position:absolute descendant on both axes, not just the one
+       that actually needs scrolling). */
+    position: absolute; top: calc(100% + 0.3rem); right: 0; z-index: 20; min-width: 220px;
+    background: var(--panel-2, #10254a); border: 1px solid var(--line, rgba(255,255,255,0.09));
+    border-radius: 10px; padding: 0.4rem; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    display: flex; flex-direction: column; gap: 0.25rem;
+  }
+  .kebab-menu button {
+    text-align: left; padding: 0.5rem 0.6rem; border-radius: 7px; border: none;
+    background: none; color: var(--text, #eef2fb); font: inherit; font-size: 0.84rem; cursor: pointer;
+  }
+  .kebab-menu button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.08); }
+  .kebab-menu button:disabled { color: var(--faint, #6e7f9e); cursor: not-allowed; }
+  .kebab-menu button.danger { color: #fecdd3; }
+  .kebab-menu button.danger:hover { background: rgba(251, 113, 133, 0.14); }
+  .kebab-menu small { padding: 0.1rem 0.6rem 0.2rem; color: var(--faint, #6e7f9e); font-size: 0.72rem; line-height: 1.4; }
   .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.78rem; border-radius: 8px; }
   .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
@@ -75,11 +106,12 @@ export const ADMIN_UI_CSS = `
   .m-foot { display: flex; justify-content: flex-end; gap: 0.6rem; padding: 1rem 1.3rem; border-top: 1px solid var(--line, rgba(255,255,255,0.09)); }
   .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
   .f { margin-bottom: 0.9rem; }
+  .f.full { grid-column: 1 / -1; }
   .f label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted, #9fb0d0); margin-bottom: 0.32rem; }
   .f input, .f select, .f textarea { width: 100%; padding: 0.6rem 0.8rem; border-radius: 10px;
     background: rgba(0, 0, 0, 0.3); border: 1px solid var(--line, rgba(255,255,255,0.09)); color: var(--text, #eef2fb); }
   .f textarea { min-height: 96px; resize: vertical; }
-  .f select option { background: var(--panel-2, #10254a); }
+  .f select option { background: var(--panel-2, #10254a); color: var(--text, #eef2fb); }
   .f .hint { font-size: 0.78rem; color: var(--faint, #6e7f9e); margin-top: 0.3rem; }
   .time-pick { display: flex; align-items: center; gap: 0.4rem; }
   .time-pick select { width: auto; flex: 1; min-width: 0; }
@@ -118,10 +150,81 @@ export const ADMIN_UI_CSS = `
   .sp-logo img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
   tr.top1 td { background: rgba(232, 182, 74, 0.08); }
   .pager { display: flex; align-items: center; justify-content: flex-end; gap: 0.6rem; margin-top: 0.9rem; font-size: 0.85rem; color: var(--muted, #9fb0d0); }
+  .bulk-summary { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.9rem 0; }
+  .bulk-errors-wrap { max-height: 260px; overflow-y: auto; border: 1px solid var(--line, rgba(255,255,255,0.09)); border-radius: 10px; }
+  .bulk-errors-wrap table.mini th { position: sticky; top: 0; background: var(--panel-2, #10254a); }
+
+  .img-pick { display: flex; align-items: center; gap: 0.8rem; }
+  .img-pick-thumb {
+    width: 56px; height: 56px; flex: 0 0 auto; object-fit: contain; border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line, rgba(255,255,255,0.09));
+  }
+  .img-pick-thumb.empty-thumb { display: grid; place-items: center; color: var(--faint, #6e7f9e); font-size: 0.8rem; }
+  .img-pick-body { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+  .img-pick-name { font-size: 0.82rem; color: var(--muted, #9fb0d0); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .img-pick-actions { display: flex; gap: 0.5rem; }
+
+  .merge-results { margin-top: 0.35rem; border: 1px solid var(--line, rgba(255,255,255,0.09)); border-radius: 10px;
+    background: rgba(0, 0, 0, 0.3); max-height: 220px; overflow-y: auto; }
+  .merge-results button { display: block; width: 100%; text-align: left; padding: 0.55rem 0.8rem; border: 0;
+    background: none; color: var(--text, #eef2fb); font-size: 0.85rem; cursor: pointer;
+    border-bottom: 1px solid var(--line, rgba(255,255,255,0.06)); }
+  .merge-results button:last-child { border-bottom: 0; }
+  .merge-results button:hover { background: rgba(232, 182, 74, 0.12); }
+
+  .checklist-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.5rem 1rem;
+    max-height: 220px; overflow-y: auto; padding: 0.7rem 0.85rem; border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line, rgba(255,255,255,0.09));
+  }
+  .checklist-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text, #f5f4ff);
+    font-weight: 400; cursor: pointer; }
+  .checklist-item input { width: auto; flex: 0 0 auto; }
+
+  .opt-builder { display: flex; flex-direction: column; gap: 0.55rem; }
+  .opt-row { display: flex; align-items: center; gap: 0.6rem; }
+  .opt-row input[type="text"] { flex: 1; margin: 0; }
+  .opt-row input[type="checkbox"], .opt-row input[type="radio"] { flex: 0 0 auto; width: 18px; height: 18px; accent-color: var(--gold, #e8b64a); cursor: pointer; }
+  .opt-remove {
+    flex: 0 0 auto; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line, rgba(255,255,255,0.09));
+    background: rgba(255, 255, 255, 0.03); color: var(--muted, #9fb0d0); cursor: pointer; font-size: 0.85rem;
+  }
+  .opt-remove:hover:not(:disabled) { background: rgba(251, 113, 133, 0.14); color: #fecdd3; border-color: rgba(251, 113, 133, 0.4); }
+  .opt-remove:disabled { opacity: 0.35; cursor: not-allowed; }
 
   @media (max-width: 900px) {
     .g4 { grid-template-columns: 1fr 1fr; }
     .g2 { grid-template-columns: 1fr; }
     .f-row { grid-template-columns: 1fr; gap: 0; }
+    .filter, .search { width: 100%; max-width: none; }
+
+    /* Main data grids only (table.mini stays a real, scrollable table —
+       those live inside an already-narrow modal, where a full label/value
+       stack per row would cost more room than it saves). Each <tr> becomes
+       its own card; each <td> becomes a label/value line using its
+       data-label attribute — set per column by the page (see
+       admin-crud.page.ts / admin-competitions.page.ts). A <td> with no
+       data-label (the trailing actions cell) just renders an empty
+       ::before, which collapses to nothing and leaves the kebab button
+       flush right via the same justify-content:space-between. */
+    .tbl-wrap { overflow: visible; border: none; background: none; border-radius: 0; }
+    .tbl-wrap table { min-width: 0; width: 100%; }
+    .tbl-wrap table thead { display: none; }
+    .tbl-wrap table, .tbl-wrap table tbody, .tbl-wrap table tr, .tbl-wrap table td { display: block; width: 100%; }
+    .tbl-wrap table tr {
+      margin-bottom: 0.7rem; border: 1px solid var(--line, rgba(255,255,255,0.09));
+      border-radius: 14px; padding: 0.3rem 0.9rem; background: var(--panel, #0c1c38);
+    }
+    .tbl-wrap table tr:last-child { margin-bottom: 0; }
+    .tbl-wrap table td {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 0.55rem 0; border-bottom: 1px solid var(--line, rgba(255,255,255,0.06)); text-align: right;
+    }
+    .tbl-wrap table td:last-child { border-bottom: 0; }
+    .tbl-wrap table td::before {
+      content: attr(data-label); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em;
+      text-transform: uppercase; color: var(--faint, #6e7f9e); text-align: left; flex-shrink: 0;
+    }
+    .tbl-wrap .empty { padding: 1.4rem 0.5rem; }
   }
 `;

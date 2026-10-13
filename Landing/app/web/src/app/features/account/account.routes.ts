@@ -22,6 +22,18 @@ export const ACCOUNT_ROUTES: Routes = [
       { path: 'results/:code', component: AccountResultDetailPage },
       { path: 'payments', component: AccountPaymentsPage },
       { path: 'help-desk', component: AccountHelpDeskPage },
+      {
+        path: 'reports',
+        loadComponent: () => import('./reports/account-reports.page').then((m) => m.AccountReportsPage),
+      },
+      {
+        path: 'assessments',
+        loadComponent: () => import('./assessments/account-assessments.page').then((m) => m.AccountAssessmentsPage),
+      },
+      {
+        path: 'assessments/:slug',
+        loadComponent: () => import('./assessments/account-assessment.page').then((m) => m.AccountAssessmentPage),
+      },
     ],
   },
 ];

@@ -2,14 +2,18 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { StudentDataService } from '../student-data.service';
-import type { GrievanceView } from '../student-data.service';
+import type { GrievanceDetailView, GrievanceView } from '../student-data.service';
 import { ACCOUNT_UI_CSS } from '../account-ui';
-import { formatDate } from '../format';
+import { formatDate, formatDateTime } from '../format';
 
+// Real Unicode characters, not HTML entity strings — this is bound via
+// plain {{ }} interpolation (line ~79 below), which HTML-escapes its
+// output, so an entity string like '&#9888;&#65039;' rendered literally
+// as that text instead of decoding to the ⚠️ glyph.
 const GTYPE_ICON: Record<string, string> = {
-  Complaint: '&#9888;&#65039;',
-  Feedback: '&#128172;',
-  Suggestion: '&#128161;',
+  Complaint: '⚠️',
+  Feedback: '💬',
+  Suggestion: '💡',
 };
 
 const GTYPE_CLASS: Record<string, string> = {
@@ -75,7 +79,7 @@ const STATUS_CLASS: Record<string, string> = {
         @if (grievances().length) {
           <ul class="dlist">
             @for (g of grievances(); track g.code) {
-              <li style="align-items:flex-start">
+              <li style="align-items:flex-start;cursor:pointer" (click)="openThread(g.code)">
                 <span class="dl-ic" [ngClass]="gtypeClass(g.gtype)">{{ gtypeIcon(g.gtype) }}</span>
                 <div style="flex:1;min-width:0">
                   <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
@@ -85,6 +89,7 @@ const STATUS_CLASS: Record<string, string> = {
                   <small>{{ g.subject || g.gtype }} · {{ formatDate(g.createdAt) }}</small>
                   <p style="color:var(--text);font-size:.9rem;margin-top:.3rem;white-space:pre-wrap">{{ g.message }}</p>
                 </div>
+                <span class="hd-view-link">View thread →</span>
               </li>
             }
           </ul>
@@ -93,8 +98,76 @@ const STATUS_CLASS: Record<string, string> = {
         }
       </div>
     </div>
+
+    @if (thread(); as t) {
+      <div class="hd-backdrop" (click)="closeThread()">
+        <div class="hd-modal" role="dialog" [attr.aria-label]="'Ticket ' + t.code" (click)="$event.stopPropagation()">
+          <div class="hd-modal-head">
+            <div>
+              <b class="mono">{{ t.code }}</b>
+              <span class="tag" [ngClass]="statusClass(t.status)" style="margin-left:0.5rem">{{ t.status }}</span>
+              <div class="hd-modal-subject">{{ t.subject || t.gtype }}</div>
+            </div>
+            <button type="button" class="hd-x" (click)="closeThread()" aria-label="Close">✕</button>
+          </div>
+
+          <div class="hd-thread">
+            <div class="hd-msg hd-msg-student">
+              <div class="hd-msg-meta"><b>You</b><small>{{ formatDateTime(t.createdAt) }}</small></div>
+              <p>{{ t.message }}</p>
+            </div>
+            @for (m of t.messages; track m.id) {
+              @if (m.authorType === 'system') {
+                <div class="hd-msg-system">{{ m.body }} <small>· {{ formatDateTime(m.createdAt) }}</small></div>
+              } @else {
+                <div class="hd-msg" [class.hd-msg-admin]="m.authorType === 'admin'" [class.hd-msg-student]="m.authorType === 'student'">
+                  <div class="hd-msg-meta"><b>{{ m.authorType === 'admin' ? m.authorName + ' (Support)' : 'You' }}</b><small>{{ formatDateTime(m.createdAt) }}</small></div>
+                  <p>{{ m.body }}</p>
+                </div>
+              }
+            }
+          </div>
+
+          @if (t.status === 'Resolved') {
+            <p class="hint" style="margin:0.6rem 0;">This ticket is marked Resolved. Sending a reply will reopen it.</p>
+          }
+          <form class="hd-reply-form" (ngSubmit)="sendReply(t.code)">
+            <textarea [(ngModel)]="replyText" name="reply" rows="3" placeholder="Write a reply…" required></textarea>
+            @if (replyError()) {
+              <div class="alert err">{{ replyError() }}</div>
+            }
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" [disabled]="replying()">{{ replying() ? 'Sending…' : 'Send Reply' }}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
   `,
-  styles: [ACCOUNT_UI_CSS],
+  styles: [
+    ACCOUNT_UI_CSS,
+    `
+      .hd-view-link { font-size: 0.8rem; color: var(--violet-2); white-space: nowrap; }
+      .hd-backdrop { position: fixed; inset: 0; background: rgba(5, 5, 12, 0.72); backdrop-filter: blur(4px);
+        display: grid; place-items: center; z-index: 200; padding: 1.2rem; }
+      .hd-modal { background: linear-gradient(180deg, var(--surface-2), var(--surface)); border: 1px solid var(--line-2);
+        border-radius: 20px; padding: 1.4rem; max-width: 620px; width: 100%; max-height: 88vh; display: flex; flex-direction: column;
+        box-shadow: var(--shadow), var(--glow); }
+      .hd-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.9rem; }
+      .hd-modal-subject { font-family: var(--display); font-weight: 700; font-size: 1.05rem; margin-top: 0.3rem; }
+      .hd-x { background: none; border: 1px solid var(--line); border-radius: 8px; width: 30px; height: 30px; color: var(--muted); cursor: pointer; flex: 0 0 auto; }
+      .hd-x:hover { color: #fff; border-color: var(--line-2); }
+      .hd-thread { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 0.7rem; padding-right: 0.2rem; margin-bottom: 0.9rem; }
+      .hd-msg { border-radius: 12px; padding: 0.7rem 0.9rem; max-width: 88%; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.03); }
+      .hd-msg-student { align-self: flex-end; background: rgba(124, 58, 237, 0.1); border-color: rgba(139, 92, 246, 0.3); }
+      .hd-msg-admin { align-self: flex-start; background: rgba(52, 211, 153, 0.08); border-color: rgba(52, 211, 153, 0.3); }
+      .hd-msg-meta { display: flex; justify-content: space-between; gap: 0.6rem; font-size: 0.76rem; color: var(--muted); margin-bottom: 0.3rem; }
+      .hd-msg p { font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; color: var(--text); }
+      .hd-msg-system { align-self: center; font-size: 0.76rem; color: var(--faint); text-align: center; }
+      .hd-reply-form textarea { width: 100%; resize: vertical; }
+      .hd-reply-form .form-actions { margin-top: 0.6rem; }
+    `,
+  ],
 })
 export class AccountHelpDeskPage implements OnInit {
   private readonly data = inject(StudentDataService);
@@ -103,6 +176,11 @@ export class AccountHelpDeskPage implements OnInit {
   protected readonly submitting = signal(false);
   protected readonly submitMsg = signal('');
   protected readonly submitOk = signal(false);
+
+  protected readonly thread = signal<GrievanceDetailView | null>(null);
+  protected readonly replying = signal(false);
+  protected readonly replyError = signal('');
+  protected replyText = '';
 
   protected readonly form = { gtype: 'Complaint', subject: '', message: '' };
 
@@ -138,7 +216,7 @@ export class AccountHelpDeskPage implements OnInit {
         next: (created) => {
           this.submitting.set(false);
           this.submitOk.set(true);
-          this.submitMsg.set(`Request ${created.code} submitted. Our team will get back to you.`);
+          this.submitMsg.set(`Request ${created.code} submitted. We've sent you a confirmation email — our team will get back to you.`);
           this.grievances.update((list) => [created, ...list]);
           f.gtype = 'Complaint';
           f.subject = '';
@@ -151,6 +229,40 @@ export class AccountHelpDeskPage implements OnInit {
           this.submitMsg.set(err?.error?.message ?? 'Could not submit your request.');
         },
       });
+  }
+
+  protected openThread(code: string): void {
+    this.replyText = '';
+    this.replyError.set('');
+    this.data.grievanceDetail(code).subscribe({
+      next: (detail) => this.thread.set(detail),
+      error: (err) => this.replyError.set(err?.error?.message ?? 'Could not load this ticket.'),
+    });
+  }
+
+  protected closeThread(): void {
+    this.thread.set(null);
+  }
+
+  protected sendReply(code: string): void {
+    const message = this.replyText.trim();
+    if (!message || this.replying()) return;
+    this.replying.set(true);
+    this.replyError.set('');
+    this.data.addGrievanceReply(code, message).subscribe({
+      next: (detail) => {
+        this.replying.set(false);
+        this.thread.set(detail);
+        this.replyText = '';
+        // Keep the list's status badge in sync (a reply may have reopened
+        // a Resolved ticket) without a full reload.
+        this.grievances.update((list) => list.map((g) => (g.code === code ? { ...g, status: detail.status } : g)));
+      },
+      error: (err) => {
+        this.replying.set(false);
+        this.replyError.set(err?.error?.message ?? 'Could not send your reply.');
+      },
+    });
   }
 
   protected gtypeIcon(gtype: string): string {
@@ -166,4 +278,5 @@ export class AccountHelpDeskPage implements OnInit {
   }
 
   protected formatDate = formatDate;
+  protected formatDateTime = formatDateTime;
 }

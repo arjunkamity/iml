@@ -2,6 +2,7 @@ import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
+import { SiteSettingsService } from '@core/services/site-settings.service';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +43,7 @@ import { AuthService } from '@core/services/auth.service';
         </aside>
 
         <section class="auth-form">
-          <img class="af-logo" src="img/new-logo-cut.png" alt="India Mind League" />
+          <img class="af-logo" [src]="settings().logoDarkUrl" alt="India Mind League" />
           <h1 class="af-title">Student Login</h1>
           <p class="af-lead">Sign in with a one-time password, or your email and password.</p>
 
@@ -77,11 +78,11 @@ import { AuthService } from '@core/services/auth.service';
             </form>
           }
 
-          @if (step() === 1) {
+          @if (method() !== 'password' && step() === 1) {
             <form (ngSubmit)="sendOtp()" novalidate>
               <div class="field">
                 <label for="contact">{{ method() === 'phone' ? 'Phone number' : 'Email address' }}</label>
-                <input id="contact" name="contact" [(ngModel)]="contact" [type]="method() === 'phone' ? 'tel' : 'email'" autocomplete="email" placeholder="you@example.com" />
+                <input id="contact" name="contact" [(ngModel)]="contact" [type]="method() === 'phone' ? 'tel' : 'email'" [attr.autocomplete]="method() === 'phone' ? 'tel' : 'email'" [placeholder]="method() === 'phone' ? '10-digit mobile number' : 'you@example.com'" />
               </div>
               @if (message()) {
                 <div class="form-msg alert error" [class.ok]="!messageIsError()">{{ message() }}</div>
@@ -90,7 +91,7 @@ import { AuthService } from '@core/services/auth.service';
             </form>
           }
 
-          @if (step() === 2) {
+          @if (method() !== 'password' && step() === 2) {
             <form (ngSubmit)="verifyOtp()" novalidate>
               <p class="otp-sent">We sent a 6-digit code to <b>{{ sentTo }}</b>. <button type="button" class="linkbtn" (click)="backToContact()">Change</button></p>
               <div class="otp-boxes" id="otpBoxes">
@@ -109,9 +110,6 @@ import { AuthService } from '@core/services/auth.service';
                   />
                 }
               </div>
-              @if (devCode()) {
-                <p class="hint">Demo: enter <b>{{ devCode() }}</b> to continue.</p>
-              }
               @if (message()) {
                 <div class="form-msg alert error" [class.ok]="!messageIsError()">{{ message() }}</div>
               }
@@ -121,6 +119,7 @@ import { AuthService } from '@core/services/auth.service';
           }
 
           <p class="af-alt">New to the League? <a routerLink="/register">Register here</a></p>
+          <a routerLink="/schools/login" class="btn btn-ghost btn-block" style="margin-top:0.9rem">School Login / Register →</a>
         </section>
 
       </div>
@@ -130,13 +129,13 @@ import { AuthService } from '@core/services/auth.service';
 export class LoginPage implements OnDestroy {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  protected readonly settings = inject(SiteSettingsService).settings;
 
   readonly method = signal<'email' | 'phone' | 'password'>('email');
   readonly step = signal<1 | 2>(1);
   readonly busy = signal(false);
   readonly message = signal('');
   readonly messageIsError = signal(true);
-  readonly devCode = signal('');
   readonly resendIn = signal(0);
 
   contact = '';
@@ -145,7 +144,7 @@ export class LoginPage implements OnDestroy {
   pwPassword = '';
   digits: string[] = ['', '', '', '', '', ''];
   private resendTimer: ReturnType<typeof setInterval> | null = null;
-  private lastRequested = '';
+  private lastRequested: { email?: string; phone?: string } = {};
 
   ngOnDestroy() {
     this.clearTimer();
@@ -154,10 +153,8 @@ export class LoginPage implements OnDestroy {
   setMethod(m: 'email' | 'phone' | 'password') {
     this.method.set(m);
     this.message.set('');
-    if (m === 'phone') {
-      this.message.set('Phone OTP is not enabled yet — please sign in with your registered email.');
-      this.messageIsError.set(true);
-    }
+    this.clearTimer();
+    this.step.set(1);
   }
 
   loginWithPassword() {
@@ -191,23 +188,27 @@ export class LoginPage implements OnDestroy {
   sendOtp() {
     const contact = this.contact.trim();
     if (this.method() === 'phone') {
-      this.message.set('Please sign in with your registered email address.');
-      this.messageIsError.set(true);
-      return;
-    }
-    if (!contact || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact)) {
-      this.message.set('Enter a valid email address.');
-      this.messageIsError.set(true);
-      return;
+      const digitsOnly = contact.replace(/\D/g, '');
+      if (!/^\d{10}$/.test(digitsOnly)) {
+        this.message.set('Enter a valid 10-digit phone number.');
+        this.messageIsError.set(true);
+        return;
+      }
+      this.lastRequested = { phone: digitsOnly };
+    } else {
+      if (!contact || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact)) {
+        this.message.set('Enter a valid email address.');
+        this.messageIsError.set(true);
+        return;
+      }
+      this.lastRequested = { email: contact.toLowerCase() };
     }
     this.busy.set(true);
     this.message.set('');
-    this.lastRequested = contact.toLowerCase();
     this.auth.requestStudentOtp(this.lastRequested).subscribe({
-      next: (res) => {
+      next: () => {
         this.busy.set(false);
-        this.devCode.set(res.devCode);
-        this.sentTo = this.lastRequested;
+        this.sentTo = this.lastRequested.phone ?? this.lastRequested.email ?? '';
         this.digits = ['', '', '', '', '', ''];
         this.step.set(2);
         this.startResend();
@@ -222,6 +223,7 @@ export class LoginPage implements OnDestroy {
   }
 
   verifyOtp() {
+    if (this.busy()) return;
     const code = this.digits.join('');
     if (code.length !== 6) {
       this.message.set('Enter all 6 digits of your OTP.');
@@ -239,6 +241,10 @@ export class LoginPage implements OnDestroy {
         this.busy.set(false);
         this.message.set(this.errText(err));
         this.messageIsError.set(true);
+        // Wrong code — clear the boxes so retyping doesn't just re-submit
+        // the same six digits (auto-submit fires again on the 6th digit).
+        this.digits = ['', '', '', '', '', ''];
+        setTimeout(() => document.getElementById('otp0')?.focus(), 0);
       },
     });
   }
@@ -247,9 +253,8 @@ export class LoginPage implements OnDestroy {
     if (this.resendIn() > 0) return;
     this.busy.set(true);
     this.auth.requestStudentOtp(this.lastRequested).subscribe({
-      next: (res) => {
+      next: () => {
         this.busy.set(false);
-        this.devCode.set(res.devCode);
         this.digits = ['', '', '', '', '', ''];
         this.message.set('');
         this.startResend();
@@ -267,7 +272,6 @@ export class LoginPage implements OnDestroy {
     this.clearTimer();
     this.step.set(1);
     this.message.set('');
-    this.devCode.set('');
   }
 
   onOtpInput(i: number, e: Event) {
@@ -275,6 +279,7 @@ export class LoginPage implements OnDestroy {
     const val = target.value.replace(/\D/g, '');
     this.digits[i] = val;
     if (val && i < 5) document.getElementById(`otp${i + 1}`)?.focus();
+    if (val && i === 5 && this.digits.every((d) => d)) this.verifyOtp();
   }
 
   onOtpBack(i: number, e: Event) {
@@ -289,6 +294,7 @@ export class LoginPage implements OnDestroy {
     const focusIdx = Math.min(nums.length, 5);
     document.getElementById(`otp${focusIdx}`)?.focus();
     e.preventDefault();
+    if (this.digits.every((d) => d)) this.verifyOtp();
   }
 
   private startResend() {

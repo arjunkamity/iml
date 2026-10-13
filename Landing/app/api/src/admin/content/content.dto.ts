@@ -10,6 +10,18 @@ import {
   Min,
 } from 'class-validator';
 
+export interface BulkUploadRowError {
+  row: number;
+  message: string;
+}
+
+export interface BulkUploadResult {
+  total: number;
+  created: number;
+  failed: number;
+  errors: BulkUploadRowError[];
+}
+
 export class CreateQuestionDto {
   @IsOptional()
   @IsString()
@@ -22,7 +34,8 @@ export class CreateQuestionDto {
   grade!: string;
 
   @IsString()
-  @IsIn(['IQ', 'EQ', 'Values'])
+  @IsNotEmpty()
+  @MaxLength(20)
   category!: string;
 
   @IsOptional()
@@ -65,6 +78,12 @@ export class CreateQuestionDto {
   @IsOptional()
   @IsArray()
   correct?: unknown[];
+
+  // Demo-only question — pulled ONLY by the Default Demo Exam, never a
+  // real one. See Question.isDemo in schema.prisma.
+  @IsOptional()
+  @IsBoolean()
+  isDemo?: boolean;
 }
 
 export class PatchQuestionDto {
@@ -80,7 +99,7 @@ export class PatchQuestionDto {
 
   @IsOptional()
   @IsString()
-  @IsIn(['IQ', 'EQ', 'Values'])
+  @MaxLength(20)
   category?: string;
 
   @IsOptional()
@@ -123,6 +142,10 @@ export class PatchQuestionDto {
   @IsOptional()
   @IsArray()
   correct?: unknown[];
+
+  @IsOptional()
+  @IsBoolean()
+  isDemo?: boolean;
 }
 
 export class CreateExamDto {
@@ -153,6 +176,18 @@ export class CreateExamDto {
   @IsInt()
   @Min(1)
   durationMin?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  questionCount?: number;
+
+  // How many times a student may take this exam. Unset = 1 (Prisma
+  // default), same one-and-done behavior as before this field existed.
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  maxAttempts?: number;
 
   @IsOptional()
   timing?: unknown;
@@ -192,11 +227,88 @@ export class PatchExamDto {
   durationMin?: number;
 
   @IsOptional()
+  @IsInt()
+  @Min(1)
+  questionCount?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  maxAttempts?: number;
+
+  @IsOptional()
   timing?: unknown;
 
   @IsOptional()
   @IsIn(['Draft', 'Scheduled', 'Live', 'Closed'])
   status?: string;
+}
+
+// ---- exam batches (batch-wise access for high-volume exams) ----
+
+export class CreateExamBatchDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(60)
+  label!: string;
+
+  // ISO datetime, e.g. "2026-09-01T10:00:00+05:30"
+  @IsString()
+  @IsNotEmpty()
+  startAt!: string;
+
+  @IsInt()
+  @Min(1)
+  durationMin!: number;
+
+  @IsInt()
+  @Min(1)
+  capacity!: number;
+}
+
+export class PatchExamBatchDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(60)
+  label?: string;
+
+  @IsOptional()
+  @IsString()
+  startAt?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  durationMin?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  capacity?: number;
+}
+
+export class AutoAssignBatchesDto {
+  // If omitted, auto-assign spreads across every batch on the exam.
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  batchIds?: number[];
+}
+
+export class AssignRegistrationDto {
+  @IsString()
+  @IsNotEmpty()
+  registrationCode!: string;
+}
+
+export class SendBatchReminderDto {
+  @IsString()
+  @IsIn(['GET_READY', 'GO_FOR_IT'])
+  type!: 'GET_READY' | 'GO_FOR_IT';
+
+  @IsArray()
+  @IsIn(['email', 'sms'], { each: true })
+  channels!: Array<'email' | 'sms'>;
 }
 
 export class CreateAnnouncementDto {
@@ -397,6 +509,20 @@ export class PatchGrievanceDto {
   @IsString()
   @IsIn(['New', 'In Progress', 'Resolved'])
   status!: string;
+}
+
+export class ReplyGrievanceDto {
+  // At least one of the two — a reply message, a status change, or both
+  // in one submit (typical "reply + close" ticketing action).
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
+  message?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['New', 'In Progress', 'Resolved'])
+  status?: string;
 }
 
 export class CreateNotificationDto {

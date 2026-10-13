@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
+import { SiteSettingsService } from '@core/services/site-settings.service';
 
 @Component({
   selector: 'app-refund-policy',
@@ -39,7 +40,7 @@ import { RouterLink } from '@angular/router';
           <p>Approved refunds shall normally be processed within 7–15 working days through the original payment method. Payment gateway charges or processing fees, where applicable, may be deducted.</p>
 
           <p class="legal-contact">
-            For a refund request, write to <a href="mailto:indiamindleague&#64;gmail.com">indiamindleague&#64;gmail.com</a> with your
+            For a refund request, write to <a [href]="'mailto:' + settings().contactEmail">{{ settings().contactEmail }}</a> with your
             registration ID. See also our <a routerLink="/terms">Terms &amp; Conditions</a>.
           </p>
         </article>
@@ -50,6 +51,7 @@ import { RouterLink } from '@angular/router';
 export class RefundPolicyPage {
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
+  protected readonly settings = inject(SiteSettingsService).settings;
 
   constructor() {
     this.title.setTitle('Refund Policy — India Mind League');

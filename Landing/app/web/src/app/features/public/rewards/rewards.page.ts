@@ -10,10 +10,9 @@ interface PrizeTier {
 }
 
 const PRIZE_TIERS: PrizeTier[] = [
-  { medal: '🥇', rank: 'National Champion', amount: '₹51,000' },
+  { medal: '🥇', rank: 'IML Champion', amount: '₹51,000' },
   { medal: '🥈', rank: 'First Runner-up', amount: '₹31,000' },
   { medal: '🥉', rank: 'Second Runner-up', amount: '₹11,000' },
-  { medal: '⭐', rank: 'Special Jury & Excellence Awards', amount: '₹7,000*' },
 ];
 
 @Component({
@@ -34,8 +33,7 @@ const PRIZE_TIERS: PrizeTier[] = [
 
     <section class="section" id="prize-pool">
       <div class="container">
-        <div class="hb-title"><span>National Cash Prize Pool</span></div>
-        <p class="lead">Total Prize Pool: <b class="gold">₹1,00,000</b></p>
+        <div class="hb-title"><span>Cash Prize Pool</span></div>
         <div class="rw-prize-table" reveal>
           @for (t of prizeTiers; track t.rank) {
             <div class="rw-prize-row">
@@ -45,7 +43,6 @@ const PRIZE_TIERS: PrizeTier[] = [
             </div>
           }
         </div>
-        <p class="hint rw-note">*Distributed across special award categories as announced by the Organising Committee.</p>
       </div>
     </section>
 
@@ -113,7 +110,7 @@ const PRIZE_TIERS: PrizeTier[] = [
             <ul class="i3-list">
               <li><i>✓</i> Leadership Bootcamp Certificate &amp; Mentor Feedback</li>
               <li><i>✓</i> Exclusive IML Merchandise (where applicable)</li>
-              <li><i>✓</i> National Recognition as Future Leaders</li>
+              <li><i>✓</i> Recognition as Future Leaders</li>
               <li><i>✓</i> Eligibility for Scholarships &amp; Ambassador Programmes</li>
             </ul>
           </div>
@@ -127,7 +124,7 @@ const PRIZE_TIERS: PrizeTier[] = [
         <p class="lead">National Finalists will compete for:</p>
         <div class="i3-card rw-single" reveal>
           <ul class="i3-list rw-finale-list">
-            <li><i>✓</i> National Championship Trophy</li>
+            <li><i>✓</i> Championship Trophy</li>
             <li><i>✓</i> Cash Awards &amp; Medals</li>
             <li><i>✓</i> Excellence Certificates</li>
             <li><i>✓</i> Media Recognition</li>
@@ -163,7 +160,7 @@ export class RewardsPage {
     this.title.setTitle('Rewards & Recognition — India Mind League');
     this.meta.updateTag({
       name: 'description',
-      content: '₹1,00,000 national cash prize pool, Leadership Bootcamp benefits and grand finale recognition for India Mind League participants.',
+      content: 'National cash prizes, Leadership Bootcamp benefits and grand finale recognition for India Mind League participants.',
     });
   }
 }

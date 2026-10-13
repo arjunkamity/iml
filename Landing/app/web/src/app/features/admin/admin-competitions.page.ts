@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, HostListener, computed, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '@core/services/api.service';
 import { ADMIN_UI_CSS } from './admin-ui';
+import { MediaLibraryModal } from './media-library-modal';
 
 interface CompRow {
   code: string;
@@ -31,6 +32,16 @@ interface CompForm {
   endDate: string;
   isMulti: boolean;
   description: string;
+  photoUrl: string;
+  scoringMode: string;
+  certificateMode: string;
+}
+
+interface CompDetail extends CompRow {
+  description: string | null;
+  photoUrl: string | null;
+  scoringMode: string;
+  certificateMode: string;
 }
 
 interface Stage {
@@ -42,6 +53,7 @@ interface Stage {
   isFree: boolean;
   price: number;
   description: string | null;
+  maxQualifiers: number | null;
 }
 
 interface Qualifier {
@@ -62,6 +74,17 @@ interface GradeRow {
   name: string;
 }
 
+// GET /competitions/:code/question-mix — see CompetitionService.getQuestionMix.
+interface MixInfo {
+  competitionCode: string;
+  rules: { category: string; count: number; available: number; inGroups?: number }[];
+  pool: { category: string; available: number; inGroups?: number; withheld?: number }[];
+  categories: string[];
+  totalPerStudent: number;
+  examLive: boolean;
+  attempts: number;
+}
+
 function errText(err: unknown): string {
   const e = err as { error?: { message?: string }; message?: string };
   return e?.error?.message ?? e?.message ?? 'Something went wrong';
@@ -70,7 +93,7 @@ function errText(err: unknown): string {
 @Component({
   selector: 'app-admin-competitions',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, MediaLibraryModal, RouterLink],
   template: `
     @if (mgr) {
       <!-- competition detail -->
@@ -95,6 +118,7 @@ function errText(err: unknown): string {
       <div class="tabs">
         <button class="tab" [class.on]="mgrTab === 'stages'" (click)="mgrTab = 'stages'">Stages ({{ stages().length }})</button>
         <button class="tab" [class.on]="mgrTab === 'qual'" (click)="mgrTab = 'qual'; loadQual()">Qualifiers</button>
+        <button class="tab" [class.on]="mgrTab === 'mix'" (click)="mgrTab = 'mix'; loadMix()">Question mix</button>
       </div>
 
       @if (mgrTab === 'stages') {
@@ -128,6 +152,15 @@ function errText(err: unknown): string {
               <label class="chk"><input type="checkbox" [(ngModel)]="sf.isFree" /> Free stage</label>
             </div>
             <div class="f"><label>Price (paid stage)</label><input type="number" step="0.01" [(ngModel)]="sf.price" /></div>
+            <div class="f">
+              <label>Max qualifiers for next stage</label>
+              <input type="number" min="1" placeholder="Leave blank — no cap" [(ngModel)]="sf.maxQualifiers" />
+              <small style="color:var(--muted,#9fb0d0)">
+                Leave blank and every attempt clearing the pass mark advances right away, same as today. Set a number
+                and advancing is decided by a ranked selection you run from here once the stage closes (fastest
+                eligible attempts first).
+              </small>
+            </div>
             <div class="f"><label>Description</label><textarea [(ngModel)]="sf.description" rows="3"></textarea></div>
             <div class="bar" style="margin:0.6rem 0 0">
               <button class="btn" (click)="stageFormOpen = false">Cancel</button>
@@ -138,28 +171,129 @@ function errText(err: unknown): string {
 
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Pos</th><th>Stage</th><th>Mode</th><th>Pass</th><th>Free</th><th>Price</th><th></th></tr></thead>
+            <thead><tr><th>Pos</th><th>Stage</th><th>Mode</th><th>Pass</th><th>Free</th><th>Price</th><th>Max qualifiers</th><th></th></tr></thead>
             <tbody>
               @for (s of stages(); track s.id) {
                 <tr>
-                  <td>{{ s.position }}</td>
-                  <td><span class="b">{{ s.name }}</span></td>
-                  <td>{{ s.mode }}</td>
-                  <td>{{ s.passMark }}%</td>
-                  <td>{{ s.isFree ? 'Yes' : 'No' }}</td>
-                  <td>{{ s.price }}</td>
+                  <td data-label="Pos">{{ s.position }}</td>
+                  <td data-label="Stage"><span class="b">{{ s.name }}</span></td>
+                  <td data-label="Mode">{{ s.mode }}</td>
+                  <td data-label="Pass">{{ s.passMark }}%</td>
+                  <td data-label="Free">{{ s.isFree ? 'Yes' : 'No' }}</td>
+                  <td data-label="Price">{{ s.price }}</td>
+                  <td data-label="Max qualifiers">{{ s.maxQualifiers ?? 'No cap' }}</td>
                   <td>
                     <div class="acts">
                       <button class="btn btn-sm" (click)="openStage(s)">Edit</button>
+                      @if (s.maxQualifiers) {
+                        <a class="btn btn-sm btn-gold" routerLink="/admin/selection">Run Selection</a>
+                      }
                       <button class="btn btn-sm btn-danger" (click)="removeStage(s)">Delete</button>
                     </div>
                   </td>
                 </tr>
               } @empty {
-                <tr><td colspan="7" class="empty">No stages yet.</td></tr>
+                <tr><td colspan="8" class="empty">No stages yet.</td></tr>
               }
             </tbody>
           </table>
+        </div>
+      }
+
+
+      @if (mgrTab === 'mix') {
+        <div class="card" style="margin-bottom:1rem">
+          <p style="margin:0;font-size:0.88rem;color:var(--muted,#9fb0d0)">
+            Choose which question categories this competition's exam serves and how many from each, per student.
+            Questions are drawn at random within each category, so every student gets the same balance. With no rows,
+            every question tagged to this competition is used (the original behaviour), capped by the exam's own question count.
+          </p>
+        </div>
+
+        @if (mixInfo(); as m) {
+          @if (m.examLive || m.attempts > 0) {
+            <div class="err" style="background:rgba(232,182,74,0.12);border-color:rgba(232,182,74,0.45);color:#f5cc5a">
+              {{ m.examLive ? 'An exam for this competition is Live. ' : '' }}{{ m.attempts }} attempt{{ m.attempts === 1 ? '' : 's' }} already exist.
+              Changes apply to <b>new attempts only</b> — attempts in progress keep the questions they were given.
+            </div>
+          }
+        }
+        @if (mixErr()) {
+          <div class="err">{{ mixErr() }}</div>
+        }
+        @if (mixMsg()) {
+          <div class="bdg green" style="display:inline-block;margin-bottom:0.8rem">{{ mixMsg() }}</div>
+        }
+
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Category</th><th>Questions per student</th><th>Available in pool</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              @for (r of mixDraft(); track $index) {
+                <tr>
+                  <td data-label="Category">
+                    <select [ngModel]="r.category" (ngModelChange)="setMixCategory($index, $event)">
+                      <option value="" disabled>Choose a category</option>
+                      @for (c of mixCategoryOptions($index); track c) {
+                        <option [value]="c">{{ c }}</option>
+                      }
+                    </select>
+                  </td>
+                  <td data-label="Questions per student">
+                    <input type="number" min="1" max="500" style="max-width:110px" [ngModel]="r.count" (ngModelChange)="setMixCount($index, $event)" />
+                  </td>
+                  <td data-label="Available in pool">
+                    {{ mixAvailable(r.category) }}
+                    @if (mixInGroups(r.category)) {
+                      <small class="muted-note">incl. {{ mixInGroups(r.category) }} in groups</small>
+                    }
+                  </td>
+                  <td data-label="Status">
+                    @if (!r.category) {
+                      <span class="bdg grey">—</span>
+                    } @else if (mixAvailable(r.category) === 0) {
+                      <span class="bdg red">No questions tagged</span>
+                    } @else if (r.count > mixAvailable(r.category)) {
+                      <span class="bdg red">Short by {{ r.count - mixAvailable(r.category) }}</span>
+                    } @else {
+                      <span class="bdg green">OK</span>
+                    }
+                  </td>
+                  <td>
+                    <div class="acts"><button class="btn btn-sm btn-danger" (click)="removeMixRow($index)">Remove</button></div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5" class="empty">No mix set — every tagged question is used.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (mixWithheld().length) {
+          <p style="margin:0.8rem 0 0;font-size:0.84rem;color:var(--muted,#9fb0d0)">
+            Not served because their question group is inactive or has fewer than 2 questions:
+            @for (p of mixWithheld(); track p.category) {
+              <span class="bdg gold" style="margin-left:0.3rem">{{ p.category }} · {{ p.withheld }}</span>
+            }
+          </p>
+        }
+
+        @if (mixUnused().length) {
+          <p style="margin:0.8rem 0 0;font-size:0.84rem;color:var(--muted,#9fb0d0)">
+            In this competition's pool but not served by the mix:
+            @for (p of mixUnused(); track p.category) {
+              <span class="bdg grey" style="margin-left:0.3rem">{{ p.category }} · {{ p.available }}</span>
+            }
+          </p>
+        }
+
+        <div class="bar" style="margin-top:1rem">
+          <button class="btn" [disabled]="!mixCanAdd()" (click)="addMixRow()">+ Add category</button>
+          <span style="font-weight:700">{{ mixTotal() }} question{{ mixTotal() === 1 ? '' : 's' }} per student</span>
+          <div class="grow"></div>
+          <button class="btn" [disabled]="!mixDirty() || mixBusy()" (click)="loadMix()">Discard changes</button>
+          <button class="btn btn-gold" [disabled]="!mixDirty() || mixBusy()" (click)="saveMix()">{{ mixBusy() ? 'Saving…' : 'Save mix' }}</button>
         </div>
       }
 
@@ -180,15 +314,15 @@ function errText(err: unknown): string {
             <tbody>
               @for (q of quals(); track $index) {
                 <tr>
-                  <td><span class="b">{{ q.registration.student.name }}</span><small>{{ q.registration.student.grade }}</small></td>
-                  <td>St{{ q.stage.position }} — {{ q.stage.name }}</td>
-                  <td>{{ q.score ?? '—' }}</td>
-                  <td>
+                  <td data-label="Student"><span class="b">{{ q.registration.student.name }}</span><small>{{ q.registration.student.grade }}</small></td>
+                  <td data-label="Stage">St{{ q.stage.position }} — {{ q.stage.name }}</td>
+                  <td data-label="Score">{{ q.score ?? '—' }}</td>
+                  <td data-label="Qualified">
                     @if (q.qualified === true) { <span class="bdg green">Yes</span> }
                     @else if (q.qualified === false) { <span class="bdg red">No</span> }
                     @else { <span class="bdg grey">—</span> }
                   </td>
-                  <td><span class="bdg" [class]="'bdg ' + qualBadge(q.status)">{{ q.status }}</span></td>
+                  <td data-label="Status"><span class="bdg" [class]="'bdg ' + qualBadge(q.status)">{{ q.status }}</span></td>
                 </tr>
               } @empty {
                 <tr><td colspan="5" class="empty">No qualifier rows yet.</td></tr>
@@ -238,9 +372,47 @@ function errText(err: unknown): string {
         <div class="mods" style="margin-bottom:0.9rem">
           <label class="chk"><input type="checkbox" [(ngModel)]="form.isMulti" /> Multi-stage competition</label>
         </div>
+        <div class="grid g2" style="margin-bottom:0.8rem">
+          <div class="f">
+            <label>Result scoring</label>
+            <select [(ngModel)]="form.scoringMode">
+              <option value="PERCENT">% Percent only</option>
+              <option value="GRADE">Grading (A+ – F)</option>
+              <option value="FRACTION">Score / Total (e.g. 80/100)</option>
+            </select>
+            <small style="display:block;color:var(--muted, #9fb0d0);margin-top:0.25rem">How a student sees their result — admin views always show the full raw score regardless.</small>
+          </div>
+          <div class="f">
+            <label>Certificate issuance</label>
+            <select [(ngModel)]="form.certificateMode">
+              <option value="INSTANT">Instant — issued automatically on submit</option>
+              <option value="MANUAL">Manual — admin issues each one from Results</option>
+            </select>
+            <small style="display:block;color:var(--muted, #9fb0d0);margin-top:0.25rem">Manual also disables the student's own "download certificate" button until an admin issues it.</small>
+          </div>
+        </div>
         <div class="f">
           <label>Description</label>
           <textarea [(ngModel)]="form.description" rows="3"></textarea>
+        </div>
+        <div class="f">
+          <label>Photo</label>
+          <div class="img-pick">
+            @if (form.photoUrl) {
+              <img [src]="form.photoUrl" alt="" class="img-pick-thumb" />
+            } @else {
+              <div class="img-pick-thumb empty-thumb">—</div>
+            }
+            <div class="img-pick-body">
+              <span class="img-pick-name">{{ photoFileName(form.photoUrl) || 'Not set' }}</span>
+              <div class="img-pick-actions">
+                <button type="button" class="btn btn-sm" (click)="openLibrary()">Choose Image</button>
+                @if (form.photoUrl) {
+                  <button type="button" class="btn btn-sm btn-danger" (click)="form.photoUrl = ''">Clear</button>
+                }
+              </div>
+            </div>
+          </div>
         </div>
         <div class="bar" style="margin:0.6rem 0 0">
           <button class="btn" (click)="formOpen = false">Cancel</button>
@@ -256,6 +428,11 @@ function errText(err: unknown): string {
           <option value="Open">Open</option>
           <option value="Live">Live</option>
           <option value="Closed">Closed</option>
+          <!-- Not a real editable status (see the Edit form's own select,
+               which deliberately omits it) — only reachable via the
+               dedicated Archive action, and only viewable, not
+               re-selectable, from here. -->
+          <option value="Archived">Archived</option>
         </select>
         <input class="search" placeholder="Search title / code…" [(ngModel)]="search" (keyup.enter)="go(1)" />
         <div class="grow"></div>
@@ -266,7 +443,7 @@ function errText(err: unknown): string {
         <div class="err">{{ error }}</div>
       }
 
-      <div class="tbl-wrap">
+      <div class="tbl-wrap" (scroll)="closeMenu()">
         <table>
           <thead>
             <tr><th>Code</th><th>Title</th><th>Grades</th><th>Dates</th><th>Status</th><th>Stages</th><th>Regs</th><th></th></tr>
@@ -274,18 +451,28 @@ function errText(err: unknown): string {
           <tbody>
             @for (c of rows(); track c.code) {
               <tr>
-                <td>{{ c.code }}</td>
-                <td><span class="b">{{ c.title }}</span></td>
-                <td>{{ c.grades }}</td>
-                <td>{{ slice(c.startDate) }} → {{ slice(c.endDate) }}</td>
-                <td><span class="bdg" [class]="'bdg ' + statusBadge(c.status)">{{ c.status }}</span></td>
-                <td>{{ c.stages }}</td>
-                <td>{{ c.registrations }}</td>
+                <td data-label="Code">{{ c.code }}</td>
+                <td data-label="Title"><span class="b">{{ c.title }}</span></td>
+                <td data-label="Grades">{{ c.grades }}</td>
+                <td data-label="Dates">{{ slice(c.startDate) }} → {{ slice(c.endDate) }}</td>
+                <td data-label="Status"><span class="bdg" [class]="'bdg ' + statusBadge(c.status)">{{ c.status }}</span></td>
+                <td data-label="Stages">{{ c.stages }}</td>
+                <td data-label="Regs">{{ c.registrations }}</td>
                 <td>
-                  <div class="acts">
-                    <button class="btn btn-sm" (click)="manage(c)">Stages &amp; qualifiers</button>
-                    <button class="btn btn-sm" (click)="openEdit(c)">Edit</button>
-                    <button class="btn btn-sm btn-danger" (click)="remove(c)">Delete</button>
+                  <div class="kebab-wrap">
+                    <button class="btn btn-sm kebab-btn" title="Actions" (click)="$event.stopPropagation(); toggleMenu(c.code, $event)">&#8942;</button>
+                    @if (openMenuFor() === c.code) {
+                      <div class="kebab-menu" [style.position]="'fixed'" [style.top.px]="menuPos()?.top" [style.right.px]="menuPos()?.right" (click)="$event.stopPropagation()">
+                        @if (c.status !== 'Archived') {
+                          <button type="button" (click)="manage(c); closeMenu()">Stages &amp; qualifiers</button>
+                          <button type="button" (click)="openEdit(c); closeMenu()">Edit</button>
+                          <button type="button" (click)="archive(c); closeMenu()">Archive</button>
+                        } @else {
+                          <small>Archived — read-only. No unarchive action.</small>
+                        }
+                        <button type="button" class="danger" (click)="remove(c); closeMenu()">Delete</button>
+                      </div>
+                    }
                   </div>
                 </td>
               </tr>
@@ -304,6 +491,14 @@ function errText(err: unknown): string {
         </div>
       }
     }
+
+    @if (libraryOpen) {
+      <app-media-library-modal
+        folder="competitions"
+        (selected)="onImageSelected($event)"
+        (close)="libraryOpen = false"
+      />
+    }
   `,
   styles: [ADMIN_UI_CSS],
 })
@@ -317,19 +512,134 @@ export class AdminCompetitionsPage {
   readonly gradeOptions = signal<string[]>([]);
   search = '';
   status = '';
+
+  // Row actions "3 dots" menu — see .kebab-* in ADMIN_UI_CSS. Positioned
+  // via computed fixed coordinates, not the CSS's own position:absolute
+  // default, so it renders above .tbl-wrap's overflow:auto instead of
+  // being clipped by it — see toggleMenu().
+  readonly openMenuFor = signal<string | null>(null);
+  protected readonly menuPos = signal<{ top: number; right: number } | null>(null);
+
+  @HostListener('document:click')
+  protected closeMenu(): void {
+    this.openMenuFor.set(null);
+    this.menuPos.set(null);
+  }
+
+  protected toggleMenu(code: string, event: MouseEvent): void {
+    if (this.openMenuFor() === code) {
+      this.closeMenu();
+      return;
+    }
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    this.menuPos.set({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
+    this.openMenuFor.set(code);
+  }
   error = '';
   formOpen = false;
   editing = false;
   editingCode = '';
   modalError = '';
   mgr: CompRow | null = null;
-  mgrTab: 'stages' | 'qual' = 'stages';
+  mgrTab: 'stages' | 'qual' | 'mix' = 'stages';
+
+  // ---- Question mix tab (all signals — async results must re-render) ----
+  readonly mixInfo = signal<MixInfo | null>(null);
+  readonly mixDraft = signal<{ category: string; count: number }[]>([]);
+  readonly mixDirty = signal(false);
+  readonly mixBusy = signal(false);
+  readonly mixErr = signal('');
+  readonly mixMsg = signal('');
+  readonly mixTotal = computed(() => this.mixDraft().reduce((n, r) => n + (Number(r.count) || 0), 0));
+  readonly mixUnused = computed(() => {
+    const used = new Set(this.mixDraft().map((r) => r.category));
+    return (this.mixInfo()?.pool ?? []).filter((p) => !used.has(p.category));
+  });
+  readonly mixCanAdd = computed(() => {
+    const used = new Set(this.mixDraft().map((r) => r.category));
+    return (this.mixInfo()?.categories ?? []).some((c) => !used.has(c));
+  });
+
+  readonly mixWithheld = computed(() => (this.mixInfo()?.pool ?? []).filter((p) => (p.withheld ?? 0) > 0));
+
+  /** Of a category's available questions, how many are served as part of a Question Group. */
+  mixInGroups(category: string): number {
+    return this.mixInfo()?.pool.find((p) => p.category === category)?.inGroups ?? 0;
+  }
+
+  mixAvailable(category: string): number {
+    return this.mixInfo()?.pool.find((p) => p.category === category)?.available ?? 0;
+  }
+
+  /** Categories a row may pick: its own current one plus any not used elsewhere. */
+  mixCategoryOptions(index: number): string[] {
+    const usedElsewhere = new Set(this.mixDraft().filter((_, i) => i !== index).map((r) => r.category));
+    return (this.mixInfo()?.categories ?? []).filter((c) => !usedElsewhere.has(c));
+  }
+
+  loadMix() {
+    if (!this.mgr) return;
+    this.mixErr.set('');
+    this.mixMsg.set('');
+    this.api.get<MixInfo>(`/competitions/${this.mgr.code}/question-mix`).subscribe({
+      next: (r) => this.applyMix(r),
+      error: (e) => this.mixErr.set(errText(e)),
+    });
+  }
+
+  private applyMix(r: MixInfo) {
+    this.mixInfo.set(r);
+    this.mixDraft.set(r.rules.map((x) => ({ category: x.category, count: x.count })));
+    this.mixDirty.set(false);
+  }
+
+  private editMix(fn: (rows: { category: string; count: number }[]) => { category: string; count: number }[]) {
+    this.mixDraft.update((rows) => fn(rows.map((r) => ({ ...r }))));
+    this.mixDirty.set(true);
+    this.mixMsg.set('');
+  }
+
+  setMixCategory(i: number, category: string) {
+    this.editMix((rows) => { rows[i].category = category; return rows; });
+  }
+
+  setMixCount(i: number, count: number | null) {
+    this.editMix((rows) => { rows[i].count = Number(count) || 0; return rows; });
+  }
+
+  addMixRow() {
+    const used = new Set(this.mixDraft().map((r) => r.category));
+    const next = (this.mixInfo()?.categories ?? []).find((c) => !used.has(c)) ?? '';
+    this.editMix((rows) => [...rows, { category: next, count: 10 }]);
+  }
+
+  removeMixRow(i: number) {
+    this.editMix((rows) => rows.filter((_, idx) => idx !== i));
+  }
+
+  saveMix() {
+    if (!this.mgr || this.mixBusy()) return;
+    const rows = this.mixDraft();
+    if (rows.some((r) => !r.category)) { this.mixErr.set('Choose a category for every row, or remove the empty row.'); return; }
+    if (rows.some((r) => !Number.isInteger(r.count) || r.count < 1)) { this.mixErr.set('Each category needs a whole number of questions, at least 1.'); return; }
+    this.mixBusy.set(true);
+    this.mixErr.set('');
+    this.api.put<MixInfo>(`/competitions/${this.mgr.code}/question-mix`, { rules: rows }).subscribe({
+      next: (r) => {
+        this.mixBusy.set(false);
+        this.applyMix(r);
+        this.mixMsg.set(rows.length ? 'Saved — applies to new attempts.' : 'Mix cleared — every tagged question is used again.');
+      },
+      error: (e) => { this.mixBusy.set(false); this.mixErr.set(errText(e)); },
+    });
+  }
   qualStage: number | null = null;
   stageFormOpen = false;
   editingStage = false;
   stageId: number | null = null;
   stageErr = '';
-  form: CompForm = { title: '', grades: '', status: 'Draft', startDate: '', endDate: '', isMulti: false, description: '' };
+  form: CompForm = { title: '', grades: '', status: 'Draft', startDate: '', endDate: '', isMulti: false, description: '', photoUrl: '', scoringMode: 'PERCENT', certificateMode: 'INSTANT' };
+  libraryOpen = false;
 
   constructor() {
     this.loadGrades();
@@ -358,7 +668,7 @@ export class AdminCompetitionsPage {
   }
 
   statusBadge(s: string) {
-    return { Draft: 'grey', Open: 'blue', Live: 'green', Closed: 'red' }[s] ?? 'grey';
+    return { Draft: 'grey', Open: 'blue', Live: 'green', Closed: 'red', Archived: 'grey' }[s] ?? 'grey';
   }
 
   qualBadge(s: string) {
@@ -391,7 +701,7 @@ export class AdminCompetitionsPage {
   }
 
   openCreate() {
-    this.form = { title: '', grades: '', status: 'Draft', startDate: '', endDate: '', isMulti: false, description: '' };
+    this.form = { title: '', grades: '', status: 'Draft', startDate: '', endDate: '', isMulti: false, description: '', photoUrl: '', scoringMode: 'PERCENT', certificateMode: 'INSTANT' };
     this.editing = false;
     this.editingCode = '';
     this.modalError = '';
@@ -407,11 +717,43 @@ export class AdminCompetitionsPage {
       endDate: this.slice(c.endDate),
       isMulti: c.isMulti,
       description: '',
+      photoUrl: '',
+      scoringMode: 'PERCENT',
+      certificateMode: 'INSTANT',
     };
     this.editing = true;
     this.editingCode = c.code;
     this.modalError = '';
     this.formOpen = true;
+    // The list row doesn't carry description/photo/scoring settings — fetch
+    // the full record so editing doesn't silently blank/reset them on save.
+    this.api.get<CompDetail>(`/competitions/${c.code}`).subscribe({
+      next: (full) => {
+        if (this.editingCode !== c.code) return; // form was reopened/closed meanwhile
+        this.form.description = full.description ?? '';
+        this.form.photoUrl = full.photoUrl ?? '';
+        this.form.scoringMode = full.scoringMode ?? 'PERCENT';
+        this.form.certificateMode = full.certificateMode ?? 'INSTANT';
+      },
+      error: () => {
+        /* form still usable with blank description/photo; save() would just not change them */
+      },
+    });
+  }
+
+  openLibrary() {
+    this.libraryOpen = true;
+  }
+
+  photoFileName(url: string): string {
+    if (!url) return '';
+    const clean = url.split('?')[0];
+    return clean.split('/').pop() ?? clean;
+  }
+
+  onImageSelected(url: string) {
+    this.form.photoUrl = url;
+    this.libraryOpen = false;
   }
 
   save() {
@@ -424,6 +766,9 @@ export class AdminCompetitionsPage {
       endDate: this.form['endDate'],
       isMulti: this.form['isMulti'],
       description: this.form['description'] || undefined,
+      photoUrl: this.form['photoUrl'] || undefined,
+      scoringMode: this.form['scoringMode'],
+      certificateMode: this.form['certificateMode'],
     };
     const req = this.editing
       ? this.api.patch(`/competitions/${this.editingCode}`, body)
@@ -449,11 +794,30 @@ export class AdminCompetitionsPage {
     });
   }
 
+  /** Soft-remove — same one-way convention as Student.archived. Nothing
+   * is deleted; the competition just drops out of the default list
+   * (still reachable via the Archived status filter) and becomes
+   * read-only here. There is deliberately no unarchive action. */
+  archive(c: CompRow) {
+    if (!confirm(`Archive competition ${c.code} — ${c.title}? It will be hidden from the default list and become read-only. This cannot be undone from here.`)) return;
+    this.api.patch(`/competitions/${c.code}`, { status: 'Archived' }).subscribe({
+      next: () => this.load(),
+      error: (e) => {
+        this.error = errText(e);
+      },
+    });
+  }
+
   manage(c: CompRow) {
     this.mgr = c;
     this.mgrTab = 'stages';
     this.qualStage = null;
     this.stageFormOpen = false;
+    this.mixInfo.set(null);
+    this.mixDraft.set([]);
+    this.mixDirty.set(false);
+    this.mixErr.set('');
+    this.mixMsg.set('');
     this.loadStages();
   }
 
@@ -475,7 +839,16 @@ export class AdminCompetitionsPage {
     });
   }
 
-  sf: { position: number; name: string; mode: string; passMark: number; isFree: boolean; price: number; description: string } = {
+  sf: {
+    position: number;
+    name: string;
+    mode: string;
+    passMark: number;
+    isFree: boolean;
+    price: number;
+    description: string;
+    maxQualifiers: number | null;
+  } = {
     position: 1,
     name: '',
     mode: 'Online',
@@ -483,6 +856,7 @@ export class AdminCompetitionsPage {
     isFree: true,
     price: 0,
     description: '',
+    maxQualifiers: null,
   };
 
   openStage(s?: Stage) {
@@ -498,12 +872,13 @@ export class AdminCompetitionsPage {
         isFree: s.isFree,
         price: Number(s.price),
         description: s.description ?? '',
+        maxQualifiers: s.maxQualifiers,
       };
     } else {
       this.editingStage = false;
       this.stageId = null;
       const nextPos = this.stages().length ? Math.max(...this.stages().map((x) => x.position)) + 1 : 1;
-      this.sf = { position: nextPos, name: '', mode: 'Online', passMark: 40, isFree: true, price: 0, description: '' };
+      this.sf = { position: nextPos, name: '', mode: 'Online', passMark: 40, isFree: true, price: 0, description: '', maxQualifiers: null };
     }
     this.stageFormOpen = true;
   }
@@ -519,6 +894,7 @@ export class AdminCompetitionsPage {
       isFree: this.sf.isFree,
       price: Number(this.sf.price),
       description: this.sf.description || undefined,
+      maxQualifiers: this.sf.maxQualifiers ? Number(this.sf.maxQualifiers) : null,
     };
     const req = this.editingStage
       ? this.api.patch(`/competitions/${this.mgr.code}/stages/${this.stageId}`, body)
@@ -544,4 +920,5 @@ export class AdminCompetitionsPage {
       },
     });
   }
+
 }

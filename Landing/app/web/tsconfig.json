@@ -18,7 +18,8 @@
       "@shared/*": ["./src/app/shared/*"],
       "@public/*": ["./src/app/features/public/*"],
       "@account/*": ["./src/app/features/account/*"],
-      "@admin/*": ["./src/app/features/admin/*"]
+      "@admin/*": ["./src/app/features/admin/*"],
+      "@school/*": ["./src/app/features/school/*"]
     }
   },
   "angularCompilerOptions": {

@@ -61,8 +61,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private logoutAndThrow(): Observable<never> {
     const wasAdmin = this.auth.isAdmin;
+    const wasPanel = this.auth.isPanel;
     this.auth.logout();
-    this.router.navigate([wasAdmin ? '/admin/login' : '/login']);
+    this.router.navigate([wasAdmin ? '/admin/login' : wasPanel ? '/panel/login' : '/login']);
     return throwError(() => new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' }));
   }
 }

@@ -1,14 +1,45 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 
-const NAV = [
-  { section: 'Overview', items: [{ label: 'Dashboard', link: 'dashboard', mod: 'dash' }] },
+/**
+ * The first admin section the given account actually has access to, in
+ * sidebar order — the safe redirect target after login instead of always
+ * assuming /admin/dashboard, which most admins DO have but isn't
+ * guaranteed (an account without the 'dash' module would otherwise land
+ * straight on /admin/forbidden immediately after signing in, having done
+ * nothing wrong). Falls back to /admin/forbidden only for the genuine
+ * edge case of an account with zero modules granted at all.
+ */
+export function firstAccessibleAdminPath(auth: AuthService): string {
+  for (const g of NAV) {
+    for (const item of g.items) {
+      if (auth.hasModule(item.mod)) return `/admin/${item.link}`;
+    }
+  }
+  return '/admin/forbidden';
+}
+
+// Exported so AdminUsersPage's Module Access field can build its checkbox
+// list straight from this same structure instead of a separately
+// maintained set of codes — this IS the definitive list of what a module
+// code actually grants, so there's no way for the two to drift apart.
+export const NAV = [
+  {
+    section: 'Overview',
+    items: [
+      { label: 'Dashboard', link: 'dashboard', mod: 'dash' },
+    ],
+  },
   {
     section: 'Competitions',
     items: [
       { label: 'Competitions', link: 'competitions', mod: 'comp' },
       { label: 'Prizes & Awards', link: 'prizes', mod: 'prize' },
+      { label: 'Scorecard Setup', link: 'scorecard', mod: 'sc' },
+      { label: 'Panels', link: 'panel', mod: 'pn' },
+      { label: 'Report Release', link: 'scorecard/reports', mod: 'rl' },
+      { label: 'Wording Approvals', link: 'scorecard/content', mod: 'scap' },
       { label: 'Leaderboard', link: 'leaderboard', mod: 'lb' },
       { label: 'Results', link: 'results', mod: 'res' },
     ],
@@ -19,6 +50,7 @@ const NAV = [
       { label: 'Registrations', link: 'registrations', mod: 'reg' },
       { label: 'Payment History', link: 'payments', mod: 'pay' },
       { label: 'Schools', link: 'schools', mod: 'sch' },
+      { label: 'Mass Email', link: 'broadcasts', mod: 'bcast' },
       { label: 'Classes & Grades', link: 'grades', mod: 'gr' },
     ],
   },
@@ -26,7 +58,11 @@ const NAV = [
     section: 'Content',
     items: [
       { label: 'Question Bank', link: 'questions', mod: 'q' },
+      { label: 'Question Groups', link: 'question-groups', mod: 'q' },
+      { label: 'Question Categories', link: 'question-categories', mod: 'qc' },
+      { label: 'Assessments', link: 'assessments', mod: 'asm' },
       { label: 'Exam Dates', link: 'exams', mod: 'ex' },
+      { label: 'Exam Batches', link: 'exam-batches', mod: 'exb' },
       { label: 'Grievances', link: 'grievances', mod: 'gri' },
       { label: 'Notifications', link: 'notifications', mod: 'nt' },
     ],
@@ -34,6 +70,7 @@ const NAV = [
   {
     section: 'Management',
     items: [
+      { label: 'FAQs', link: 'faqs', mod: 'faq' },
       { label: 'Announcements', link: 'announcements', mod: 'ann' },
       { label: 'News', link: 'news', mod: 'news' },
       { label: 'Gallery', link: 'gallery', mod: 'gal' },
@@ -45,31 +82,38 @@ const NAV = [
       { label: 'Sponsors', link: 'sponsors', mod: 'spon' },
       { label: 'Sponsorship Plans', link: 'plans', mod: 'plan' },
       { label: 'Admin Users', link: 'admins', mod: 'ad' },
+      { label: 'Site Settings', link: 'settings', mod: 'set' },
+      { label: 'Message Templates', link: 'messaging', mod: 'msg' },
+      { label: 'Certificate Queue', link: 'certificate-queue', mod: 'certq' },
     ],
   },
 ];
-
-const MENU = ['dash', 'comp', 'prize', 'lb', 'res', 'reg', 'pay', 'sch', 'gr', 'q', 'ex', 'gri', 'nt', 'ann', 'news', 'gal', 'spon', 'plan', 'ad'];
 
 @Component({
   selector: 'app-admin-shell',
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   template: `
-    <aside class="sb">
-      <a class="sb-brand" routerLink="/admin">India Mind League <span class="sb-tag">Admin</span></a>
+    @if (mobileNavOpen()) {
+      <div class="sb-backdrop" (click)="closeMobileNav()"></div>
+    }
+    <aside class="sb" [class.open]="mobileNavOpen()">
+      <a class="sb-brand" routerLink="/admin" (click)="closeMobileNav()">India Mind League <span class="sb-tag">Admin</span></a>
       <nav class="sb-nav">
-        @for (group of groups; track group.section) {
+        @for (group of groups(); track group.section) {
           <div class="sb-sec">{{ group.section }}</div>
           @for (item of group.items; track item.link) {
-            <a [routerLink]="['/admin', item.link]" routerLinkActive="active">{{ item.label }}</a>
+            <a [routerLink]="['/admin', item.link]" routerLinkActive="active" (click)="closeMobileNav()">{{ item.label }}</a>
           }
         }
       </nav>
-      <a class="sb-site" routerLink="/">↗ View website</a>
+      <a class="sb-site" routerLink="/" (click)="closeMobileNav()">↗ View website</a>
     </aside>
     <div class="main">
       <header class="topbar">
+        <button class="menu-btn" type="button" (click)="mobileNavOpen.set(!mobileNavOpen())" [attr.aria-expanded]="mobileNavOpen()" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
         <h1 class="tb-title">{{ currentLabel() }}</h1>
         <div class="tb-right">
           <span class="tb-role">{{ roleLabel() }}</span>
@@ -180,6 +224,21 @@ const MENU = ['dash', 'comp', 'prize', 'lb', 'res', 'reg', 'pay', 'sch', 'gr', '
       }
       .tb-title { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.01em; margin: 0; }
       .tb-right { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+      .menu-btn {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid var(--line-2);
+        background: rgba(255, 255, 255, 0.05);
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .menu-btn span { display: block; width: 16px; height: 2px; margin: 0 auto; background: var(--text); border-radius: 2px; }
+      .sb-backdrop { display: none; }
       .tb-role {
         font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
         color: var(--gold-2); background: rgba(232, 182, 74, 0.12); border: 1px solid rgba(232, 182, 74, 0.35);
@@ -198,8 +257,34 @@ const MENU = ['dash', 'comp', 'prize', 'lb', 'res', 'reg', 'pay', 'sch', 'gr', '
       .content { padding: 1.4rem; max-width: 1180px; width: 100%; }
       @media (max-width: 900px) {
         :host { grid-template-columns: 1fr; }
-        .sb { display: none; }
+        .menu-btn { display: flex; }
+        .sb {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 60;
+          width: min(78vw, 280px);
+          transform: translateX(-100%);
+          transition: transform 0.22s ease;
+          box-shadow: 8px 0 24px rgba(0, 0, 0, 0.4);
+        }
+        .sb.open { transform: translateX(0); }
+        .sb-backdrop {
+          display: block;
+          position: fixed;
+          inset: 0;
+          z-index: 50;
+          background: rgba(4, 9, 20, 0.6);
+          backdrop-filter: blur(2px);
+        }
+        .topbar { padding: 0.7rem 1rem; gap: 0.6rem; }
+        .tb-title { font-size: 1rem; }
+        .tb-name { display: none; }
+        .tb-right { gap: 0.55rem; }
         .content { padding: 1rem; }
+      }
+      @media (max-width: 420px) {
+        .tb-role { display: none; }
       }
     `,
   ],
@@ -207,10 +292,17 @@ const MENU = ['dash', 'comp', 'prize', 'lb', 'res', 'reg', 'pay', 'sch', 'gr', '
 export class AdminShell {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
-  protected readonly groups = NAV.map((g) => ({
-    section: g.section,
-    items: g.items.filter((i) => this.auth.hasModule(i.mod)),
-  }));
+  // A real computed(), not a plain field initializer — this must stay in
+  // sync with the signed-in admin's modules for the lifetime of the app,
+  // not just whatever hasModule() happened to return the one time
+  // AdminShell was first constructed (it's mounted once and reused across
+  // every /admin/* child navigation, never destroyed in between).
+  protected readonly groups = computed(() =>
+    NAV.map((g) => ({
+      section: g.section,
+      items: g.items.filter((i) => this.auth.hasModule(i.mod)),
+    })).filter((g) => g.items.length > 0),
+  );
 
   protected name() {
     return this.auth.user()?.name ?? 'Admin';
@@ -226,7 +318,9 @@ export class AdminShell {
   }
 
   protected currentLabel() {
-    const seg = this.router.url.split('/').pop() ?? 'dashboard';
+    // The section is the segment after /admin/ — not the last one, which is an id on detail pages.
+    const seg = this.router.url.split('?')[0].split('/')[2] ?? 'dashboard';
+    if (seg === 'forbidden') return 'Access Denied';
     for (const g of NAV) {
       const found = g.items.find((i) => i.link === seg);
       if (found) return found.label;
@@ -241,5 +335,14 @@ export class AdminShell {
 
   protected hasAccess(mod: string) {
     return this.auth.hasModule(mod);
+  }
+
+  // Off-canvas below 900px (see the .sb media-query rules) — a plain field
+  // toggle is enough since the drawer only ever reflects user taps, never
+  // route state.
+  protected readonly mobileNavOpen = signal(false);
+
+  protected closeMobileNav() {
+    this.mobileNavOpen.set(false);
   }
 }

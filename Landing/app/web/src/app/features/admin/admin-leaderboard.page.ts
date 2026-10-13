@@ -24,8 +24,8 @@ interface LbRow {
     <div class="bar">
       <select class="filter" [(ngModel)]="comp" (ngModelChange)="load()">
         <option value="">All competitions</option>
-        @for (c of comps(); track c) {
-          <option [value]="c">{{ c }}</option>
+        @for (c of comps(); track c.code) {
+          <option [value]="c.code">{{ c.title }}</option>
         }
       </select>
       <div class="grow"></div>
@@ -70,12 +70,15 @@ interface LbRow {
 export class AdminLeaderboardPage {
   private readonly api = inject(ApiService);
   readonly rows = signal<LbRow[]>([]);
-  readonly comps = signal<string[]>([]);
+  readonly comps = signal<{ code: string; title: string }[]>([]);
   comp = '';
 
   constructor() {
-    this.api.get<Array<{ code: string }>>('/competitions', { limit: 100 }).subscribe({
-      next: (r) => this.comps.set((r as unknown as { data: Array<{ code: string }> }).data.map((c) => c.code)),
+    this.api.get<Array<{ code: string; title: string }>>('/competitions', { limit: 100 }).subscribe({
+      next: (r) =>
+        this.comps.set(
+          (r as unknown as { data: Array<{ code: string; title: string }> }).data.map((c) => ({ code: c.code, title: c.title })),
+        ),
       error: () => undefined,
     });
     this.load();

@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
   IsArray,
   IsBoolean,
   IsIn,
@@ -8,6 +9,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Max,
   MaxLength,
   Min,
   ValidateNested,
@@ -60,7 +62,7 @@ export class CreateCompetitionDto {
   endDate!: string;
 
   @IsOptional()
-  @IsIn(['Draft', 'Open', 'Live', 'Closed'])
+  @IsIn(['Draft', 'Open', 'Live', 'Closed', 'Archived'])
   status?: string;
 
   @IsOptional()
@@ -70,6 +72,18 @@ export class CreateCompetitionDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsString()
+  photoUrl?: string;
+
+  @IsOptional()
+  @IsIn(['PERCENT', 'GRADE', 'FRACTION'])
+  scoringMode?: string;
+
+  @IsOptional()
+  @IsIn(['INSTANT', 'MANUAL'])
+  certificateMode?: string;
 
   @IsOptional()
   @IsArray()
@@ -98,7 +112,7 @@ export class PatchCompetitionDto {
   endDate?: string;
 
   @IsOptional()
-  @IsIn(['Draft', 'Open', 'Live', 'Closed'])
+  @IsIn(['Draft', 'Open', 'Live', 'Closed', 'Archived'])
   status?: string;
 
   @IsOptional()
@@ -108,6 +122,18 @@ export class PatchCompetitionDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsString()
+  photoUrl?: string;
+
+  @IsOptional()
+  @IsIn(['PERCENT', 'GRADE', 'FRACTION'])
+  scoringMode?: string;
+
+  @IsOptional()
+  @IsIn(['INSTANT', 'MANUAL'])
+  certificateMode?: string;
 }
 
 export class CreateStageDto {
@@ -138,6 +164,14 @@ export class CreateStageDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  // null/omitted = no cap, every attempt clearing passMark qualifies
+  // immediately (today's behavior). Set = qualifying is deferred to a
+  // ranked selection run once the stage closes — see SelectionService.
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  maxQualifiers?: number;
 }
 
 export class PatchStageDto {
@@ -166,6 +200,11 @@ export class PatchStageDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  maxQualifiers?: number | null;
 }
 
 export class CreatePrizeDto {
@@ -210,4 +249,29 @@ export class PatchPrizeDto {
   @IsOptional()
   @IsString()
   note?: string;
+}
+
+// One row of a competition's question mix: how many questions of this
+// category each student is served. See CompetitionQuestionRule and
+// StudentService.drawQuestions.
+export class QuestionMixRuleDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(20)
+  category!: string;
+
+  @IsInt()
+  @Min(1)
+  @Max(500)
+  count!: number;
+}
+
+// PUT replaces the whole mix; an empty list clears it (back to "use every
+// tagged question", the original behaviour).
+export class PutQuestionMixDto {
+  @IsArray()
+  @ArrayMaxSize(30)
+  @ValidateNested({ each: true })
+  @Type(() => QuestionMixRuleDto)
+  rules!: QuestionMixRuleDto[];
 }

@@ -16,6 +16,7 @@ import type {
   RegistrationView,
 } from '../student-data.service';
 import { ACCOUNT_UI_CSS } from '../account-ui';
+import { AssessmentsDataService, type AssessmentSummary } from '../assessments/assessments-data.service';
 import {
   countdownParts,
   formatDate,
@@ -54,6 +55,8 @@ import {
             </p>
             <div class="wel-cta">
               <a routerLink="/account/schedules" class="btn btn-primary">View Schedules</a>
+              <a routerLink="/demo-exam" class="btn btn-ghost">Try the Demo Exam</a>
+              <a routerLink="/system-requirements" class="btn btn-ghost">System Requirements</a>
               <a routerLink="/account/help-desk" class="btn btn-ghost">Get Support</a>
             </div>
           </div>
@@ -127,7 +130,12 @@ import {
               </div>
               @if (nextAction()) {
                 <div class="next-act" [class.na-pay]="nextAction()!.kind === 'pay'" [class.na-done]="nextAction()!.kind === 'done'">
-                  <span class="na-ic">{{ nextAction()!.kind === 'pay' ? '&#128179;' : nextAction()!.kind === 'done' ? '&#127942;' : '&#9989;' }}</span>
+                  <!-- real Unicode characters, not HTML entity strings — a
+                       string literal like '&#128179;' inside a {{ }}
+                       expression is set as plain text content (no entity
+                       decoding), so it would show that literal text
+                       instead of the 💳 glyph it's meant to be. -->
+                  <span class="na-ic">{{ nextAction()!.kind === 'pay' ? '💳' : nextAction()!.kind === 'done' ? '🏆' : '✅' }}</span>
                   <div class="na-body">
                     <b>{{ nextAction()!.title }}</b>
                     <small>{{ nextAction()!.text }}</small>
@@ -137,6 +145,29 @@ import {
                   }
                 </div>
               }
+            </div>
+          }
+
+          <!-- assessments: unscored reflections, separate from competition exams -->
+          @if (assessments().length) {
+            <div class="card wide">
+              <div class="card-head">
+                <h3>Assessments</h3>
+                <a routerLink="/account/assessments" class="dl-go">View all</a>
+              </div>
+              <ul class="dlist">
+                @for (a of assessments(); track a.slug) {
+                  <li>
+                    <span class="dl-ic iq">&#129504;</span>
+                    <div>
+                      <b>{{ a.title }}</b>
+                      <small>{{ a.questionCount }} scenarios · about 8 minutes · not an exam, no marks</small>
+                    </div>
+                    <span class="tag" [class.tag-green]="a.completed" [class.tag-muted]="!a.completed">{{ a.completed ? 'Completed' : 'New' }}</span>
+                    <a [routerLink]="['/account/assessments', a.slug]" class="btn btn-sm btn-primary">{{ a.completed ? 'View result →' : 'Start →' }}</a>
+                  </li>
+                }
+              </ul>
             </div>
           }
 
@@ -160,7 +191,9 @@ import {
                     <span class="tag" [class.tag-green]="exam.status === 'Live'" [class.tag-muted]="exam.status !== 'Live'">
                       {{ exam.status }}
                     </span>
-                    @if (exam.status === 'Live') {
+                    @if (exam.attemptCode) {
+                      <a routerLink="/account/results/{{ exam.attemptCode }}" class="btn btn-sm btn-primary">View Result →</a>
+                    } @else if (exam.status === 'Live') {
                       <a routerLink="/exam/{{ exam.code }}" class="btn btn-sm btn-primary">Start →</a>
                     }
                   </li>
@@ -180,13 +213,15 @@ import {
             @if (recentAttempts().length) {
               <ul class="dlist">
                 @for (attempt of recentAttempts(); track attempt.code) {
-                  <li>
-                    <span class="dl-ic iq">&#127891;</span>
-                    <div>
-                      <b>{{ attempt.stage?.name ?? 'Qualifier' }}</b>
-                      <small>{{ attempt.competition.title }} · {{ formatDate(attempt.finishedAt) }}</small>
-                    </div>
-                    <span class="dl-go">{{ formatScore(attempt.score) }}/{{ formatScore(attempt.total) }}</span>
+                  <li class="dlist-li-link">
+                    <a class="dlist-row" routerLink="/account/results/{{ attempt.code }}">
+                      <span class="dl-ic iq">&#127891;</span>
+                      <div>
+                        <b>{{ attempt.stage?.name ?? 'Qualifier' }}</b>
+                        <small>{{ attempt.competition.title }} · {{ formatDate(attempt.finishedAt) }}</small>
+                      </div>
+                      <span class="dl-go">{{ formatScore(attempt.score) }}/{{ formatScore(attempt.total) }}</span>
+                    </a>
                   </li>
                 }
               </ul>
@@ -197,6 +232,40 @@ import {
         </section>
       }
     </div>
+
+    @if (showDemoModal()) {
+      <div class="demo-backdrop" (click)="dismissDemoModal()">
+        <div class="demo-modal" role="dialog" aria-label="Try the Demo Exam" (click)="$event.stopPropagation()">
+          <div class="demo-modal-hero">🎉</div>
+          <h2>Congratulations, {{ firstName() }}!</h2>
+          <p class="demo-modal-lead">You're officially part of the India Mind League. Before your real exam day, try a short practice run so nothing catches you off guard.</p>
+
+          <div class="demo-dos-donts">
+            <div class="dd-col dd-do">
+              <h4>&#9989; Do</h4>
+              <ul>
+                <li>Keep the exam tab open and full-screen the whole time</li>
+                <li>Answer each question before its own timer runs out</li>
+                <li>Use the question palette to jump between questions</li>
+              </ul>
+            </div>
+            <div class="dd-col dd-dont">
+              <h4>&#128683; Don't</h4>
+              <ul>
+                <li>Switch to another tab or window — one warning, then it auto-submits</li>
+                <li>Refresh or close the page mid-exam</li>
+                <li>Wait for a question's timer to lapse — it's marked unanswered</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="demo-modal-cta">
+            <a class="btn btn-gold-solid btn-lg" routerLink="/demo-exam" (click)="dismissDemoModal()">Take the Demo Exam — See How It Works →</a>
+            <button type="button" class="linkbtn" (click)="dismissDemoModal()">Maybe later</button>
+          </div>
+        </div>
+      </div>
+    }
   `,
   styles: [
     ACCOUNT_UI_CSS,
@@ -257,16 +326,42 @@ import {
         .wel-side .exam-clock { width: 100%; }
         .prog-steps { grid-template-columns: repeat(2, 1fr); }
       }
+      .demo-backdrop { position: fixed; inset: 0; background: rgba(5, 5, 12, 0.72); backdrop-filter: blur(4px);
+        display: grid; place-items: center; z-index: 200; padding: 1.2rem; }
+      .demo-modal { background: linear-gradient(180deg, var(--surface-2), var(--surface)); border: 1px solid var(--line-2);
+        border-radius: 24px; padding: clamp(1.6rem, 4vw, 2.4rem); max-width: 560px; width: 100%; box-shadow: var(--shadow), var(--glow);
+        text-align: center; max-height: 90vh; overflow-y: auto; }
+      .demo-modal-hero { font-size: 2.8rem; line-height: 1; margin-bottom: 0.6rem; }
+      .demo-modal h2 { font-family: var(--display); font-weight: 800; font-size: 1.6rem; margin-bottom: 0.6rem; }
+      .demo-modal-lead { color: var(--muted); line-height: 1.6; max-width: 46ch; margin: 0 auto 1.4rem; }
+      .demo-dos-donts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: left; margin-bottom: 1.6rem; }
+      .dd-col { border-radius: 14px; padding: 1rem 1.1rem; border: 1px solid var(--line); background: rgba(0, 0, 0, 0.2); }
+      .dd-do { border-color: rgba(52, 211, 153, 0.35); background: rgba(52, 211, 153, 0.06); }
+      .dd-dont { border-color: rgba(251, 113, 133, 0.35); background: rgba(251, 113, 133, 0.06); }
+      .dd-col h4 { font-family: var(--display); font-weight: 700; font-size: 0.88rem; margin-bottom: 0.6rem; }
+      .dd-col ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.45rem; }
+      .dd-col li { font-size: 0.84rem; color: var(--muted); line-height: 1.45; }
+      .demo-modal-cta { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; }
+      .demo-modal-cta .btn { width: 100%; }
+      @media (max-width: 560px) {
+        .demo-dos-donts { grid-template-columns: 1fr; }
+      }
     `,
   ],
 })
 export class AccountDashboardPage implements OnInit, OnDestroy {
   private readonly auth = inject(AuthService);
   private readonly data = inject(StudentDataService);
+  private readonly assessmentsData = inject(AssessmentsDataService);
   protected readonly loading = signal(true);
   protected readonly profile = signal<MeProfile | null>(null);
   protected readonly exams = signal<ExamView[]>([]);
+  protected readonly assessments = signal<AssessmentSummary[]>([]);
   protected readonly cd = signal({ days: '00', hours: '00', mins: '00', secs: '00' });
+  // Shown once, the very first dashboard load after registration — see
+  // markDemoPromptSeen(). A permanent "Try the Demo Exam" button in the
+  // welcome CTA row stays available regardless.
+  protected readonly showDemoModal = signal(false);
 
   private tick?: ReturnType<typeof setInterval>;
 
@@ -360,9 +455,12 @@ export class AccountDashboardPage implements OnInit, OnDestroy {
   }
 
   private load(): void {
+    // Assessments are optional extras: a failure here must never block the dashboard.
+    this.assessmentsData.list().subscribe({ next: (r) => this.assessments.set(r), error: () => this.assessments.set([]) });
     this.data.me().subscribe({
       next: (profile) => {
         this.profile.set(profile);
+        this.showDemoModal.set(!profile.demoPromptSeen);
         this.data.schedules().subscribe({
           next: (exams) => {
             this.exams.set(exams);
@@ -376,6 +474,14 @@ export class AccountDashboardPage implements OnInit, OnDestroy {
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  /** Fires on both the CTA click and the backdrop/"Maybe later" dismiss —
+   * either way this is a one-time prompt, never shown again. */
+  protected dismissDemoModal(): void {
+    if (!this.showDemoModal()) return;
+    this.showDemoModal.set(false);
+    this.data.markDemoPromptSeen().subscribe({ error: () => {} });
   }
 
   protected formatDate = formatDate;

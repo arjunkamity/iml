@@ -9,10 +9,8 @@ export const ACCOUNT_UI_CSS = `
   display: flex; align-items: center; gap: 1.2rem; padding: 0 1.5rem;
   background: rgba(7, 16, 33, 0.86); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
 }
-.acc-top .brand { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.55rem;
-  font-family: var(--display); font-weight: 800; letter-spacing: 0.05em; font-size: 1.02rem; }
-.acc-top .brand .logo { width: 30px; height: 30px; }
-.acc-top .brand .b2 { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.acc-top .brand { flex: 0 0 auto; display: inline-flex; align-items: center; }
+.acc-top .brand .logo { height: 34px; width: auto; }
 .acc-nav { display: flex; align-items: center; gap: 0.15rem; margin: 0 auto; }
 .acc-nav a { position: relative; color: rgba(255, 255, 255, 0.78); font-family: var(--display);
   font-weight: 600; font-size: 0.84rem; letter-spacing: 0.02em; padding: 0.5rem 0.85rem; border-radius: 10px; transition: color 0.2s, background 0.2s; }
@@ -91,6 +89,14 @@ export const ACCOUNT_UI_CSS = `
 .stat b { font-family: var(--display); font-weight: 800; font-size: 1.4rem; line-height: 1; display: block; white-space: nowrap; }
 .stat small { color: var(--muted); font-size: 0.82rem; }
 .stat > div { min-width: 0; }
+/* A stat card showing a title/name instead of a short number (e.g. "Next
+   exam") needs to actually fit — the default big nowrap numeral styling
+   above overflows badly with real text. */
+.stat.stat-text b {
+  font-size: 0.98rem; line-height: 1.3; white-space: normal;
+  overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
 
 /* ---------- badges / tags ---------- */
 .tag { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.22rem 0.6rem; border-radius: 999px;
@@ -130,6 +136,14 @@ td small { color: var(--faint); }
 .dlist { display: grid; gap: 0.7rem; }
 .dlist li { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem; border-radius: 14px;
   background: rgba(0, 0, 0, 0.2); border: 1px solid var(--line); }
+/* A clickable row: the <li> itself goes bare (no box of its own) and the
+   inner <a> carries the same box the plain <li> above has, plus hover
+   affordance — avoids nesting an <a> inside an already-boxed <li>. */
+.dlist li.dlist-li-link { padding: 0; background: none; border: none; }
+.dlist a.dlist-row { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem; border-radius: 14px;
+  background: rgba(0, 0, 0, 0.2); border: 1px solid var(--line); width: 100%;
+  text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.1s; }
+.dlist a.dlist-row:hover { border-color: var(--violet-2); transform: translateY(-1px); }
 .dl-ic { width: 40px; height: 40px; flex: 0 0 auto; border-radius: 12px; display: grid; place-items: center; font-size: 1.2rem; }
 .dl-ic.iq { background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.45); }
 .dl-ic.eq { background: rgba(236, 72, 153, 0.2); border: 1px solid rgba(236, 72, 153, 0.45); }
@@ -155,7 +169,7 @@ td small { color: var(--faint); }
 .field input:focus, .field select:focus, .field textarea:focus { border-color: rgba(139, 92, 246, 0.7); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18); }
 .field input:disabled { opacity: 0.55; }
 .field textarea { resize: vertical; min-height: 110px; }
-.field .hint { color: var(--faint); font-size: 0.8rem; }
+.field .hint, .hint { color: var(--faint); font-size: 0.8rem; }
 .field.error input, .field.error select, .field.error textarea { border-color: rgba(251, 113, 133, 0.6); }
 .err-text { color: var(--red); font-size: 0.8rem; }
 .form-actions { display: flex; align-items: center; gap: 0.7rem; margin-top: 1.2rem; flex-wrap: wrap; }

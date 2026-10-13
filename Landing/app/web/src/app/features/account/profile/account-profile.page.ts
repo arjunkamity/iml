@@ -46,6 +46,24 @@ interface GradeOption {
             </button>
           </div>
 
+          <div class="photo-row">
+            @if (profile()?.photoUrl) {
+              <img class="photo-thumb" [src]="profile()?.photoUrl" alt="Your photo" />
+            } @else {
+              <span class="photo-thumb photo-fallback">{{ initialsOf(profile()?.name) }}</span>
+            }
+            <div class="photo-actions">
+              <label class="btn btn-sm" for="photoFile">{{ uploadingPhoto() ? 'Uploading…' : 'Change Photo' }}</label>
+              <input id="photoFile" type="file" accept="image/png,image/jpeg,image/webp" [disabled]="uploadingPhoto()" (change)="onPhotoSelected($event)" hidden />
+              @if (profile()?.photoUrl) {
+                <button type="button" class="btn btn-sm btn-danger" [disabled]="uploadingPhoto()" (click)="removePhoto()">Remove</button>
+              }
+            </div>
+            @if (photoMsg()) {
+              <span class="photo-msg" [class.err]="!photoOk()">{{ photoMsg() }}</span>
+            }
+          </div>
+
           @if (!editing()) {
             <dl class="kv">
               <dt>Full name</dt><dd>{{ profile()?.name }}</dd>
@@ -90,6 +108,11 @@ interface GradeOption {
                 <div class="field">
                   <label for="phone">Phone</label>
                   <input id="phone" name="phone" type="tel" [(ngModel)]="edit.phone" maxlength="20" />
+                </div>
+                <div class="field" [class.error]="pf.submitted && emailField.invalid">
+                  <label for="email">Email</label>
+                  <input #emailField="ngModel" id="email" name="email" type="email" [(ngModel)]="edit.email" maxlength="190" />
+                  <span class="hint">Used for sign-in and certificate/result emails — changing it takes effect immediately.</span>
                 </div>
                 <div class="field">
                   <label for="parentPhone">Parent phone</label>
@@ -182,6 +205,17 @@ interface GradeOption {
     `
       .acc-av { width: 64px; height: 64px; border-radius: 50%; background: var(--grad); display: grid; place-items: center;
         font-family: var(--display); font-weight: 800; font-size: 1.4rem; color: #0a0820; }
+      .photo-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.3rem; padding-bottom: 1.3rem;
+        border-bottom: 1px solid var(--line, rgba(255,255,255,0.09)); }
+      .photo-thumb { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
+      .photo-fallback { background: var(--grad); display: grid; place-items: center;
+        font-family: var(--display); font-weight: 800; font-size: 1.3rem; color: #0a0820; }
+      .photo-actions { display: flex; align-items: center; gap: 0.6rem; }
+      .photo-actions label.btn { cursor: pointer; }
+      .photo-msg { font-size: 0.82rem; color: #34d399; }
+      .photo-msg.err { color: #fda4af; }
+      .btn-danger { color: #fecdd3; border-color: rgba(251, 113, 133, 0.5); background: rgba(251, 113, 133, 0.12); }
+      .btn-danger:hover { background: rgba(251, 113, 133, 0.22); }
     `,
   ],
 })
@@ -202,6 +236,9 @@ export class AccountProfilePage implements OnInit {
   protected readonly pwMsg = signal('');
   protected readonly pwOk = signal(false);
   protected readonly gradeOptions = signal<string[]>([]);
+  protected readonly uploadingPhoto = signal(false);
+  protected readonly photoMsg = signal('');
+  protected readonly photoOk = signal(false);
 
   protected readonly hasPassword = signal(true);
 
@@ -211,6 +248,7 @@ export class AccountProfilePage implements OnInit {
     gender: '',
     dob: '',
     phone: '',
+    email: '',
     parentPhone: '',
     parent: '',
     school: '',
@@ -236,6 +274,7 @@ export class AccountProfilePage implements OnInit {
           gender: profile.gender ?? '',
           dob: profile.dob ? String(profile.dob).slice(0, 10) : '',
           phone: profile.phone ?? '',
+          email: profile.email ?? '',
           parentPhone: profile.parentPhone ?? '',
           parent: profile.parent ?? '',
           school: profile.school?.name ?? '',
@@ -244,6 +283,45 @@ export class AccountProfilePage implements OnInit {
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
+    });
+  }
+
+  protected onPhotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+    this.uploadingPhoto.set(true);
+    this.photoMsg.set('');
+    this.data.uploadPhoto(file).subscribe({
+      next: (profile) => {
+        this.profile.set(profile);
+        this.uploadingPhoto.set(false);
+        this.photoOk.set(true);
+        this.photoMsg.set('Photo updated.');
+        setTimeout(() => this.photoMsg.set(''), 3000);
+      },
+      error: (err) => {
+        this.uploadingPhoto.set(false);
+        this.photoOk.set(false);
+        this.photoMsg.set(err?.error?.message ?? 'Could not upload your photo.');
+      },
+    });
+  }
+
+  protected removePhoto(): void {
+    this.uploadingPhoto.set(true);
+    this.photoMsg.set('');
+    this.data.removePhoto().subscribe({
+      next: (profile) => {
+        this.profile.set(profile);
+        this.uploadingPhoto.set(false);
+      },
+      error: (err) => {
+        this.uploadingPhoto.set(false);
+        this.photoOk.set(false);
+        this.photoMsg.set(err?.error?.message ?? 'Could not remove your photo.');
+      },
     });
   }
 

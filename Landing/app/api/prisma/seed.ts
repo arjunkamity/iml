@@ -141,6 +141,13 @@ const GRADES = [
   { name: 'All', position: 8 },
 ];
 
+// Admin-managed question categories shown in the Question Bank filter/form.
+const QUESTION_CATEGORIES = [
+  { name: 'IQ', position: 1 },
+  { name: 'EQ', position: 2 },
+  { name: 'Values', position: 3 },
+];
+
 const SCHOOLS = [
   { code: 'S01', name: 'Amity International School, Saket', city: 'New Delhi', contact: '011-4000 0001', coordinator: 'Mrs. R. Khanna' },
   { code: 'S02', name: 'Amity International School, Noida', city: 'Noida', contact: '0120-400 0002', coordinator: 'Mr. S. Bhatia' },
@@ -309,10 +316,16 @@ async function main() {
   await prisma.student.deleteMany();
   await prisma.school.deleteMany();
   await prisma.grade.deleteMany();
+  await prisma.questionCategory.deleteMany();
 
   // ---- grades ----
   for (const g of GRADES) {
     await prisma.grade.create({ data: g });
+  }
+
+  // ---- question categories ----
+  for (const c of QUESTION_CATEGORIES) {
+    await prisma.questionCategory.create({ data: c });
   }
 
   // ---- schools ----

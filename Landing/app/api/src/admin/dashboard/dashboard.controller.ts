@@ -19,4 +19,9 @@ export class DashboardController {
   recent() {
     return this.service.recent();
   }
+
+  @Get('analytics')
+  analytics() {
+    return this.service.analytics();
+  }
 }

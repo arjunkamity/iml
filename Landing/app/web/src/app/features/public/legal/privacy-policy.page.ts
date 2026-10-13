@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
+import { SiteSettingsService } from '@core/services/site-settings.service';
 
 @Component({
   selector: 'app-privacy-policy',
@@ -90,7 +91,7 @@ import { RouterLink } from '@angular/router';
           </p>
 
           <p class="legal-contact">
-            Questions about this policy? Reach us at <a href="mailto:indiamindleague&#64;gmail.com">indiamindleague&#64;gmail.com</a>
+            Questions about this policy? Reach us at <a [href]="'mailto:' + settings().contactEmail">{{ settings().contactEmail }}</a>
             or visit our <a routerLink="/faq">FAQ</a>.
           </p>
         </article>
@@ -101,6 +102,7 @@ import { RouterLink } from '@angular/router';
 export class PrivacyPolicyPage {
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
+  protected readonly settings = inject(SiteSettingsService).settings;
 
   constructor() {
     this.title.setTitle('Privacy Policy — India Mind League');

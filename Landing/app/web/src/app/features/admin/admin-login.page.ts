@@ -1,7 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, isDevMode, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '@core/services/auth.service';
+import { firstAccessibleAdminPath } from './admin-shell';
 
 @Component({
   selector: 'app-admin-login',
@@ -59,12 +60,6 @@ import { AuthService } from '@core/services/auth.service';
             {{ busy ? 'Signing in…' : 'Sign in →' }}
           </button>
         </form>
-
-        <div class="hint">
-          <b>Dev credentials</b>
-          <code>arjun@amity.edu</code> / <code>Admin@123</code> (Super Admin)
-          <div class="hint-more">Editor: <code>priya@amity.edu</code> · Viewer: <code>rahul@amity.edu</code> (disabled)</div>
-        </div>
 
         <p class="alt">Student? <a routerLink="/login">Use the OTP login →</a></p>
       </section>
@@ -240,33 +235,6 @@ import { AuthService } from '@core/services/auth.service';
         opacity: 0.55;
         cursor: not-allowed;
       }
-      .hint {
-        margin-top: 1.3rem;
-        padding: 0.7rem 0.9rem;
-        border-radius: 10px;
-        border: 1px dashed rgba(232, 182, 74, 0.45);
-        background: rgba(232, 182, 74, 0.07);
-        font-size: 0.82rem;
-        color: rgba(244, 242, 255, 0.8);
-        line-height: 1.6;
-      }
-      .hint b {
-        display: block;
-        color: #e8b64a;
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-      }
-      .hint code {
-        background: rgba(0, 0, 0, 0.35);
-        padding: 0.1rem 0.4rem;
-        border-radius: 6px;
-        color: #f5cc5a;
-      }
-      .hint-more {
-        font-size: 0.78rem;
-        opacity: 0.75;
-      }
       .alt {
         text-align: center;
         margin: 1.2rem 0 0;
@@ -293,7 +261,16 @@ export class AdminLoginPage implements OnInit {
 
   ngOnInit(): void {
     if (this.auth.isAuthenticated && this.auth.isAdmin) {
-      this.router.navigate(['/admin']);
+      this.router.navigate([firstAccessibleAdminPath(this.auth)]);
+      return;
+    }
+    // Dev-build convenience only: isDevMode() is false in the actual
+    // production bundle (built with `ng build` / --configuration
+    // production), so this never reaches indiamindleague.com. Matches the
+    // seed admin in prisma/seed.ts (DEV_ADMIN_PASSWORD).
+    if (isDevMode()) {
+      this.email = 'arjun@amity.edu';
+      this.password = 'Admin@123';
     }
   }
 
@@ -304,7 +281,7 @@ export class AdminLoginPage implements OnInit {
     this.auth.adminLogin(this.email.trim(), this.password).subscribe({
       next: () => {
         const next = this.route.snapshot.queryParamMap.get('next');
-        this.router.navigate(next && next.startsWith('/admin') ? [next] : ['/admin']);
+        this.router.navigate(next && next.startsWith('/admin') ? [next] : [firstAccessibleAdminPath(this.auth)]);
       },
       error: (err: unknown) => {
         this.busy = false;

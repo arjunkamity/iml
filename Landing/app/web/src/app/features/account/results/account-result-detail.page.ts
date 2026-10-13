@@ -30,6 +30,26 @@ function levelFor(percent: number, total: number): string {
         <h1 class="acc-title">{{ detail()?.stage ?? 'Qualifier' }}</h1>
         <p class="acc-sub">{{ detail()?.competition }} &middot; Attempt <span class="mono">{{ detail()?.code }}</span> &middot; {{ detail()?.finishedAt ? formatDateTime(detail()!.finishedAt) : '' }}</p>
       </div>
+      @if (detail()?.certificateNumber) {
+        <a class="btn btn-gold" [href]="certificateUrl()" target="_blank" rel="noopener">Download Certificate (PDF)</a>
+      } @else if (detail()?.finishedAt && detail()?.certificateMode === 'MANUAL') {
+        <div class="rd-cert-pending">
+          <small class="rd-cert-err">Certificates for this competition are issued by the administration team once your result has been finalised.</small>
+        </div>
+      } @else if (detail()?.finishedAt) {
+        <!-- Certificates are normally issued automatically a few seconds
+             after submitting — this manual fallback covers the case where
+             that queue is still catching up (e.g. paused while another
+             exam window is open) so a student isn't stuck waiting. -->
+        <div class="rd-cert-pending">
+          <button type="button" class="btn btn-gold" [disabled]="generating()" (click)="generateCertificate()">
+            {{ generating() ? 'Generating…' : 'Generate Certificate' }}
+          </button>
+          @if (certError()) {
+            <small class="rd-cert-err">{{ certError() }}</small>
+          }
+        </div>
+      }
     </div>
 
     @if (loading()) {
@@ -37,10 +57,12 @@ function levelFor(percent: number, total: number): string {
     } @else if (detail()) {
       <div class="rd-summary">
         <div class="rd-ring" [style.--p]="detail()?.percent">
-          <div class="rd-ring-in"><b>{{ detail()?.percent }}%</b><small>Score</small></div>
+          <div class="rd-ring-in"><b>{{ detail()?.scoreDisplay }}</b><small>Result</small></div>
         </div>
         <div class="rd-meta">
-          <div class="rd-stat"><b>{{ detail()?.score }} / {{ detail()?.total }}</b><small>Correct answers</small></div>
+          @if (detail()?.scoringMode === 'FRACTION') {
+            <div class="rd-stat"><b>{{ detail()?.score }} / {{ detail()?.total }}</b><small>Correct answers</small></div>
+          }
           <div class="rd-stat"><b>{{ detail()?.passMark }}%</b><small>Pass mark</small></div>
           <div class="rd-stat"><b>{{ attempted() }} / {{ detail()?.total }}</b><small>Attempted</small></div>
           <div class="rd-stat">
@@ -49,7 +71,7 @@ function levelFor(percent: number, total: number): string {
             } @else if (detail()?.qualified === false) {
               <span class="tag tag-red" style="margin-top:0.35rem">Not qualified</span>
             } @else {
-              <span class="tag" style="margin-top:0.35rem">—</span>
+              <span class="tag" style="margin-top:0.35rem">Pending</span>
             }
           </div>
         </div>
@@ -73,38 +95,45 @@ function levelFor(percent: number, total: number): string {
         }
       </div>
 
-      <h2 class="rd-sec">Question History</h2>
-      <div class="rd-list">
-        @for (q of questions(); track $index; let i = $index) {
-          <div class="rd-q" [class.q-wrong]="!q.isCorrect">
-            <div class="rdq-top">
-              <span class="q-cat" [class]="catClass(q.category)">{{ q.category }}</span>
-              <span class="rdq-num">Q{{ i + 1 }}</span>
-              <span class="rdq-verdict" [class.v-ok]="q.isCorrect" [class.v-no]="!q.isCorrect">{{ q.isCorrect ? 'Correct' : q.given.length ? 'Incorrect' : 'Not answered' }}</span>
-              @if (q.takenSecs != null) {
-                <span class="rdq-secs">&#9201; {{ q.takenSecs }}s</span>
-              }
+      @if (detail()?.showQuestionHistory) {
+        <h2 class="rd-sec">Question History</h2>
+        <div class="rd-list">
+          @for (q of questions(); track $index; let i = $index) {
+            @if (q.groupTitle && (i === 0 || questions()[i - 1].groupCode !== q.groupCode)) {
+              <div class="rd-group">&#9638; Question group: <b>{{ q.groupTitle }}</b></div>
+            }
+            <div class="rd-q" [class.q-wrong]="!q.isCorrect" [class.in-group]="!!q.groupTitle">
+              <div class="rdq-top">
+                <span class="q-cat" [class]="catClass(q.category)">{{ q.category }}</span>
+                <span class="rdq-num">Q{{ i + 1 }}</span>
+                <span class="rdq-verdict" [class.v-ok]="q.isCorrect" [class.v-no]="!q.isCorrect">{{ q.isCorrect ? 'Correct' : q.given.length ? 'Incorrect' : 'Not answered' }}</span>
+                @if (q.takenSecs != null) {
+                  <span class="rdq-secs">&#9201; {{ q.takenSecs }}s</span>
+                }
+              </div>
+              <p class="rdq-text">{{ q.prompt }}</p>
+              <div class="rdq-opts">
+                @for (opt of q.options; track $index; let oi = $index) {
+                  <div class="rdq-opt"
+                    [class.good]="q.correct.includes(oi)"
+                    [class.bad]="q.given.includes(oi) && !q.correct.includes(oi)"
+                    [class.given]="q.given.includes(oi)">
+                    <span class="key">{{ KEYS[oi] }}</span>
+                    <span class="ot">{{ opt }}</span>
+                    @if (q.correct.includes(oi)) {
+                      <span class="mark m-ok">&#10003;</span>
+                    } @else if (q.given.includes(oi)) {
+                      <span class="mark m-no">&#10005;</span>
+                    }
+                  </div>
+                }
+              </div>
             </div>
-            <p class="rdq-text">{{ q.prompt }}</p>
-            <div class="rdq-opts">
-              @for (opt of q.options; track $index; let oi = $index) {
-                <div class="rdq-opt"
-                  [class.good]="q.correct.includes(oi)"
-                  [class.bad]="q.given.includes(oi) && !q.correct.includes(oi)"
-                  [class.given]="q.given.includes(oi)">
-                  <span class="key">{{ KEYS[oi] }}</span>
-                  <span class="ot">{{ opt }}</span>
-                  @if (q.correct.includes(oi)) {
-                    <span class="mark m-ok">&#10003;</span>
-                  } @else if (q.given.includes(oi)) {
-                    <span class="mark m-no">&#10005;</span>
-                  }
-                </div>
-              }
-            </div>
-          </div>
-        }
-      </div>
+          }
+        </div>
+      } @else {
+        <p class="hint" style="margin-top:0.5rem">Question-by-question review isn't available for this result.</p>
+      }
     } @else {
       <div class="empty">
         <div class="big">&#128221;</div>
@@ -118,6 +147,8 @@ function levelFor(percent: number, total: number): string {
     `
     .rd-back { color: var(--violet-2); text-decoration: none; font-weight: 600; }
     .rd-back:hover { text-decoration: underline; }
+    .rd-cert-pending { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; }
+    .rd-cert-err { color: #fda4af; max-width: 220px; text-align: right; }
     .rd-summary {
       display: flex; align-items: center; gap: 1.6rem; padding: 1.4rem 1.6rem; margin-bottom: 1.4rem;
       background: var(--surface); border: 1px solid var(--line); border-radius: 18px; flex-wrap: wrap;
@@ -159,6 +190,8 @@ function levelFor(percent: number, total: number): string {
     .rd-list { display: grid; gap: 0.9rem; }
     .rd-q { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.1rem 1.2rem; }
     .rd-q.q-wrong { border-color: rgba(251, 113, 133, 0.3); }
+    .rd-q.in-group { border-left: 3px solid var(--gold); }
+    .rd-group { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold); margin: 0.5rem 0 -0.3rem; }
     .rdq-top { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
     .q-cat { font-family: var(--display); font-weight: 700; font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase;
       padding: 0.24rem 0.55rem; border-radius: 999px; background: rgba(124, 58, 237, 0.2); border: 1px solid rgba(139, 92, 246, 0.45); color: var(--violet-2); }
@@ -196,13 +229,13 @@ export class AccountResultDetailPage implements OnInit {
 
   protected readonly loading = signal(true);
   protected readonly detail = signal<ResultDetail | null>(null);
+  protected readonly generating = signal(false);
+  protected readonly certError = signal('');
 
   protected readonly questions = computed<ResultQuestion[]>(
     () => this.detail()?.questions ?? [],
   );
-  protected readonly attempted = computed(
-    () => this.questions().filter((q) => q.given.length > 0).length,
-  );
+  protected readonly attempted = computed(() => this.detail()?.attemptedCount ?? 0);
   protected readonly levels = computed(() =>
     (this.detail()?.categories ?? []).map((c) => {
       const percent = c.total ? Math.round((c.correct / c.total) * 100) : 0;
@@ -239,5 +272,32 @@ export class AccountResultDetailPage implements OnInit {
 
   protected catClass(name: string): string {
     return name === 'IQ' ? 'iq' : name === 'EQ' ? 'eq' : 'values';
+  }
+
+  /** Public, unauthenticated endpoint (see PublicController) — a plain
+   * link is enough, no need to fetch/blob it like the admin side does. */
+  protected certificateUrl(): string {
+    return `/api/v1/public/certificates/${this.detail()?.certificateNumber}/download`;
+  }
+
+  /** Manual fallback when the automatic queue hasn't issued one yet — see
+   * the button's comment in the template. Opens the download in a new tab
+   * immediately on success, same as the normal Download Certificate link. */
+  protected generateCertificate(): void {
+    const code = this.detail()?.code;
+    if (!code || this.generating()) return;
+    this.generating.set(true);
+    this.certError.set('');
+    this.data.generateCertificate(code).subscribe({
+      next: ({ certificateNumber }) => {
+        this.generating.set(false);
+        this.detail.update((d) => (d ? { ...d, certificateNumber } : d));
+        window.open(`/api/v1/public/certificates/${certificateNumber}/download`, '_blank', 'noopener');
+      },
+      error: (err) => {
+        this.generating.set(false);
+        this.certError.set(err?.error?.message ?? 'Could not generate the certificate right now. Please try again shortly.');
+      },
+    });
   }
 }

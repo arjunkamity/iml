@@ -58,7 +58,11 @@ import { RouterLink } from '@angular/router';
             <li>Compatible device</li>
             <li>Updated browser</li>
           </ul>
-          <p>IML shall not be responsible for interruptions caused by participant-side technical issues.</p>
+          <p>
+            See our <a routerLink="/system-requirements">System Requirements</a> for the exact minimum and
+            recommended specifications. IML shall not be responsible for interruptions caused by participant-side
+            technical issues.
+          </p>
 
           <h2>Schedule Changes</h2>
           <p>IML reserves the right to:</p>

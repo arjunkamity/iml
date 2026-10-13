@@ -6,6 +6,7 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
+import { SiteSettingsService } from '@core/services/site-settings.service';
 import { ACCOUNT_UI_CSS } from './account-ui';
 
 @Component({
@@ -15,8 +16,7 @@ import { ACCOUNT_UI_CSS } from './account-ui';
   template: `
     <header class="acc-top">
       <a routerLink="/account" class="brand" aria-label="Dashboard">
-        <img class="logo" src="img/new-logo-cut.png" alt="India Mind League" />
-        <span>India Mind <b class="b2">League</b></span>
+        <img class="logo" [src]="settings().logoDarkUrl" alt="India Mind League" />
       </a>
 
       <nav class="acc-nav" aria-label="Account">
@@ -24,6 +24,8 @@ import { ACCOUNT_UI_CSS } from './account-ui';
         <a routerLink="/account/profile" routerLinkActive="active">My Profile</a>
         <a routerLink="/account/schedules" routerLinkActive="active">Schedules</a>
         <a routerLink="/account/results" routerLinkActive="active">Results</a>
+        <a routerLink="/account/assessments" routerLinkActive="active">Assessments</a>
+        <a routerLink="/account/reports" routerLinkActive="active">My Reports</a>
         <a routerLink="/account/payments" routerLinkActive="active">Payment History</a>
         <a routerLink="/account/help-desk" routerLinkActive="active">Help Desk</a>
       </nav>
@@ -64,6 +66,7 @@ import { ACCOUNT_UI_CSS } from './account-ui';
 export class AccountShell {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  protected readonly settings = inject(SiteSettingsService).settings;
   protected readonly year = new Date().getFullYear();
   protected menuOpen = false;
 

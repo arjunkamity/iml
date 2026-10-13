@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
@@ -19,6 +19,11 @@ export class ResultController {
   @Get('results/:code')
   get(@Param('code') code: string) {
     return this.service.getResult(code);
+  }
+
+  @Post('results/:code/certificate/generate')
+  generateCertificate(@Param('code') code: string) {
+    return this.service.generateCertificate(code);
   }
 
   @Get('leaderboard')

@@ -29,6 +29,9 @@ export function journeyStepsFor(reg: RegistrationView): JourneyStep[] {
     if (s === 'Eliminated') {
       return { ...base, state: 'locked' as const, sub: 'Eliminated' };
     }
+    if (s === 'Locked' && !rs.stage.isFree) {
+      return { ...base, state: 'locked' as const, sub: 'Payment pending' };
+    }
     return { ...base, state: 'locked' as const };
   });
 }
@@ -43,6 +46,21 @@ export function journeyProgressFor(reg: RegistrationView): number {
 
 export function nextActionFor(reg: RegistrationView): NextAction | null {
   const stages = reg.stages;
+  if (!stages.length) return null;
+
+  // Registration itself isn't confirmed until stage 1 is paid — this needs to
+  // surface even before the student has qualified for anything.
+  const first = stages[0];
+  if (first.status === 'Locked' && !first.stage.isFree) {
+    return {
+      kind: 'pay',
+      title: 'Pay to confirm your registration',
+      text: `Pay ${formatINR(first.stage.price)} to confirm your registration and unlock ${first.stage.name}. Payments are recorded via your school coordinator.`,
+      cta: 'Pay Now →',
+      href: '/account/payments',
+    };
+  }
+
   let qualifiedIdx = -1;
   for (let i = 0; i < stages.length; i++) {
     if (stages[i].status === 'Qualified') qualifiedIdx = i;

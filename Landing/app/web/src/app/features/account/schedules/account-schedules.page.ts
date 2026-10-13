@@ -13,7 +13,10 @@ import { formatDate, formatTime, startsInMs } from '../format';
       <div>
         <div class="acc-eyebrow">Schedules</div>
         <h1 class="acc-title">Exam Schedule</h1>
-        <p class="acc-sub">All tests lined up for the competitions you are registered in. Keep your credentials ready before each window.</p>
+        <p class="acc-sub">
+          All tests lined up for the competitions you are registered in. Keep your credentials ready before each window.
+          <a routerLink="/system-requirements">Check System Requirements →</a>
+        </p>
       </div>
     </div>
 
@@ -29,9 +32,9 @@ import { formatDate, formatTime, startsInMs } from '../format';
           <span class="stat-ic green">&#128308;</span>
           <div><b>{{ liveCount() }}</b><small>Live now</small></div>
         </div>
-        <div class="stat">
+        <div class="stat stat-text">
           <span class="stat-ic amber">&#9201;</span>
-          <div><b>{{ nextTitle() }}</b><small>Next exam</small></div>
+          <div><b [title]="nextTitle()">{{ nextTitle() }}</b><small>Next exam</small></div>
         </div>
       </div>
 
@@ -51,24 +54,45 @@ import { formatDate, formatTime, startsInMs } from '../format';
           <tbody>
             @for (exam of exams(); track exam.code) {
               <tr>
-                <td><b>{{ formatDate(exam.date) }}</b></td>
-                <td>{{ formatTime(exam.time) }}</td>
+                @if (exam.batchPending) {
+                  <td colspan="2"><span class="hint">Batch pending</span></td>
+                } @else if (exam.batch) {
+                  <td><b>{{ formatDate(exam.batch.startAt) }}</b></td>
+                  <td>{{ formatTime(exam.batch.startAt) }}</td>
+                } @else {
+                  <td><b>{{ formatDate(exam.date) }}</b></td>
+                  <td>{{ formatTime(exam.time) }}</td>
+                }
                 <td>
                   <b>{{ exam.title }}</b>
-                  @if (exam.status === 'Live') {
+                  @if (exam.batch) {
+                    <br /><small class="hint">Your batch: {{ exam.batch.label }}</small>
+                  }
+                  @if (exam.attemptCode) {
+                    <a class="btn btn-sm btn-primary" [routerLink]="['/account/results', exam.attemptCode]" style="margin-left:0.5rem">View Result →</a>
+                    @if (exam.canReattempt && exam.status === 'Live') {
+                      <a class="btn btn-sm btn-ghost" [routerLink]="['/exam', exam.code]" style="margin-left:0.5rem">
+                        Re-attempt ({{ exam.attemptsUsed }}/{{ exam.maxAttempts }} used) →
+                      </a>
+                    }
+                  } @else if (exam.status === 'Live') {
                     <a class="btn btn-sm btn-primary" [routerLink]="['/exam', exam.code]" style="margin-left:0.5rem">Start Test →</a>
                   }
                 </td>
                 <td>{{ exam.grade ?? '—' }}</td>
-                <td>{{ exam.durationMin ? exam.durationMin + ' min' : '—' }}</td>
+                <td>{{ (exam.batch ? exam.batch.durationMin : exam.durationMin) ? (exam.batch ? exam.batch.durationMin : exam.durationMin) + ' min' : '—' }}</td>
                 <td>
                   <small>{{ exam.competitionCode }}</small><br />
                   {{ exam.competitionTitle }}
                 </td>
                 <td>
-                  <span class="tag" [class.tag-green]="exam.status === 'Live'" [class.tag-blue]="exam.status === 'Scheduled'">
-                    <span class="status-dot"></span>{{ exam.status }}
-                  </span>
+                  @if (exam.batchPending) {
+                    <span class="tag tag-blue"><span class="status-dot"></span>Awaiting batch</span>
+                  } @else {
+                    <span class="tag" [class.tag-green]="exam.status === 'Live'" [class.tag-blue]="exam.status === 'Scheduled'">
+                      <span class="status-dot"></span>{{ exam.status }}
+                    </span>
+                  }
                 </td>
               </tr>
             }
