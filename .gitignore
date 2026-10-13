@@ -33,3 +33,6 @@ Landing/sounds/*.mp4
 
 # Generated API spec (regenerated on backend start)
 backend/openapi.json
+
+# Private keys
+*.pem
